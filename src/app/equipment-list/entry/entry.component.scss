@@ -1,0 +1,23 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.items {
+  margin-left: 50px;
+}
+
+.cost {
+  display: inline-block;
+  width: 50px;
+}
+
+.weight {
+  display: inline-block;
+}
+
+.title {
+  display: inline-block;
+  width: 150px;
+  margin-right: 10px;
+}

@@ -1,0 +1,33 @@
+<form [formGroup]="form">
+  <div class="wrapper">
+    <button md-icon-button (click)="collapsed = !collapsed">
+      <md-icon>{{ collapsed ? 'keyboard_arrow_right' : 'keyboard_arrow_down' }}</md-icon>
+    </button>
+    <md-icon>folder_open</md-icon>
+    <md-input-container>
+      <input mdInput formControlName="title" placeholder="Title">
+    </md-input-container>
+    <!--<md-select formControlName="selectedItem">-->
+    <!--<md-option *ngFor="let item of items.controls" [value]="item.value">{{ item.value.title }}</md-option>-->
+    <!--</md-select>-->
+    <ng-container *ngIf="form.get('selectedItem')?.value as selectedItem">
+      <span class="title">{{ selectedItem.title }}</span>
+      <span class="cost">{{ selectedItem.cost }}</span>
+      <span class="weight">{{ selectedItem.weight }}</span>
+    </ng-container>
+  </div>
+  <div class="items" *ngIf="!collapsed">
+    <md-radio-group formControlName="selectedItem" >
+      <div *ngFor="let item of items.controls" class="wrapper">
+        <md-radio-button [value]="item.value">
+        </md-radio-button>
+        <equip-item [form]="item"></equip-item>
+      </div>
+    </md-radio-group>
+    <button md-button (click)="addItem()">
+      <md-icon>add_circle_outline</md-icon>
+      New item
+    </button>
+    <br>
+  </div>
+</form>

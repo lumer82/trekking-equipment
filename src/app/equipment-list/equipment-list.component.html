@@ -1,0 +1,22 @@
+<h1>{{(isNewList$ | async) ? 'Neue Liste anlegen' : 'Liste bearbeiten'}}</h1>
+<form [formGroup]="form">
+  <div class="list-settings">
+    <md-input-container>
+      <input mdInput placeholder="Name" formControlName="title">
+    </md-input-container>
+    <md-input-container>
+      <input mdInput placeholder="Budget" formControlName="budget">
+    </md-input-container>
+    <md-input-container>
+      <input mdInput placeholder="Weight" formControlName="weight">
+    </md-input-container>
+  </div>
+  <div formArrayName="entries" class="entries">
+    <equip-entry *ngFor="let entry of entries.controls; let i = index" [form]="entry"></equip-entry>
+  </div>
+</form>
+<button md-button color="primary" (click)="addEntry()"><md-icon>add</md-icon>Neuer Eintrag</button>
+<button md-button color="primary">SPEICHERN</button>
+<br>
+<br>
+{{ form.value | json }}
