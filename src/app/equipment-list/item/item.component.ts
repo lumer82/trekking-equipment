@@ -31,7 +31,7 @@ export class ItemComponent implements OnInit, ControlValueAccessor {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    // this.initForm();
+    this.initForm();
   }
 
   initForm(): void {
@@ -54,7 +54,6 @@ export class ItemComponent implements OnInit, ControlValueAccessor {
   }
 
   writeValue(item: Item): void {
-    console.log('write item', item);
     this.item = item;
     this.initForm();
   }
@@ -63,12 +62,10 @@ export class ItemComponent implements OnInit, ControlValueAccessor {
   propagateTouch = (_: any) => {};
 
   registerOnChange(fn: any): void {
-    console.log('item registerOnChange', fn);
     this.propagateChange = fn;
   }
 
   registerOnTouched(fn: any): void {
-    console.log('item registerOnTouched', fn);
     this.propagateTouch = fn;
   }
 

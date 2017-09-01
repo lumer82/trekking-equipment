@@ -6,7 +6,7 @@ import {
   MD_PLACEHOLDER_GLOBAL_OPTIONS, MdButtonModule, MdIconModule, MdInputModule, MdRadioModule,
   MdSelectModule
 } from '@angular/material';
-import { EditEntryComponent } from './entry/entry.component';
+import { EntryComponent } from './entry/entry.component';
 import { CollectionService } from './shared/services/collection.service';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { ItemComponent } from './item/item.component';
@@ -27,7 +27,7 @@ import { SettingsService } from '../shared/service/settings.service';
   ],
   declarations: [
     EquipmentListComponent,
-    EditEntryComponent,
+    EntryComponent,
     ItemComponent,
     EntriesComponent
   ],
@@ -39,7 +39,7 @@ import { SettingsService } from '../shared/service/settings.service';
     SettingsService,
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => EditEntryComponent),
+      useExisting: forwardRef(() => EntryComponent),
       multi: true
     },
     {provide: MD_PLACEHOLDER_GLOBAL_OPTIONS, useValue: {float: 'never'}}

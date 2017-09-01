@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 @Injectable()
 export class SettingsService {
 
-  private settings: Settings = {budget: 500, weight: 10000};
+  private settings: Settings = {budget: 2000, weight: 10000};
   private _settings$: BehaviorSubject<Settings> = new BehaviorSubject(this.settings);
 
   settings$: Observable<Settings> = this._settings$.asObservable();

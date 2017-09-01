@@ -20,7 +20,7 @@
     <span class="number">Total Weight (g)</span>
   </div>
   <div class="entries">
-    <equip-entries [entries]="(collection$ | async).entries"></equip-entries>
+    <equip-entries formControlName="entries"></equip-entries>
   </div>
 </form>
 <button md-button color="primary" (click)="addEntry()"><md-icon>add</md-icon>Neuer Eintrag</button>

@@ -15,12 +15,12 @@ import { Observable } from 'rxjs/Observable';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => EditEntryComponent),
+      useExisting: forwardRef(() => EntryComponent),
       multi: true
     }
   ]
 })
-export class EditEntryComponent implements OnInit, ControlValueAccessor {
+export class EntryComponent implements OnInit, ControlValueAccessor {
 
   @Input()
   entry: Entry;
@@ -39,6 +39,8 @@ export class EditEntryComponent implements OnInit, ControlValueAccessor {
   form: FormGroup;
 
   settings$: Observable<Settings>;
+  budget_exceeded$: Observable<boolean>;
+  weight_exceeded$: Observable<boolean>;
 
   private valueChangesSubscription: Subscription;
 
@@ -49,13 +51,14 @@ export class EditEntryComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {
     this.settings$ = this.settingsService.settings$;
-    this.settings$.subscribe(settings => console.log('settings are', settings));
+    this.budget_exceeded$ = this.settings$.map(settings => settings.budget < (this.acc_cost + this.entry.selectedItem.cost));
+    this.weight_exceeded$ = this.settings$.map(settings => settings.weight < (this.acc_weight + this.entry.selectedItem.weight));
     // console.log('this.form', this.form.get('items'));
     // this.form.patchValue({
     //   items: this.formBuilder.array(this.form.get('items').value || [])
     // });
     // console.log('this.form after patch', this.form.get('items'));
-    // this.initForm();
+    this.initForm();
   }
 
   initForm() {
@@ -64,9 +67,6 @@ export class EditEntryComponent implements OnInit, ControlValueAccessor {
     if (this.valueChangesSubscription) {
       this.valueChangesSubscription.unsubscribe();
     }
-
-    entry.items = [];
-    console.log('entry.items', entry);
 
     this.form = this.formBuilder.group({
       title: entry.title,
@@ -81,10 +81,8 @@ export class EditEntryComponent implements OnInit, ControlValueAccessor {
     });
   }
 
-  propagateChange = (_: any) => {
-  };
-  propagateTouch = (_: any) => {
-  };
+  propagateChange = (_: any) => {  };
+  propagateTouch = (_: any) => {  };
 
   writeValue(entry: Entry): void {
     console.log('write entry', entry);

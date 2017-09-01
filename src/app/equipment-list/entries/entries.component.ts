@@ -1,20 +1,26 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input, OnInit } from '@angular/core';
 import { Entry } from '../../shared/domain/entry';
+import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'equip-entries',
   templateUrl: './entries.component.html',
   styleUrls: ['./entries.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => EntriesComponent),
+      multi: true
+    }
+  ]
 })
-export class EntriesComponent implements OnInit {
-
-
+export class EntriesComponent implements OnInit, ControlValueAccessor {
 
   @Input()
   entries: Array<Entry>;
 
-  constructor() { }
+  constructor(private formBuilder: FormBuilder, private changeDetectorRef: ChangeDetectorRef) { }
 
   ngOnInit() {
   }
@@ -34,5 +40,22 @@ export class EntriesComponent implements OnInit {
       .map(selector)
       .reduce((a, b) => a + b, 0);
   }
+
+
+  writeValue(entries: Array<Entry>): void {
+    this.entries = entries;
+  }
+
+  propagateChange = (_: any) => {};
+  propagateTouch = (_: any) => {};
+
+  registerOnChange(fn: any): void {
+    this.propagateChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.propagateTouch = fn;
+  }
+
 
 }
