@@ -1,0 +1,3 @@
+<div class="entry" *ngFor="let entry of entries; let i = index">
+  <equip-entry [entry]="entry" [acc_cost]="calcCost(i)" [acc_weight]="calcWeight(i)"></equip-entry>
+</div>

@@ -21,6 +21,9 @@ export class ItemComponent implements OnInit, ControlValueAccessor {
   @Input()
   item: Item;
 
+  @Input()
+  new = false;
+
   valueChangesSubscription: Subscription;
   @Input()
   form: FormGroup;

@@ -3,10 +3,12 @@ import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/shareReplay';
+import 'rxjs/add/operator/do';
 import { Collection, TEST_COLLECTION } from '../shared/domain/collection';
 import { CollectionService } from './shared/services/collection.service';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Entry } from '../shared/domain/entry';
+import { SettingsService } from '../shared/service/settings.service';
 
 @Component({
   selector: 'equip-equipment-list',
@@ -22,7 +24,8 @@ export class EquipmentListComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
               private collectionService: CollectionService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder,
+              private settingsService: SettingsService) { }
 
   ngOnInit() {
     const id$ = this.activatedRoute.paramMap.map(map => map.get('id'));
@@ -33,10 +36,11 @@ export class EquipmentListComponent implements OnInit {
       this.form = this.formBuilder.group({
         title: collection.title,
         budget: collection.budget,
-        weight: collection.weight,
-        entries: this.formBuilder.array(collection.entries.map(e => this.formBuilder.group(
-          {...e, items: this.formBuilder.array(e.items.map(i => this.formBuilder.group(i)))})))
+        weight: collection.weight
       });
+      this.form.valueChanges
+        .do(value => console.log('value changed', value))
+        .subscribe(value => this.settingsService.updateSettings(value));
     });
   }
 

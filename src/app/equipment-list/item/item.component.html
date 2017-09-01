@@ -1,12 +1,12 @@
-<form [formGroup]="form" class="wrapper">
-  <md-icon>label_outline</md-icon>
+<div class="wrapper">
+  <md-icon>{{ new ? 'add_circle_outline' : 'label_outline' }}</md-icon>
   <md-input-container>
-    <input mdInput formControlName="title" placeholder="Title">
+    <input mdInput type="text" [(ngModel)]="item.title" placeholder="Title">
   </md-input-container>
   <md-input-container>
-    <input mdInput formControlName="cost" placeholder="Cost">
+    <input mdInput type="number" [(ngModel)]="item.cost" placeholder="Cost">
   </md-input-container>
   <md-input-container>
-    <input mdInput formControlName="weight" placeholder="Weight">
+    <input mdInput type="number" [(ngModel)]="item.weight" placeholder="Weight">
   </md-input-container>
-</form>
+</div>

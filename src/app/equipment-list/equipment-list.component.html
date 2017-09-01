@@ -1,18 +1,26 @@
-<h1>{{(isNewList$ | async) ? 'Neue Liste anlegen' : 'Liste bearbeiten'}}</h1>
+<h1>{{(isNewList$ | async) ? 'Create List' : 'Edit List'}}</h1>
 <form [formGroup]="form">
   <div class="list-settings">
-    <md-input-container>
+    <md-input-container floatPlaceholder="auto">
       <input mdInput placeholder="Name" formControlName="title">
     </md-input-container>
-    <md-input-container>
+    <md-input-container floatPlaceholder="auto">
       <input mdInput placeholder="Budget" formControlName="budget">
     </md-input-container>
-    <md-input-container>
+    <md-input-container floatPlaceholder="auto">
       <input mdInput placeholder="Weight" formControlName="weight">
     </md-input-container>
   </div>
-  <div formArrayName="entries" class="entries">
-    <equip-entry *ngFor="let entry of entries.controls; let i = index" [form]="entry"></equip-entry>
+  <div class="headers">
+    <span>Name</span>
+    <span>Product</span>
+    <span class="number">Cost (&euro;)</span>
+    <span class="number">Total Cost (&euro;)</span>
+    <span class="number">Weight (g)</span>
+    <span class="number">Total Weight (g)</span>
+  </div>
+  <div class="entries">
+    <equip-entries [entries]="(collection$ | async).entries"></equip-entries>
   </div>
 </form>
 <button md-button color="primary" (click)="addEntry()"><md-icon>add</md-icon>Neuer Eintrag</button>

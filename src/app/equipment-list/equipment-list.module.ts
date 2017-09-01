@@ -2,13 +2,16 @@ import { forwardRef, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EquipmentListComponent } from './equipment-list.component';
 import { EquipmentListRoutingModule } from './equipment-list.routing.module';
-import { EditEquipmentListComponent } from './edit-equipment-list/edit-equipment-list.component';
-import { NewEquipmentListComponent } from './new-equipment-list/new-equipment-list.component';
-import { MdButtonModule, MdIconModule, MdInputModule, MdRadioModule, MdSelectModule } from '@angular/material';
+import {
+  MD_PLACEHOLDER_GLOBAL_OPTIONS, MdButtonModule, MdIconModule, MdInputModule, MdRadioModule,
+  MdSelectModule
+} from '@angular/material';
 import { EditEntryComponent } from './entry/entry.component';
 import { CollectionService } from './shared/services/collection.service';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { ItemComponent } from './item/item.component';
+import { EntriesComponent } from './entries/entries.component';
+import { SettingsService } from '../shared/service/settings.service';
 
 @NgModule({
   imports: [
@@ -24,21 +27,23 @@ import { ItemComponent } from './item/item.component';
   ],
   declarations: [
     EquipmentListComponent,
-    EditEquipmentListComponent,
-    NewEquipmentListComponent,
     EditEntryComponent,
-    ItemComponent
+    ItemComponent,
+    EntriesComponent
   ],
   exports: [
     EquipmentListComponent
   ],
   providers: [
     CollectionService,
+    SettingsService,
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => EditEntryComponent),
       multi: true
-    }
+    },
+    {provide: MD_PLACEHOLDER_GLOBAL_OPTIONS, useValue: {float: 'never'}}
   ]
 })
-export class EquipmentListModule { }
+export class EquipmentListModule {
+}

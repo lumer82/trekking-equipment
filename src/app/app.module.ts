@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,7 +17,12 @@ import { EquipmentListModule } from './equipment-list/equipment-list.module';
     /* Components */
     EquipmentListModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: LOCALE_ID,
+      useValue: 'de-DE' // 'de-DE' for Germany, 'fr-FR' for France ...
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

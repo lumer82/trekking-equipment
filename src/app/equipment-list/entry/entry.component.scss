@@ -1,23 +1,33 @@
-.wrapper {
-  display: flex;
+.item {
+  display: grid;
+  grid-template-columns: 230px 1fr;
   align-items: center;
+
+  md-radio-button {
+    justify-self: end;
+  }
+
+  equip-item {
+    grid-column-start: 2;
+  }
 }
 
-.items {
-  margin-left: 50px;
+.entry {
+  display: grid;
+  grid-template-columns: 30px 30px 200px 200px repeat(4, 100px);
+  align-items: center;
+  border-bottom: 1px solid rgba(0,0,0,.12);
 }
 
-.cost {
-  display: inline-block;
-  width: 50px;
+.number {
+  justify-self: end;
 }
 
-.weight {
-  display: inline-block;
+.budget-exceeded {
+  color: red;
 }
 
-.title {
-  display: inline-block;
-  width: 150px;
-  margin-right: 10px;
+.weight-exceeded:not(:hover) {
+  color: rgba(0,0,0,.54);
+  background-color: rgba(0,0,0,.12);
 }

@@ -3,6 +3,9 @@ import { Entry } from '../../shared/domain/entry';
 import { ControlValueAccessor, FormArray, FormBuilder, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Item } from '../../shared/domain/item';
 import { Subscription } from 'rxjs/Subscription';
+import { SettingsService } from '../../shared/service/settings.service';
+import { Settings } from '../../shared/domain/settings';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'equip-entry',
@@ -22,17 +25,31 @@ export class EditEntryComponent implements OnInit, ControlValueAccessor {
   @Input()
   entry: Entry;
 
+  @Input()
+  acc_cost: number;
+
+  @Input()
+  acc_weight: number;
+
+  newItem = new Item();
+
   collapsed = true;
 
   @Input()
   form: FormGroup;
 
+  settings$: Observable<Settings>;
+
   private valueChangesSubscription: Subscription;
 
   constructor(private formBuilder: FormBuilder,
-              private changeDetectorRef: ChangeDetectorRef) { }
+              private changeDetectorRef: ChangeDetectorRef,
+              private settingsService: SettingsService) {
+  }
 
   ngOnInit() {
+    this.settings$ = this.settingsService.settings$;
+    this.settings$.subscribe(settings => console.log('settings are', settings));
     // console.log('this.form', this.form.get('items'));
     // this.form.patchValue({
     //   items: this.formBuilder.array(this.form.get('items').value || [])
@@ -64,8 +81,10 @@ export class EditEntryComponent implements OnInit, ControlValueAccessor {
     });
   }
 
-  propagateChange = (_: any) => {};
-  propagateTouch = (_: any) => {};
+  propagateChange = (_: any) => {
+  };
+  propagateTouch = (_: any) => {
+  };
 
   writeValue(entry: Entry): void {
     console.log('write entry', entry);
