@@ -8,7 +8,7 @@
       <input mdInput formControlName="title" placeholder="Title">
     </md-input-container>
 
-    <ng-container *ngIf="entry.selectedItem as selectedItem">
+    <ng-container *ngIf="getSelectedItem() as selectedItem">
       <span>{{ selectedItem.title }}</span>
       <span class="number">{{ +selectedItem.cost | currency:'EUR':true}}</span>
       <span class="number" [class.budget-exceeded]="budget_exceeded$ | async">{{ +selectedItem.cost + acc_cost | currency:'EUR':true}}</span>
@@ -17,11 +17,11 @@
     </ng-container>
 
     <div class="items" *ngIf="!collapsed">
-      <md-radio-group formControlName="selectedItem">
-        <div *ngFor="let item of items.controls; let i = index" class="item">
-          <md-radio-button [value]="item">
+      <md-radio-group formControlName="selectedItemId">
+        <div *ngFor="let item of entry.items; let i = index; trackBy: trackById" class="item">
+          <md-radio-button [value]="item.id">
           </md-radio-button>
-          <equip-item [formControl]="item"></equip-item>
+          <equip-item [item]="item" (itemChanged)="itemChanged($event, i)"></equip-item>
         </div>
       </md-radio-group>
       <div class="item">

@@ -1,29 +1,29 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnChanges, OnInit,
+  Output, SimpleChanges
+} from '@angular/core';
 import { Entry } from '../../shared/domain/entry';
-import { ControlValueAccessor, FormArray, FormBuilder, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, FormBuilder, FormGroup } from '@angular/forms';
 import { Item } from '../../shared/domain/item';
 import { Subscription } from 'rxjs/Subscription';
 import { SettingsService } from '../../shared/service/settings.service';
 import { Settings } from '../../shared/domain/settings';
 import { Observable } from 'rxjs/Observable';
+import { getSelectedItem } from '../../shared/util/entry.util';
 
 @Component({
   selector: 'equip-entry',
   templateUrl: 'entry.component.html',
   styleUrls: ['entry.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => EntryComponent),
-      multi: true
-    }
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntryComponent implements OnInit, ControlValueAccessor {
+export class EntryComponent implements OnInit, OnChanges {
 
   @Input()
   entry: Entry;
+
+  @Output()
+  entryChanged: EventEmitter<Entry> = new EventEmitter();
 
   @Input()
   acc_cost: number;
@@ -31,12 +31,11 @@ export class EntryComponent implements OnInit, ControlValueAccessor {
   @Input()
   acc_weight: number;
 
+  form: FormGroup;
+
   newItem = new Item();
 
   collapsed = true;
-
-  @Input()
-  form: FormGroup;
 
   settings$: Observable<Settings>;
   budget_exceeded$: Observable<boolean>;
@@ -44,71 +43,49 @@ export class EntryComponent implements OnInit, ControlValueAccessor {
 
   private valueChangesSubscription: Subscription;
 
-  constructor(private formBuilder: FormBuilder,
-              private changeDetectorRef: ChangeDetectorRef,
-              private settingsService: SettingsService) {
-  }
+  constructor(private settingsService: SettingsService, private formBuilder: FormBuilder) {}
 
   ngOnInit() {
-    this.settings$ = this.settingsService.settings$;
-    this.budget_exceeded$ = this.settings$.map(settings => settings.budget < (this.acc_cost + this.entry.selectedItem.cost));
-    this.weight_exceeded$ = this.settings$.map(settings => settings.weight < (this.acc_weight + this.entry.selectedItem.weight));
-    // console.log('this.form', this.form.get('items'));
-    // this.form.patchValue({
-    //   items: this.formBuilder.array(this.form.get('items').value || [])
-    // });
-    // console.log('this.form after patch', this.form.get('items'));
-    this.initForm();
-  }
-
-  initForm() {
-    const entry = this.entry || new Entry();
-
-    if (this.valueChangesSubscription) {
-      this.valueChangesSubscription.unsubscribe();
-    }
+    this.settings$ = this.settingsService.settings$.do(settings => console.log('getting settings', settings));
+    this.calcExceeded();
 
     this.form = this.formBuilder.group({
-      title: entry.title,
-      items: this.formBuilder.array(entry.items),
-      selectedItem: entry.selectedItem
+      title: this.entry.title,
+      selectedItemId: this.entry.selectedItemId
     });
-
-    this.valueChangesSubscription = this.form.valueChanges.subscribe(form => {
-      console.log('form changes', form);
-      this.changeDetectorRef.detectChanges();
-      this.propagateChange(form);
+    this.form.valueChanges.subscribe(value => {
+      this.entryChanged.emit({...this.entry, ...value});
     });
   }
 
-  propagateChange = (_: any) => {  };
-  propagateTouch = (_: any) => {  };
-
-  writeValue(entry: Entry): void {
-    console.log('write entry', entry);
-    this.entry = entry;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.form) {
+      this.form.setValue({
+        title: this.entry.title,
+        selectedItemId: this.entry.selectedItemId
+      });
+    }
+    this.calcExceeded();
   }
 
-  registerOnChange(fn: any): void {
-    console.log('entry registerOnChange', fn);
-    this.propagateChange = fn;
+  calcExceeded(): void {
+    if (this.settings$) {
+      this.budget_exceeded$ = this.settings$.map(settings => settings.budget < (this.acc_cost + this.getSelectedItem().cost));
+      this.weight_exceeded$ = this.settings$.map(settings => settings.weight < (this.acc_weight + this.getSelectedItem().weight));
+    }
   }
 
-  registerOnTouched(fn: any): void {
-    console.log('entry registerOnTouched', fn);
-    this.propagateTouch = fn;
+  getSelectedItem(): Item {
+    return getSelectedItem(this.entry);
   }
 
-  setDisabledState(isDisabled: boolean): void {
-    throw new Error('Method not implemented.');
+  itemChanged(item: Item, index: number): void {
+    const items = this.entry.items;
+    this.entryChanged.emit({...this.entry, items: [...items.slice(0, index), item, ...items.slice(index + 1)]});
   }
 
-  get items(): FormArray {
-    return this.form.get('items') as FormArray;
-  }
-
-  addItem(): void {
-    this.items.push(this.formBuilder.group(new Item()));
+  trackById(index: number, item: Item): number {
+    return item.id;
   }
 
 }

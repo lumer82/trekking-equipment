@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, forwardRef, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnChanges, OnInit,
+  Output, SimpleChanges
+} from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Item } from '../../shared/domain/item';
 import { Subscription } from 'rxjs/Subscription';
@@ -7,19 +10,15 @@ import { Subscription } from 'rxjs/Subscription';
   selector: 'equip-item',
   templateUrl: 'item.component.html',
   styleUrls: ['item.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => ItemComponent),
-      multi: true
-    }
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ItemComponent implements OnInit, ControlValueAccessor {
+export class ItemComponent implements OnInit, OnChanges {
 
   @Input()
   item: Item;
+
+  @Output()
+  itemChanged: EventEmitter<Item> = new EventEmitter();
 
   @Input()
   new = false;
@@ -37,36 +36,28 @@ export class ItemComponent implements OnInit, ControlValueAccessor {
   initForm(): void {
     const item = this.item || new Item();
 
-    if (this.valueChangesSubscription) {
-      this.valueChangesSubscription.unsubscribe();
-    }
-
     this.form = this.formBuilder.group({
+      id: item.id,
       title: item.title,
       cost: item.cost,
       weight: item.weight
     });
 
-    this.valueChangesSubscription = this.form.valueChanges.subscribe(value => {
-      console.log('item change', value);
-      this.propagateChange(value);
+    this.form.valueChanges.subscribe(value => {
+      this.itemChanged.emit(value);
     });
   }
 
-  writeValue(item: Item): void {
-    this.item = item;
-    this.initForm();
-  }
 
-  propagateChange = (_: any) => {};
-  propagateTouch = (_: any) => {};
+  ngOnChanges(changes: SimpleChanges): void {
+    const item = this.item || new Item();
 
-  registerOnChange(fn: any): void {
-    this.propagateChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.propagateTouch = fn;
+    this.form && this.form.setValue({
+      id: item.id,
+      title: item.title,
+      cost: item.cost,
+      weight: item.weight
+    });
   }
 
 }

@@ -5,10 +5,10 @@
       <input mdInput placeholder="Name" formControlName="title">
     </md-input-container>
     <md-input-container floatPlaceholder="auto">
-      <input mdInput placeholder="Budget" formControlName="budget">
+      <input mdInput placeholder="Budget" formControlName="budget" type="number">
     </md-input-container>
     <md-input-container floatPlaceholder="auto">
-      <input mdInput placeholder="Weight" formControlName="weight">
+      <input mdInput placeholder="Weight" formControlName="weight" type="number">
     </md-input-container>
   </div>
   <div class="headers">
@@ -20,11 +20,11 @@
     <span class="number">Total Weight (g)</span>
   </div>
   <div class="entries">
-    <equip-entries formControlName="entries"></equip-entries>
+    <equip-entries [entries]="(collection$ | async).entries" (entriesChanged)="entriesChanged($event)"></equip-entries>
   </div>
 </form>
-<button md-button color="primary" (click)="addEntry()"><md-icon>add</md-icon>Neuer Eintrag</button>
+<!--<button md-button color="primary" (click)="addEntry()"><md-icon>add</md-icon>Neuer Eintrag</button>-->
 <button md-button color="primary">SPEICHERN</button>
 <br>
 <br>
-{{ form.value | json }}
+{{ collection | json }}

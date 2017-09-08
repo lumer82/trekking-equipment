@@ -1,61 +1,50 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnInit,
+  Output
+} from '@angular/core';
 import { Entry } from '../../shared/domain/entry';
-import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, FormArray, FormBuilder, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { getSelectedItem } from '../../shared/util/entry.util';
 
 @Component({
   selector: 'equip-entries',
   templateUrl: './entries.component.html',
   styleUrls: ['./entries.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => EntriesComponent),
-      multi: true
-    }
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntriesComponent implements OnInit, ControlValueAccessor {
+export class EntriesComponent {
 
   @Input()
   entries: Array<Entry>;
 
-  constructor(private formBuilder: FormBuilder, private changeDetectorRef: ChangeDetectorRef) { }
+  @Output()
+  entriesChanged: EventEmitter<Array<Entry>> = new EventEmitter();
 
-  ngOnInit() {
-  }
+  form: FormGroup;
+
+  constructor() { }
 
   calcCost(index: number): number {
-      return this.calc(index, e => e.selectedItem.cost);
+      return this.calc(index, e => getSelectedItem(e).cost);
   }
 
   calcWeight(index: number): number {
-    return this.calc(index, e => e.selectedItem.weight);
+    return this.calc(index, e => getSelectedItem(e).weight);
   }
 
   private calc(index, selector: (entry) => number): number {
     return this.entries
       .slice(0, index)
-      .filter(e => !!e.selectedItem)
+      .filter(e => !!e.selectedItemId)
       .map(selector)
       .reduce((a, b) => a + b, 0);
   }
 
-
-  writeValue(entries: Array<Entry>): void {
-    this.entries = entries;
+  entryChanged(entry: Entry, index: number): void {
+    this.entriesChanged.emit([...this.entries.slice(0, index), entry, ...this.entries.slice(index + 1)]);
   }
 
-  propagateChange = (_: any) => {};
-  propagateTouch = (_: any) => {};
-
-  registerOnChange(fn: any): void {
-    this.propagateChange = fn;
+  trackByTitle(index: number, entry: Entry): string {
+    return entry.title;
   }
-
-  registerOnTouched(fn: any): void {
-    this.propagateTouch = fn;
-  }
-
-
 }
