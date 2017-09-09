@@ -1,6 +1,7 @@
 <div class="entry" *ngFor="let entry of entries; let i = index; trackBy: trackByTitle">
   <equip-entry [entry]="entry"
-               (entryChanged)="entryChanged($event, i)"
+               (entryChange)="entryChange($event, i)"
                [acc_cost]="calcCost(i)"
                [acc_weight]="calcWeight(i)"></equip-entry>
 </div>
+<equip-entry [(entry)]="newEntry" (addEntry)="addEntry()" [new]="true"></equip-entry>

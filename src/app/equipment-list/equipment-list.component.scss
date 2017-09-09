@@ -1,17 +1,26 @@
 .list-settings {
-  display: grid;
-  grid-template-columns: (30px+30px+200px+200px) 200px 200px;
-  align-items: center;
+  .title {
+    grid-column-start: title;
+  }
+
+  .budget {
+    grid-column-start: 6;
+  }
+
+  .weight {
+    grid-column-start: 8;
+  }
 }
 
 .headers {
-  display: grid;
-  grid-template-columns: repeat(2, 200px) repeat(4, 100px);
   font-size: 12px;
   padding-bottom: 1.25em;
-  padding-left: 60px;
   color: rgba(0,0,0,0.54);
   border-bottom: 1px solid rgba(0,0,0,.12);
+
+  span:first-child {
+    grid-column-start: 3;
+  }
 }
 
 .number {

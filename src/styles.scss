@@ -6,3 +6,41 @@ body {
   font-size: 14px;
   font-weight: 500;
 }
+
+
+
+.grid {
+  display: grid;
+  grid-template-columns: [action] 40px [icon] 40px [title] 200px [name] 200px repeat(4, 100px);
+  align-items: center;
+}
+
+.childgrid {
+  margin-left: 200px;
+  display: grid;
+  grid-template-columns: [icon] 40px [child] 1fr;
+  align-items: center;
+}
+
+.subgrid {
+  display: grid;
+  grid-template-columns: [icon] 40px [name] 200px repeat(4, 100px);
+  align-items: center;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  text-align: right;
+
+  &+.mat-input-placeholder-wrapper {
+    text-align: right;
+  }
+}
+md-input-container.number {
+  width: 100px;
+}

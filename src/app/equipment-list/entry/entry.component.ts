@@ -1,5 +1,5 @@
 import {
-  ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnChanges, OnInit,
+  ChangeDetectionStrategy, Component, EventEmitter, forwardRef, HostListener, Input, OnChanges, OnInit,
   Output, SimpleChanges
 } from '@angular/core';
 import { Entry } from '../../shared/domain/entry';
@@ -10,6 +10,7 @@ import { SettingsService } from '../../shared/service/settings.service';
 import { Settings } from '../../shared/domain/settings';
 import { Observable } from 'rxjs/Observable';
 import { getSelectedItem } from '../../shared/util/entry.util';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'equip-entry',
@@ -23,7 +24,13 @@ export class EntryComponent implements OnInit, OnChanges {
   entry: Entry;
 
   @Output()
-  entryChanged: EventEmitter<Entry> = new EventEmitter();
+  entryChange: EventEmitter<Entry> = new EventEmitter();
+
+  @Output()
+  addEntry: EventEmitter<Entry> = new EventEmitter();
+
+  @Input()
+  new: boolean = false;
 
   @Input()
   acc_cost: number;
@@ -43,10 +50,11 @@ export class EntryComponent implements OnInit, OnChanges {
 
   private valueChangesSubscription: Subscription;
 
-  constructor(private settingsService: SettingsService, private formBuilder: FormBuilder) {}
+  constructor(private settingsService: SettingsService, private formBuilder: FormBuilder) {
+  }
 
   ngOnInit() {
-    this.settings$ = this.settingsService.settings$.do(settings => console.log('getting settings', settings));
+    this.settings$ = this.settingsService.settings$;
     this.calcExceeded();
 
     this.form = this.formBuilder.group({
@@ -54,7 +62,7 @@ export class EntryComponent implements OnInit, OnChanges {
       selectedItemId: this.entry.selectedItemId
     });
     this.form.valueChanges.subscribe(value => {
-      this.entryChanged.emit({...this.entry, ...value});
+      this.entryChange.emit({...this.entry, ...value});
     });
   }
 
@@ -70,7 +78,7 @@ export class EntryComponent implements OnInit, OnChanges {
 
   calcExceeded(): void {
     if (this.settings$) {
-      this.budget_exceeded$ = this.settings$.map(settings => settings.budget < (this.acc_cost + this.getSelectedItem().cost));
+      this.budget_exceeded$ = this.settings$.map(settings => settings.budget < (this.acc_cost + this.getSelectedItem().price));
       this.weight_exceeded$ = this.settings$.map(settings => settings.weight < (this.acc_weight + this.getSelectedItem().weight));
     }
   }
@@ -81,11 +89,27 @@ export class EntryComponent implements OnInit, OnChanges {
 
   itemChanged(item: Item, index: number): void {
     const items = this.entry.items;
-    this.entryChanged.emit({...this.entry, items: [...items.slice(0, index), item, ...items.slice(index + 1)]});
+    this.entryChange.emit({...this.entry, items: [...items.slice(0, index), item, ...items.slice(index + 1)]});
   }
 
   trackById(index: number, item: Item): number {
     return item.id;
+  }
+
+  addNewItem(): void {
+    console.log(this.newItem);
+    const item = this.newItem;
+    this.newItem = new Item();
+    this.entryChange.emit({...this.entry, items: [...this.entry.items, item]});
+  }
+
+  @HostListener('keyup', ['$event'])
+  keyup(ev: KeyboardEvent): void {
+    if (ev.key === 'Enter' && this.new && this.form.valid) {
+      ev.stopPropagation();
+      this.addEntry.emit(this.form.value);
+      this.form.reset();
+    }
   }
 
 }

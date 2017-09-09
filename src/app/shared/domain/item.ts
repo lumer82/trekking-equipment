@@ -1,6 +1,6 @@
 export class Item {
-  id: number;
+  id: number = Date.now();
   title: string = null;
-  cost: number = null;
+  price: number = null;
   weight: number = null;
 }

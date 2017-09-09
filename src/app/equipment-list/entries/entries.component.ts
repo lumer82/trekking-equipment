@@ -18,14 +18,16 @@ export class EntriesComponent {
   entries: Array<Entry>;
 
   @Output()
-  entriesChanged: EventEmitter<Array<Entry>> = new EventEmitter();
+  entriesChange: EventEmitter<Array<Entry>> = new EventEmitter();
+
+  newEntry = new Entry();
 
   form: FormGroup;
 
   constructor() { }
 
   calcCost(index: number): number {
-      return this.calc(index, e => getSelectedItem(e).cost);
+      return this.calc(index, e => getSelectedItem(e).price);
   }
 
   calcWeight(index: number): number {
@@ -40,11 +42,18 @@ export class EntriesComponent {
       .reduce((a, b) => a + b, 0);
   }
 
-  entryChanged(entry: Entry, index: number): void {
-    this.entriesChanged.emit([...this.entries.slice(0, index), entry, ...this.entries.slice(index + 1)]);
+  entryChange(entry: Entry, index: number): void {
+    this.entriesChange.emit([...this.entries.slice(0, index), entry, ...this.entries.slice(index + 1)]);
   }
 
   trackByTitle(index: number, entry: Entry): string {
     return entry.title;
+  }
+
+  addEntry(): void {
+    console.log(this.newEntry);
+    const entry = this.newEntry;
+    this.newEntry = new Entry();
+    this.entriesChange.emit([...this.entries, entry]);
   }
 }

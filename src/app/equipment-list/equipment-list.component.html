@@ -1,26 +1,26 @@
 <h1>{{(isNewList$ | async) ? 'Create List' : 'Edit List'}}</h1>
 <form [formGroup]="form">
-  <div class="list-settings">
-    <md-input-container floatPlaceholder="auto">
+  <div class="list-settings grid">
+    <md-input-container floatPlaceholder="auto" class="title">
       <input mdInput placeholder="Name" formControlName="title">
     </md-input-container>
-    <md-input-container floatPlaceholder="auto">
+    <md-input-container floatPlaceholder="auto" class="budget number">
       <input mdInput placeholder="Budget" formControlName="budget" type="number">
     </md-input-container>
-    <md-input-container floatPlaceholder="auto">
+    <md-input-container floatPlaceholder="auto" class="weight number">
       <input mdInput placeholder="Weight" formControlName="weight" type="number">
     </md-input-container>
   </div>
-  <div class="headers">
+  <div class="headers grid">
     <span>Name</span>
     <span>Product</span>
-    <span class="number">Cost (&euro;)</span>
-    <span class="number">Total Cost (&euro;)</span>
+    <span class="number">Price (&euro;)</span>
+    <span class="number">Total Price (&euro;)</span>
     <span class="number">Weight (g)</span>
     <span class="number">Total Weight (g)</span>
   </div>
   <div class="entries">
-    <equip-entries [entries]="(collection$ | async).entries" (entriesChanged)="entriesChanged($event)"></equip-entries>
+    <equip-entries [entries]="(collection$ | async).entries" (entriesChange)="entriesChanged($event)"></equip-entries>
   </div>
 </form>
 <!--<button md-button color="primary" (click)="addEntry()"><md-icon>add</md-icon>Neuer Eintrag</button>-->

@@ -1,7 +1,4 @@
 .item {
-  display: grid;
-  grid-template-columns: 230px 1fr;
-  align-items: center;
 
   md-radio-button {
     justify-self: end;
@@ -9,13 +6,11 @@
 
   equip-item {
     grid-column-start: 2;
+    grid-column-end: -1;
   }
 }
 
 .entry {
-  display: grid;
-  grid-template-columns: 30px 30px 200px 200px repeat(4, 100px);
-  align-items: center;
   border-bottom: 1px solid rgba(0,0,0,.12);
 }
 

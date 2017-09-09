@@ -1,5 +1,7 @@
-.wrapper {
-  display: grid;
-  grid-template-columns: 30px 200px 200px 200px;
-  align-items: center;
+.price {
+  grid-column-start: 3;
+}
+
+.weight {
+  grid-column-start: 5;
 }

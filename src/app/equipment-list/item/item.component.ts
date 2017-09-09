@@ -1,10 +1,17 @@
 import {
-  ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnChanges, OnInit,
-  Output, SimpleChanges
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter, HostListener,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
 } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Item } from '../../shared/domain/item';
-import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/operator/filter';
 
 @Component({
   selector: 'equip-item',
@@ -18,13 +25,14 @@ export class ItemComponent implements OnInit, OnChanges {
   item: Item;
 
   @Output()
-  itemChanged: EventEmitter<Item> = new EventEmitter();
+  itemChange: EventEmitter<Item> = new EventEmitter();
+
+  @Output()
+  addItem: EventEmitter<void> = new EventEmitter<void>();
 
   @Input()
   new = false;
 
-  valueChangesSubscription: Subscription;
-  @Input()
   form: FormGroup;
 
   constructor(private formBuilder: FormBuilder) { }
@@ -37,14 +45,15 @@ export class ItemComponent implements OnInit, OnChanges {
     const item = this.item || new Item();
 
     this.form = this.formBuilder.group({
-      id: item.id,
-      title: item.title,
-      cost: item.cost,
+      id: [item.id, Validators.required],
+      title: [item.title, Validators.required],
+      price: item.price,
       weight: item.weight
     });
 
-    this.form.valueChanges.subscribe(value => {
-      this.itemChanged.emit(value);
+    this.form.valueChanges
+      .subscribe(value => {
+      this.itemChange.emit(value);
     });
   }
 
@@ -52,12 +61,22 @@ export class ItemComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     const item = this.item || new Item();
 
-    this.form && this.form.setValue({
-      id: item.id,
-      title: item.title,
-      cost: item.cost,
-      weight: item.weight
-    });
+    if (this.form) {
+      this.form.setValue({
+        id: item.id,
+        title: item.title,
+        price: item.price,
+        weight: item.weight
+      });
+    }
   }
 
+  @HostListener('keyup', ['$event'])
+  keyup(ev: KeyboardEvent): void {
+    if (ev.key === 'Enter' && this.new && this.form.valid) {
+      ev.stopPropagation();
+      this.addItem.emit();
+      this.form.reset();
+    }
+  }
 }
