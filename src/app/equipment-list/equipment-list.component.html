@@ -19,9 +19,20 @@
     <span class="number">Weight (g)</span>
     <span class="number">Total Weight (g)</span>
   </div>
-  <div class="entries">
-    <equip-entries [entries]="(collection$ | async).entries" (entriesChange)="entriesChanged($event)"></equip-entries>
-  </div>
+  <ng-container *ngIf="collection">
+    <div *ngFor="let entityLink of getSelectedVariant(collection).entityLinks; let i = index; trackBy: trackByLinkId">
+      <ng-container [ngSwitch]="entityLink.linkType">
+        <equip-entry *ngSwitchCase="linkType.ENTRY"
+                     [entry]="mappedEntities[i].entity"
+                     (entryChange)="entryChanged($event)"
+                     [item]="mappedEntities[i].selected"
+                     [selectedId]="entityLink.selectedId"
+                     (selectedIdChange)="selectedIdChange($event, i)"
+                     [acc_price]="mappedEntities[i].acc_price"
+                     [acc_weight]="mappedEntities[i].acc_weight"></equip-entry>
+      </ng-container>
+    </div>
+  </ng-container>
 </form>
 <!--<button md-button color="primary" (click)="addEntry()"><md-icon>add</md-icon>Neuer Eintrag</button>-->
 <button md-button color="primary">SPEICHERN</button>

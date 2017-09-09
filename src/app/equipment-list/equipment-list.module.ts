@@ -10,7 +10,6 @@ import { EntryComponent } from './entry/entry.component';
 import { CollectionService } from './shared/services/collection.service';
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { ItemComponent } from './item/item.component';
-import { EntriesComponent } from './entries/entries.component';
 import { SettingsService } from '../shared/service/settings.service';
 
 @NgModule({
@@ -28,8 +27,7 @@ import { SettingsService } from '../shared/service/settings.service';
   declarations: [
     EquipmentListComponent,
     EntryComponent,
-    ItemComponent,
-    EntriesComponent
+    ItemComponent
   ],
   exports: [
     EquipmentListComponent

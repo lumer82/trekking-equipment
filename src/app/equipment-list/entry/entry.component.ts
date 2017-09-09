@@ -3,7 +3,7 @@ import {
   Output, SimpleChanges
 } from '@angular/core';
 import { Entry } from '../../shared/domain/entry';
-import { NG_VALUE_ACCESSOR, FormBuilder, FormGroup } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Item } from '../../shared/domain/item';
 import { Subscription } from 'rxjs/Subscription';
 import { SettingsService } from '../../shared/service/settings.service';
@@ -23,6 +23,9 @@ export class EntryComponent implements OnInit, OnChanges {
   @Input()
   entry: Entry;
 
+  @Input()
+  item: Item;
+
   @Output()
   entryChange: EventEmitter<Entry> = new EventEmitter();
 
@@ -30,15 +33,23 @@ export class EntryComponent implements OnInit, OnChanges {
   addEntry: EventEmitter<Entry> = new EventEmitter();
 
   @Input()
-  new: boolean = false;
+  selectedId: number;
+
+  @Output()
+  readonly selectedIdChange = new EventEmitter<number>();
 
   @Input()
-  acc_cost: number;
+  new = false;
+
+  @Input()
+  acc_price: number;
 
   @Input()
   acc_weight: number;
 
   form: FormGroup;
+
+  selectedForm: FormControl;
 
   newItem = new Item();
 
@@ -58,33 +69,38 @@ export class EntryComponent implements OnInit, OnChanges {
     this.calcExceeded();
 
     this.form = this.formBuilder.group({
-      title: this.entry.title,
-      selectedItemId: this.entry.selectedItemId
+      title: this.entry.title
     });
     this.form.valueChanges.subscribe(value => {
       this.entryChange.emit({...this.entry, ...value});
     });
+    this.selectedForm = this.formBuilder.control(this.selectedId);
+    this.selectedForm.valueChanges.subscribe(value => {
+      this.selectedIdChange.emit(value);
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.form) {
+    if (changes['entry'] && this.form) {
+      const entry = this.entry || { title: '' };
       this.form.setValue({
-        title: this.entry.title,
-        selectedItemId: this.entry.selectedItemId
+        title: entry.title
       });
     }
-    this.calcExceeded();
+    if (changes['acc_weight'] || changes['acc_price']) {
+      this.calcExceeded();
+    }
   }
 
   calcExceeded(): void {
     if (this.settings$) {
-      this.budget_exceeded$ = this.settings$.map(settings => settings.budget < (this.acc_cost + this.getSelectedItem().price));
-      this.weight_exceeded$ = this.settings$.map(settings => settings.weight < (this.acc_weight + this.getSelectedItem().weight));
+      this.budget_exceeded$ = this.settings$.map(settings => settings.budget < this.acc_price);
+      this.weight_exceeded$ = this.settings$.map(settings => settings.weight < this.acc_weight);
     }
   }
 
   getSelectedItem(): Item {
-    return getSelectedItem(this.entry);
+    return getSelectedItem(this.entry, this.selectedId);
   }
 
   itemChanged(item: Item, index: number): void {
@@ -97,7 +113,6 @@ export class EntryComponent implements OnInit, OnChanges {
   }
 
   addNewItem(): void {
-    console.log(this.newItem);
     const item = this.newItem;
     this.newItem = new Item();
     this.entryChange.emit({...this.entry, items: [...this.entry.items, item]});

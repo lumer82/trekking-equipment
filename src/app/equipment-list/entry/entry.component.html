@@ -1,34 +1,35 @@
-<form [formGroup]="form">
-  <div class="entry grid" [class.weight-exceeded]="weight_exceeded$ | async">
-    <button md-icon-button (click)="collapsed = !collapsed">
-      <md-icon>{{ collapsed ? 'keyboard_arrow_right' : 'keyboard_arrow_down' }}</md-icon>
-    </button>
-    <md-icon>{{ new ? 'create_new_folder' : 'folder_open' }}</md-icon>
+<div class="entry grid" [class.weight-exceeded]="weight_exceeded$ | async">
+  <button md-icon-button (click)="collapsed = !collapsed">
+    <md-icon>{{ collapsed ? 'keyboard_arrow_right' : 'keyboard_arrow_down' }}</md-icon>
+  </button>
+  <md-icon>{{ new ? 'create_new_folder' : 'folder_open' }}</md-icon>
+  <form [formGroup]="form">
     <md-input-container>
       <input mdInput formControlName="title" placeholder="Title">
     </md-input-container>
+  </form>
 
-    <ng-container *ngIf="!new">
-      <ng-container *ngIf="getSelectedItem() as selectedItem">
-        <span>{{ selectedItem.title }}</span>
-        <span class="number">{{ +selectedItem.price | currency:'EUR':true}}</span>
-        <span class="number" [class.budget-exceeded]="budget_exceeded$ | async">{{ +selectedItem.price + acc_cost | currency:'EUR':true}}</span>
-        <span class="number">{{ +selectedItem.weight }} g</span>
-        <span class="number">{{ +selectedItem.weight + acc_weight }} g</span>
-      </ng-container>
+  <ng-container *ngIf="!new">
+    <ng-container *ngIf="item">
+      <span>{{ item.title }}</span>
+      <span class="number">{{ item.price | currency:'EUR':true}}</span>
+      <span class="number"
+            [class.budget-exceeded]="budget_exceeded$ | async">{{ acc_price | currency:'EUR':true}}</span>
+      <span class="number">{{ item.weight }} g</span>
+      <span class="number">{{ acc_weight }} g</span>
     </ng-container>
-  </div>
+  </ng-container>
+</div>
 
-  <div class="items" *ngIf="!collapsed">
-    <md-radio-group formControlName="selectedItemId">
-      <div *ngFor="let item of entry.items; let i = index; trackBy: trackById" class="childgrid item">
-        <md-radio-button [value]="item.id"> </md-radio-button>
-        <equip-item [item]="item" (itemChange)="itemChanged($event, i)"></equip-item>
-      </div>
-    </md-radio-group>
-    <div class="item childgrid">
-      <equip-item [(item)]="newItem" (addItem)="addNewItem()" [new]="true"></equip-item>
+<div class="items" *ngIf="!collapsed">
+  <md-radio-group [formControl]="selectedForm">
+    <div *ngFor="let item of entry.items; let i = index; trackBy: trackById" class="childgrid item">
+      <md-radio-button [value]="item.id"></md-radio-button>
+      <equip-item [item]="item" (itemChange)="itemChanged($event, i)"></equip-item>
     </div>
-    <br>
+  </md-radio-group>
+  <div class="item childgrid">
+    <equip-item [(item)]="newItem" (addItem)="addNewItem()" [new]="true"></equip-item>
   </div>
-</form>
+  <br>
+</div>
