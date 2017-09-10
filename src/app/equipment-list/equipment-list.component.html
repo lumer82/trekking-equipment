@@ -34,6 +34,11 @@
     </div>
   </ng-container>
 </form>
+
+<h3>Entries not in variant</h3>
+<equip-entry *ngFor="let entry of notMappedEntries"
+             [entry]="entry">
+</equip-entry>
 <!--<button md-button color="primary" (click)="addEntry()"><md-icon>add</md-icon>Neuer Eintrag</button>-->
 <button md-button color="primary">SPEICHERN</button>
 <br>

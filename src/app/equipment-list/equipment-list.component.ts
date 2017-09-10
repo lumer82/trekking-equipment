@@ -41,7 +41,7 @@ export class EquipmentListComponent implements OnInit {
   linkType: typeof LinkType = LinkType;
   mappedEntities: Array<Mapped | {}>;
 
-
+  notMappedEntries: Array<Entry>;
 
   constructor(private activatedRoute: ActivatedRoute,
               private collectionService: CollectionService,
@@ -76,6 +76,14 @@ export class EquipmentListComponent implements OnInit {
         this.collection = collection;
 
         this.mappedEntities = this.buildMappedEntities(this.collection);
+
+        const mappedEntries = this.mappedEntities
+          // .filter(e => (<Mapped>e).entity instanceof Entry) // TODO only use objects of type entry
+          .map(e => (<Mapped>e).entity);
+
+        console.log('mappedEntries', mappedEntries);
+        this.notMappedEntries = collection.entries
+          .filter(e => mappedEntries.findIndex(me => me.id === e.id) === -1);
       });
 
     this.collection$

@@ -156,7 +156,7 @@ export const TEST_COLLECTION: Collection = {
           id: 12,
           title: 'Petzl Nao+',
           price: 0,
-          weight: 181
+          weight: 185
         }
       ]
     }
