@@ -3,7 +3,7 @@ import { Variant } from './variant';
 import { LinkType } from './link';
 
 export class Collection {
-  id: number;
+  _id: string;
   title: string;
   entries: Array<Entry> = [];
   variants: Array<Variant>;
@@ -23,7 +23,7 @@ export class Collection {
 }
 
 export const TEST_COLLECTION: Collection = {
-  id: 123456789,
+  _id: '123456789',
   title: 'Trekking',
   budget: 2000,
   weight: 10000,

@@ -12,6 +12,7 @@ import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/fo
 import { ItemComponent } from './item/item.component';
 import { SettingsService } from '../shared/service/settings.service';
 import { DragulaModule } from 'ng2-dragula';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { DragulaModule } from 'ng2-dragula';
     MdRadioModule,
     FormsModule,
     ReactiveFormsModule,
-    DragulaModule
+    DragulaModule,
+    HttpClientModule
   ],
   declarations: [
     EquipmentListComponent,

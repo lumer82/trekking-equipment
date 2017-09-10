@@ -74,7 +74,7 @@ export class EquipmentListComponent implements OnInit {
   ngOnInit() {
     const id$ = this.activatedRoute.paramMap.map(map => map.get('id'));
     this.isNewList$ = id$.map(id => id === 'new');
-    id$.switchMap(id => id === 'new' ? Observable.of(new Collection) : this.collectionService.get(+id))
+    id$.switchMap(id => id === 'new' ? Observable.of(new Collection) : this.collectionService.get(id))
       .do(collection => {
         if (isNullOrUndefined(collection)) {
           this.router.navigate(['new']);
@@ -106,7 +106,7 @@ export class EquipmentListComponent implements OnInit {
 
         console.log('mappedEntries', mappedEntries);
         this.notMappedEntries = collection.entries
-          .filter(e => mappedEntries.findIndex(me => me.id === e.id) === -1);
+          .filter(e => mappedEntries.findIndex(me => (<Entry>me).id === e.id) === -1);
       });
 
     this.collection$
@@ -245,7 +245,7 @@ export class EquipmentListComponent implements OnInit {
       .withLatestFrom(this.isNewList$)
       .subscribe(([collection, isNewList]) => {
         if (isNewList) {
-          this.router.navigate([collection.id]);
+          this.router.navigate([collection._id]);
         } else {
           this.collection = collection;
         }
