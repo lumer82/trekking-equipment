@@ -16,6 +16,7 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { EntryLink, LinkType, LinkTypes } from '../shared/domain/link';
 import { Variant } from '../shared/domain/variant';
 import { Item } from '../shared/domain/item';
+import { DragulaService } from 'ng2-dragula';
 
 export interface Mapped {
   entity: Entry | Collection;
@@ -49,7 +50,21 @@ export class EquipmentListComponent implements OnInit {
               private collectionService: CollectionService,
               private formBuilder: FormBuilder,
               private settingsService: SettingsService,
-              private changeDetectorRef: ChangeDetectorRef) {
+              private changeDetectorRef: ChangeDetectorRef,
+              private dragulaService: DragulaService) {
+    dragulaService.drop.subscribe((value) => {
+      const oldVariant = this.getSelectedVariant(this.collection);
+      const entityLinks = [...this.getSelectedVariant(this.collection).entityLinks];
+      const variant = {...oldVariant, entityLinks};
+      const variantIndex = this.collection.variants.findIndex(v => v.id === oldVariant.id);
+      const variants = [...this.collection.variants.slice(0, variantIndex), variant, ...this.collection.variants.slice(variantIndex + 1)];
+      this.replay$.next({...this.collection, variants});
+      this.changeDetectorRef.detectChanges();
+    });;
+  }
+
+  log(msg: string, link: LinkTypes, index: number): void {
+    console.log(`${msg}: ${index}`, link);
   }
 
   ngOnInit() {

@@ -19,7 +19,7 @@
     <span class="number">Weight (g)</span>
     <span class="number">Total Weight (g)</span>
   </div>
-  <ng-container *ngIf="collection">
+  <div *ngIf="collection" [dragula]="'variant-bag'" [dragulaModel]="getSelectedVariant(collection).entityLinks">
     <div *ngFor="let entityLink of getSelectedVariant(collection).entityLinks; let i = index; trackBy: trackByLinkId">
       <ng-container [ngSwitch]="entityLink.linkType">
         <equip-entry *ngSwitchCase="linkType.ENTRY"
@@ -32,14 +32,16 @@
                      [acc_weight]="mappedEntities[i].acc_weight"></equip-entry>
       </ng-container>
     </div>
-  </ng-container>
+  </div>
 </form>
 <equip-entry [(entry)]="newEntry" (addEntry)="addEntry($event)" [new]="true"></equip-entry>
 
-<h3>Entries not in variant</h3>
-<equip-entry *ngFor="let entry of notMappedEntries"
+<h3 *ngIf="notMappedEntries.length">Entries not in variant</h3>
+<div>
+  <equip-entry *ngFor="let entry of notMappedEntries"
              [entry]="entry">
 </equip-entry>
+</div>
 <!--<button md-button color="primary" (click)="addEntry()"><md-icon>add</md-icon>Neuer Eintrag</button>-->
 <button md-button color="primary">SPEICHERN</button>
 <br>
