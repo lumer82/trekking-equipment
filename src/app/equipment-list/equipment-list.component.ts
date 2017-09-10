@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/map';
@@ -13,7 +13,7 @@ import { Entry } from '../shared/domain/entry';
 import { SettingsService } from '../shared/service/settings.service';
 import 'rxjs/add/observable/of';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { LinkType, LinkTypes } from '../shared/domain/link';
+import { EntryLink, LinkType, LinkTypes } from '../shared/domain/link';
 import { Variant } from '../shared/domain/variant';
 import { Item } from '../shared/domain/item';
 
@@ -43,10 +43,13 @@ export class EquipmentListComponent implements OnInit {
 
   notMappedEntries: Array<Entry>;
 
+  newEntry = new Entry();
+
   constructor(private activatedRoute: ActivatedRoute,
               private collectionService: CollectionService,
               private formBuilder: FormBuilder,
-              private settingsService: SettingsService) {
+              private settingsService: SettingsService,
+              private changeDetectorRef: ChangeDetectorRef) {
   }
 
   ngOnInit() {
@@ -189,5 +192,27 @@ export class EquipmentListComponent implements OnInit {
 
     console.log('mappedEntities', mappedEntities);
     return mappedEntities;
+  }
+
+  addEntry(entry: Entry): void {
+    entry = this.newEntry;
+    const oldVariant = this.getSelectedVariant(this.collection);
+    const link: EntryLink = {
+      linkType: LinkType.ENTRY,
+      entityId: entry.id,
+      selectedId: entry.items && entry.items.length > 0 ? entry.items[0].id : null
+    };
+    const entityLinks = [
+      ...oldVariant.entityLinks,
+      link
+    ];
+    const variant = {...oldVariant, entityLinks};
+    const variantIndex = this.collection.variants.findIndex(v => v.id === oldVariant.id);
+    const variants = [...this.collection.variants.slice(0, variantIndex), variant, ...this.collection.variants.slice(variantIndex + 1)];
+    const entries = [...this.collection.entries, entry];
+    this.replay$.next({...this.collection, variants, entries});
+
+    this.newEntry = new Entry();
+    this.changeDetectorRef.detectChanges();
   }
 }

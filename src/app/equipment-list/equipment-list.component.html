@@ -34,6 +34,7 @@
     </div>
   </ng-container>
 </form>
+<equip-entry [(entry)]="newEntry" (addEntry)="addEntry($event)" [new]="true"></equip-entry>
 
 <h3>Entries not in variant</h3>
 <equip-entry *ngFor="let entry of notMappedEntries"
