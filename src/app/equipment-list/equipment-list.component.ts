@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/scan';
-import { Collection, TEST_COLLECTION } from '../shared/domain/collection';
+import { Collection } from '../shared/domain/collection';
 import { CollectionService } from './shared/services/collection.service';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Entry } from '../shared/domain/entry';
 import { SettingsService } from '../shared/service/settings.service';
 import 'rxjs/add/observable/of';
@@ -17,6 +17,9 @@ import { EntryLink, LinkType, LinkTypes } from '../shared/domain/link';
 import { Variant } from '../shared/domain/variant';
 import { Item } from '../shared/domain/item';
 import { DragulaService } from 'ng2-dragula';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/withLatestFrom';
+import { isNullOrUndefined } from 'util';
 
 export interface Mapped {
   entity: Entry | Collection;
@@ -36,7 +39,7 @@ export class EquipmentListComponent implements OnInit {
   isNewList$: Observable<boolean>;
   private replay$ = new ReplaySubject<Collection>();
   collection: Collection;
-  collection$ = this.replay$.asObservable();
+  collection$ = this.replay$.asObservable().filter(collection => !!collection);
   form: FormGroup;
 
   linkType: typeof LinkType = LinkType;
@@ -51,7 +54,8 @@ export class EquipmentListComponent implements OnInit {
               private formBuilder: FormBuilder,
               private settingsService: SettingsService,
               private changeDetectorRef: ChangeDetectorRef,
-              private dragulaService: DragulaService) {
+              private dragulaService: DragulaService,
+              private router: Router) {
     dragulaService.drop.subscribe((value) => {
       const oldVariant = this.getSelectedVariant(this.collection);
       const entityLinks = [...this.getSelectedVariant(this.collection).entityLinks];
@@ -70,8 +74,14 @@ export class EquipmentListComponent implements OnInit {
   ngOnInit() {
     const id$ = this.activatedRoute.paramMap.map(map => map.get('id'));
     this.isNewList$ = id$.map(id => id === 'new');
-    // this.collection$ = id$.map(id => id === 'new' ? TEST_COLLECTION : this.collectionService.get(+id)).shareReplay().do(col => console.log('col', col));
-    const col$ = Observable.of(TEST_COLLECTION).do(col => console.log('col source', col)).shareReplay();
+    id$.switchMap(id => id === 'new' ? Observable.of(new Collection) : this.collectionService.get(+id))
+      .do(collection => {
+        if (isNullOrUndefined(collection)) {
+          this.router.navigate(['new']);
+        }
+      })
+      .subscribe(collection => this.replay$.next(collection));
+    // const col$ = Observable.of(TEST_COLLECTION).do(col => console.log('col source', col)).shareReplay();
 
     this.form = this.formBuilder.group({
       title: '',
@@ -82,11 +92,6 @@ export class EquipmentListComponent implements OnInit {
     this.form.valueChanges
       .subscribe(value => {
         this.replay$.next({...this.collection, ...value});
-      });
-
-    col$
-      .subscribe(collection => {
-        this.replay$.next(collection);
       });
 
     this.collection$
@@ -105,7 +110,7 @@ export class EquipmentListComponent implements OnInit {
       });
 
     this.collection$
-      .map(collection => ({title: collection.title, budget: collection.budget, weight: collection.weight}))
+      .map(collection => ({title: collection.title || '', budget: collection.budget || null, weight: collection.weight || null}))
       .scan((prev, settings) => Object.keys(settings).every(key => prev[key] === settings[key]) ? prev : settings)
       .distinctUntilChanged()
       .subscribe(settings => {
@@ -163,6 +168,9 @@ export class EquipmentListComponent implements OnInit {
 
   private buildMappedEntities(collection: Collection): Array<Mapped | {}> {
     const variant = this.getSelectedVariant(collection);
+    if (!variant) {
+      return this.mappedEntities || [];
+    }
 
     let acc_price = 0;
     let acc_weight = 0;
@@ -229,5 +237,18 @@ export class EquipmentListComponent implements OnInit {
 
     this.newEntry = new Entry();
     this.changeDetectorRef.detectChanges();
+  }
+
+  save(): void {
+    this.collectionService
+      .save(this.collection)
+      .withLatestFrom(this.isNewList$)
+      .subscribe(([collection, isNewList]) => {
+        if (isNewList) {
+          this.router.navigate([collection.id]);
+        } else {
+          this.collection = collection;
+        }
+      });
   }
 }

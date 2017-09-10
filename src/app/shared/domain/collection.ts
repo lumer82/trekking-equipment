@@ -10,10 +10,20 @@ export class Collection {
   selectedVariantId: number;
   budget: number;
   weight: number;
+
+  constructor() {
+    const id = Date.now();
+    this.variants = [{
+      id: id,
+      name: 'Default',
+      entityLinks: []
+    }];
+    this.selectedVariantId = id;
+  }
 }
 
 export const TEST_COLLECTION: Collection = {
-  id: 0,
+  id: 123456789,
   title: 'Trekking',
   budget: 2000,
   weight: 10000,

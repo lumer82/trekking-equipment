@@ -94,8 +94,8 @@ export class EntryComponent implements OnInit, OnChanges {
 
   calcExceeded(): void {
     if (this.settings$) {
-      this.budget_exceeded$ = this.settings$.map(settings => settings.budget < this.acc_price);
-      this.weight_exceeded$ = this.settings$.map(settings => settings.weight < this.acc_weight);
+      this.budget_exceeded$ = this.settings$.map(settings => !isNullOrUndefined(settings.budget) && settings.budget < this.acc_price);
+      this.weight_exceeded$ = this.settings$.map(settings => !isNullOrUndefined(settings.weight) && settings.weight < this.acc_weight);
     }
   }
 

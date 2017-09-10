@@ -36,14 +36,14 @@
 </form>
 <equip-entry [(entry)]="newEntry" (addEntry)="addEntry($event)" [new]="true"></equip-entry>
 
-<h3 *ngIf="notMappedEntries.length">Entries not in variant</h3>
+<h3 *ngIf="notMappedEntries?.length">Entries not in variant</h3>
 <div>
   <equip-entry *ngFor="let entry of notMappedEntries"
              [entry]="entry">
 </equip-entry>
 </div>
 <!--<button md-button color="primary" (click)="addEntry()"><md-icon>add</md-icon>Neuer Eintrag</button>-->
-<button md-button color="primary">SPEICHERN</button>
+<button md-button color="primary" (click)="save()">SPEICHERN</button>
 <br>
 <br>
 {{ collection | json }}
