@@ -1,6 +1,7 @@
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 
@@ -22,8 +23,12 @@ MongoClient.connect(process.env.MONGODB_URI, (err, database) => {
   }
   require('./server/routes')(app, database);
 
+
+  app.all('*', (req, res) => { res.status(200).sendFile(path.join(distDir, '/index.html')); });
+
   const server = app.listen(process.env.PORT || 8080, () => {
     const port = server.address().port;
     console.log('We are live on ' + port);
   });
 })
+
