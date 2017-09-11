@@ -13,14 +13,14 @@ export class CollectionService {
   }
 
   get(id: string): Observable<Collection> {
-    return this.http.get<Collection>(`http://localhost:8000/collections/${id}`);
+    return this.http.get<Collection>(`api/collections/${id}`);
   }
 
   save(collection: Collection): Observable<Collection> {
     if (collection._id) {
-      return this.http.put<Collection>(`http://localhost:8000/collections/${collection._id}`, collection);
+      return this.http.put<Collection>(`api/collections/${collection._id}`, collection);
     } else {
-      return this.http.post<Collection>(`http://localhost:8000/collections`, collection);
+      return this.http.post<Collection>(`api/collections`, collection);
     }
   }
 }
