@@ -7,9 +7,9 @@
     "start": "node server.js",
     "devserver": "nodemon server.js",
     "dev": "ng serve --proxy-config proxy.conf.json",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
+    "build": "ng build --prod --aot --no-progress",
+    "test": "ng test --single-run --no-progress",
+    "lint": "ng lint --type-check",
     "e2e": "ng e2e",
     "postinstall": "ng build --prod --no-progress"
   },

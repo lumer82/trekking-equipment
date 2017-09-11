@@ -1,3 +1,8 @@
+export enum LinkType {
+  ENTRY,
+  COLLECTION
+}
+
 export abstract class Link {
   abstract readonly linkType: LinkType;
   readonly entityId: number;
@@ -13,8 +18,3 @@ export class CollectionLink extends Link {
 }
 
 export type LinkTypes = EntryLink | CollectionLink;
-
-export enum LinkType {
-  ENTRY,
-  COLLECTION
-}

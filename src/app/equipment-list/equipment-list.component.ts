@@ -64,7 +64,7 @@ export class EquipmentListComponent implements OnInit {
       const variants = [...this.collection.variants.slice(0, variantIndex), variant, ...this.collection.variants.slice(variantIndex + 1)];
       this.replay$.next({...this.collection, variants});
       this.changeDetectorRef.detectChanges();
-    });;
+    });
   }
 
   log(msg: string, link: LinkTypes, index: number): void {
