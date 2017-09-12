@@ -13,7 +13,8 @@ export class CollectionService {
   }
 
   get(id: string): Observable<Collection> {
-    return this.http.get<Collection>(`api/collections/${id}`);
+    // return this.http.get<Collection>(`api/collections/${id}`);
+    return Observable.of(TEST_COLLECTION);
   }
 
   save(collection: Collection): Observable<Collection> {

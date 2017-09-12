@@ -19,7 +19,7 @@ import { Item } from '../shared/domain/item';
 import { DragulaService } from 'ng2-dragula';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/withLatestFrom';
-import { isNullOrUndefined } from 'util';
+import { isNull, isNullOrUndefined } from 'util';
 
 export interface Mapped {
   entity: Entry | Collection;
@@ -57,41 +57,42 @@ export class EquipmentListComponent implements OnInit {
               private dragulaService: DragulaService,
               private router: Router) {
     dragulaService.drop.subscribe((value) => {
-      const oldVariant = this.getSelectedVariant(this.collection);
       const entityLinks = [...this.getSelectedVariant(this.collection).entityLinks];
-      const variant = {...oldVariant, entityLinks};
-      const variantIndex = this.collection.variants.findIndex(v => v.id === oldVariant.id);
-      const variants = [...this.collection.variants.slice(0, variantIndex), variant, ...this.collection.variants.slice(variantIndex + 1)];
-      this.replay$.next({...this.collection, variants});
+      this.replay$.next(this.updateVariant(this.collection, this.collection.variants[this.collection.selectedVariantId], {entityLinks}));
       this.changeDetectorRef.detectChanges();
     });
   }
 
-  log(msg: string, link: LinkTypes, index: number): void {
-    console.log(`${msg}: ${index}`, link);
-  }
-
   ngOnInit() {
-    const id$ = this.activatedRoute.paramMap.map(map => map.get('id'));
-    this.isNewList$ = id$.map(id => id === 'new');
-    id$.switchMap(id => id === 'new' ? Observable.of(new Collection) : this.collectionService.get(id))
-      .do(collection => {
-        if (isNullOrUndefined(collection)) {
-          this.router.navigate(['new']);
-        }
-      })
-      .subscribe(collection => this.replay$.next(collection));
-    // const col$ = Observable.of(TEST_COLLECTION).do(col => console.log('col source', col)).shareReplay();
-
     this.form = this.formBuilder.group({
       title: '',
       budget: '',
       weight: ''
     });
 
+    const id$ = this.activatedRoute.paramMap.map(map => map.get('id'));
+    this.isNewList$ = id$.map(id => id === 'new');
+    id$.switchMap(id =>
+      id === 'new'
+        ? Observable.of(new Collection)
+        : this.collectionService.get(id))
+      .do(collection => {
+        if (isNullOrUndefined(collection)) {
+          this.router.navigate(['new']);
+        }
+      })
+      .subscribe(collection => {
+        this.form.setValue({
+          title: collection.settings.title,
+          budget: collection.settings.budget,
+          weight: collection.settings.weight
+        });
+        this.replay$.next(collection);
+      });
+
     this.form.valueChanges
-      .subscribe(value => {
-        this.replay$.next({...this.collection, ...value});
+      .subscribe(settings => {
+        this.replay$.next({...this.collection, settings});
       });
 
     this.collection$
@@ -104,22 +105,12 @@ export class EquipmentListComponent implements OnInit {
           // .filter(e => (<Mapped>e).entity instanceof Entry) // TODO only use objects of type entry
           .map(e => (<Mapped>e).entity);
 
-        console.log('mappedEntries', mappedEntries);
         this.notMappedEntries = collection.entries
           .filter(e => mappedEntries.findIndex(me => (<Entry>me).id === e.id) === -1);
       });
 
     this.collection$
-      .map(collection => ({title: collection.title || '', budget: collection.budget || null, weight: collection.weight || null}))
-      .scan((prev, settings) => Object.keys(settings).every(key => prev[key] === settings[key]) ? prev : settings)
-      .distinctUntilChanged()
-      .subscribe(settings => {
-        this.form.setValue(settings);
-      });
-
-    this.collection$
-      .map(collection => ({budget: collection.budget, weight: collection.weight}))
-      .scan((prev, settings) => Object.keys(settings).every(key => prev[key] === settings[key]) ? prev : settings)
+      .map(collection => collection.settings)
       .distinctUntilChanged()
       .subscribe(settings => {
         this.settingsService.updateSettings(settings);
@@ -127,7 +118,7 @@ export class EquipmentListComponent implements OnInit {
   }
 
   getSelectedVariant(collection: Collection): Variant {
-    return collection.variants.find(v => v.id === collection.selectedVariantId);
+    return collection.variants[collection.selectedVariantId];
   }
 
   getEntry(collection: Collection, linkId: Number): Entry {
@@ -136,9 +127,7 @@ export class EquipmentListComponent implements OnInit {
 
   entryChanged(entry: Entry): void {
     const index = this.collection.entries.findIndex(e => e.id === entry.id);
-    const entries = [...this.collection.entries.slice(0, index), entry, ...this.collection.entries.slice(index + 1)];
-    console.log('entryChanged');
-    this.replay$.next({...this.collection, entries});
+    this.replay$.next(this.updateEntries(this.collection, this.collection.entries, entry, index));
   }
 
 
@@ -148,17 +137,8 @@ export class EquipmentListComponent implements OnInit {
 
   selectedIdChange(selectedId: number, index: number): void {
     const oldVariant = this.getSelectedVariant(this.collection);
-    const oldLink = oldVariant.entityLinks[index];
-    const entityLinks = [
-      ...oldVariant.entityLinks.slice(0, index),
-      {...oldLink, selectedId},
-      ...oldVariant.entityLinks.slice(index + 1)
-    ];
-    const variant = {...oldVariant, entityLinks};
-    const variantIndex = this.collection.variants.findIndex(v => v.id === oldVariant.id);
-    const variants = [...this.collection.variants.slice(0, variantIndex), variant, ...this.collection.variants.slice(variantIndex + 1)];
-    console.log('selectedIdChange');
-    this.replay$.next({...this.collection, variants});
+    const link = {...oldVariant.entityLinks[index], selectedId};
+    this.replay$.next(this.updateEntityLinks(this.collection, oldVariant.entityLinks, link, index));
   }
 
   /* tslint:disable:member-ordering */
@@ -180,9 +160,6 @@ export class EquipmentListComponent implements OnInit {
     if (variant.entityLinks === this._oldEntityLinks && collection.entries === this._oldEntries) {
       return this.mappedEntities;
     }
-
-    console.log('variant.entityLinks === this._oldEntityLinks', variant.entityLinks === this._oldEntityLinks);
-    console.log('collection.entries === this._oldEntries', collection.entries === this._oldEntries);
 
     this._oldEntries = collection.entries;
     this._oldEntityLinks = variant.entityLinks;
@@ -212,31 +189,54 @@ export class EquipmentListComponent implements OnInit {
           mappedEntities.push(mapped);
       }
     }
-
-    console.log('mappedEntities', mappedEntities);
     return mappedEntities;
   }
 
   addEntry(entry: Entry): void {
+    console.log('*********** Begin addEntry ***********');
     entry = this.newEntry;
-    const oldVariant = this.getSelectedVariant(this.collection);
+
     const link: EntryLink = {
       linkType: LinkType.ENTRY,
       entityId: entry.id,
       selectedId: entry.items && entry.items.length > 0 ? entry.items[0].id : null
     };
-    const entityLinks = [
-      ...oldVariant.entityLinks,
-      link
-    ];
-    const variant = {...oldVariant, entityLinks};
-    const variantIndex = this.collection.variants.findIndex(v => v.id === oldVariant.id);
-    const variants = [...this.collection.variants.slice(0, variantIndex), variant, ...this.collection.variants.slice(variantIndex + 1)];
-    const entries = [...this.collection.entries, entry];
-    this.replay$.next({...this.collection, variants, entries});
+    let collection = this.updateEntityLinks(this.collection,
+      this.collection.variants[this.collection.selectedVariantId].entityLinks,
+      link);
+    collection = this.updateEntries(collection, collection.entries, entry);
+    this.replay$.next(collection);
 
     this.newEntry = new Entry();
     this.changeDetectorRef.detectChanges();
+
+    console.log('*********** End addEntry ***********');
+  }
+
+  private updateEntries(collection, oldEntries: Array<Entry>, entry: Entry, index?: number): Collection {
+    index = isNullOrUndefined(index) ? oldEntries.length : index;
+    const entries = [...oldEntries.slice(0, index), entry, ...oldEntries.slice(index + 1)];
+    return this.updateCollection(collection, {entries});
+  }
+
+  private updateEntityLinks(collection: Collection, oldEntityLinks: Array<LinkTypes>, link: LinkTypes, index?: number): Collection {
+    index = isNullOrUndefined(index) ? oldEntityLinks.length : index;
+    const entityLinks = [...oldEntityLinks.slice(0, index), link, ...oldEntityLinks.slice(index + 1)];
+    return this.updateVariant(collection, collection.variants[collection.selectedVariantId], {entityLinks});
+  }
+
+  private updateVariant(collection: Collection, variant: Variant, value: any): Collection {
+    return this.updateVariants(collection, collection.variants, {...variant, ...value});
+  }
+
+  private updateVariants(collection: Collection, oldVariants: {[key: string]: Variant}, variant: Variant): Collection {
+    const variants = {...oldVariants};
+    variants[variant.id] = variant;
+    return this.updateCollection(collection, {variants});
+  }
+
+  private updateCollection(collection: Collection, value: any): Collection {
+    return {...collection, ...value};
   }
 
   save(): void {
