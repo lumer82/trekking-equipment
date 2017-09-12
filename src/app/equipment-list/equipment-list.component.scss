@@ -4,11 +4,11 @@
   }
 
   .budget {
-    grid-column-start: 6;
+    grid-column-start: 5;
   }
 
   .weight {
-    grid-column-start: 8;
+    grid-column-start: 6;
   }
 }
 
@@ -24,5 +24,12 @@
 }
 
 .number {
+  align-self: center;
+}
+
+.double {
   justify-self: end;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5em;
 }

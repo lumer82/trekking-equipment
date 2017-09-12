@@ -12,11 +12,15 @@
   <ng-container *ngIf="!new">
     <ng-container *ngIf="item">
       <span>{{ item.title }}</span>
-      <span class="number">{{ item.price | currency:'EUR':true}}</span>
-      <span class="number"
-            [class.budget-exceeded]="budget_exceeded$ | async">{{ acc_price | currency:'EUR':true}}</span>
-      <span class="number">{{ item.weight }} g</span>
-      <span class="number">{{ acc_weight }} g</span>
+      <span class="double">
+        <span class="number">{{ item.price | currency:'EUR':true}}</span>
+        <span class="number total"
+              [class.budget-exceeded]="budget_exceeded$ | async">({{ acc_price | currency:'EUR':true}})</span>
+      </span>
+      <span class="double">
+        <span class="number">{{ item.weight }} g</span>
+        <span class="number total">({{ acc_weight }} g)</span>
+      </span>
     </ng-container>
   </ng-container>
 </div>
