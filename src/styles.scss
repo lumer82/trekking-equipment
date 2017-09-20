@@ -12,7 +12,7 @@ body {
 
 .grid {
   display: grid;
-  grid-template-columns: [action] 40px [icon] 40px [title] 200px [name] 200px repeat(4, 100px);
+  grid-template-columns: [action] 40px [icon] 40px [title] 200px [name] 200px repeat(2, 100px);
   align-items: center;
 }
 
@@ -25,7 +25,7 @@ body {
 
 .subgrid {
   display: grid;
-  grid-template-columns: [icon] 40px [name] 200px repeat(4, 100px);
+  grid-template-columns: [icon] 40px [name] 200px repeat(2, 100px);
   align-items: center;
 }
 

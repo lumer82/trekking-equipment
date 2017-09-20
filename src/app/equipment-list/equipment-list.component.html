@@ -14,10 +14,14 @@
   <div class="headers grid">
     <span>Name</span>
     <span>Product</span>
-    <span class="number">Price (&euro;)</span>
-    <span class="number">Total Price (&euro;)</span>
-    <span class="number">Weight (g)</span>
-    <span class="number">Total Weight (g)</span>
+    <span class="double">
+      <span class="number">Price (&euro;)</span>
+      <span class="number">(Total)</span>
+    </span>
+    <span class="double">
+      <span class="number">Weight (g)</span>
+      <span class="number">(Total)</span>
+    </span>
   </div>
   <div *ngIf="collection" [dragula]="'variant-bag'" [dragulaModel]="getSelectedVariant(collection).entityLinks">
     <div *ngFor="let entityLink of getSelectedVariant(collection).entityLinks; let i = index; trackBy: trackByLinkId">
@@ -39,8 +43,8 @@
 <h3 *ngIf="notMappedEntries?.length">Entries not in variant</h3>
 <div>
   <equip-entry *ngFor="let entry of notMappedEntries"
-             [entry]="entry">
-</equip-entry>
+               [entry]="entry">
+  </equip-entry>
 </div>
 <!--<button md-button color="primary" (click)="addEntry()"><md-icon>add</md-icon>Neuer Eintrag</button>-->
 <button md-button color="primary" (click)="save()">SPEICHERN</button>
