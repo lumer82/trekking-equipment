@@ -4,7 +4,7 @@ import { EquipmentListComponent } from './equipment-list.component';
 
 const routes: Routes = [
   {
-    path: ':id',
+    path: 'collection/:id',
     component: EquipmentListComponent
     // children: [
     //   {
@@ -20,7 +20,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'new'
+    redirectTo: 'collection/new'
   }
 ];
 

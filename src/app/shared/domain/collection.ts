@@ -4,6 +4,7 @@ import { LinkType } from './link';
 
 export class Collection {
   _id: string;
+  readonly id?: number;
   settings: {
     title: string;
     budget: number;

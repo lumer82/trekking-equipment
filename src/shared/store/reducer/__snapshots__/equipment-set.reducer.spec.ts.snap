@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EquipmentSetReducer add should add a new entry to given collection 1`] = `
+Object {
+  "collections": Object {
+    "entities": Object {
+      "collection_1": Object {
+        "entries": Object {
+          "entities": Object {
+            "entry_1": Object {
+              "id": "entry_1",
+              "items": undefined,
+              "name": "entry_1",
+            },
+          },
+          "ids": Array [
+            "entry_1",
+          ],
+          "selectedItemId": undefined,
+        },
+        "id": "collection_1",
+        "name": "collection_1",
+      },
+    },
+    "ids": Array [
+      "collection_1",
+    ],
+  },
+  "name": "set_1",
+}
+`;
+
+exports[`EquipmentSetReducer add should add a new item to given collection and entry 1`] = `
+Object {
+  "collections": Object {
+    "entities": Object {
+      "collection_1": Object {
+        "entries": Object {
+          "entities": Object {
+            "entry_1": Object {
+              "id": "entry_1",
+              "items": Object {
+                "entities": Object {
+                  "item_1": Object {
+                    "id": "item_1",
+                    "name": "item_1",
+                    "price": undefined,
+                    "weight": undefined,
+                  },
+                },
+                "ids": Array [
+                  "item_1",
+                ],
+              },
+              "name": "entry_1",
+            },
+          },
+          "ids": Array [
+            "entry_1",
+          ],
+          "selectedItemId": undefined,
+        },
+        "id": "collection_1",
+        "name": "collection_1",
+      },
+    },
+    "ids": Array [
+      "collection_1",
+    ],
+  },
+  "name": "set_1",
+}
+`;

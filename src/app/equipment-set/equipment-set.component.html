@@ -1,0 +1,8 @@
+<div *ngIf="equipmentSet$ | async as equipmentSet">
+  <md-input-container>
+    <input type="text" placeholder="Name" [value]="equipmentSet.name" (change)="changeName($event.value)">
+  </md-input-container>
+  <div class="collections">
+    <equip-equipment-list *ngFor="let id of (equipmentSet$ | async).collections.ids"></equip-equipment-list>
+  </div>
+</div>
