@@ -4,7 +4,6 @@ import { LOCALE_ID, NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app.routing.module';
-import { EquipmentListModule } from './equipment-list/equipment-list.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +14,6 @@ import { EquipmentListModule } from './equipment-list/equipment-list.module';
     BrowserAnimationsModule,
     AppRoutingModule,
     /* Components */
-    EquipmentListModule
   ],
   providers: [
     {
