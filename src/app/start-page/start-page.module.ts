@@ -1,12 +1,16 @@
-import { TrekkingEquipmentMaterialModule } from './../../shared/trekking-equipment-material.module';
+import { MatCardModule, MatButtonModule, MatIconModule } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StartPageComponent } from './start-page.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
     CommonModule,
-    TrekkingEquipmentMaterialModule
+    RouterModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule
   ],
   declarations: [
     StartPageComponent
