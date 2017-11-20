@@ -1,3 +1,17 @@
-<p>
-  {{ equipmentSet$ | async | json }}
-</p>
+<ng-container *ngIf="equipmentSet$ | async as equipmentSet">
+  <div>
+    <mat-form-field>
+      <input matInput placeholder="Name" [formControl]="nameForm" [value]="equipmentSet.name">
+    </mat-form-field>
+  </div>
+
+  <equip-equipment-collection
+    *ngFor="let collectionId of equipmentSet.collections.ids"
+    [collection]="equipmentSet.collections.entities[collectionId]"
+  >
+
+  </equip-equipment-collection>
+
+  <button mat-raised-button (click)="addCollection()">
+    <mat-icon>format_list_bulleted</mat-icon>Add Collection</button>
+</ng-container>
