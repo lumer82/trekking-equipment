@@ -1,9 +1,13 @@
+import { EquipmentEntryState } from './../store/reducer/equipment-entry.reducer';
 import { EquipmentCollection } from './../../shared/models/equipment-collection.model';
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { DeleteEquipmentCollectionAction, UpdateEquipmentCollectionAction } from '../store/actions/equipment-collection.actions';
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators/debounceTime';
+import { EquipmentSetState, selectEquipmentEntries } from '../store/equipment-set.reducer';
+import { Observable } from 'rxjs/Observable';
+import { AddEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 
 @Component({
   selector: 'equip-equipment-collection',
@@ -18,7 +22,9 @@ export class EquipmentCollectionComponent implements OnInit {
   @Input()
   collection: EquipmentCollection;
 
-  constructor(private store: Store<any>) { }
+  entries$: Observable<EquipmentEntryState>;
+
+  constructor(private store: Store<{ equipmentSet: EquipmentSetState }>) { }
 
   ngOnInit() {
     console.log('OnInit for id', this.collection.id);
@@ -28,6 +34,8 @@ export class EquipmentCollectionComponent implements OnInit {
         debounceTime(800)
       )
       .subscribe(name => this.store.dispatch(new UpdateEquipmentCollectionAction({...this.collection, name})));
+
+      this.entries$ = this.store.select(selectEquipmentEntries);
   }
 
   delete(): void {
@@ -35,7 +43,10 @@ export class EquipmentCollectionComponent implements OnInit {
   }
 
   addEntry(): void {
-
+    this.store.dispatch(new AddEquipmentEntryAction({
+      collection: this.collection,
+      entry: { id: Date.now().toString(), name: 'New Entry' }
+    }));
   }
 
 }

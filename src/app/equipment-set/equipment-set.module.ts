@@ -1,3 +1,4 @@
+import { EquipmentEntryComponent } from './equipment-entry/equipment-entry.component';
 import { EquipmentCollectionComponent } from './equipment-collection/equipment-collection.component';
 import { equipmentSetReducer, EQUIPMENT_SET_FEATURE_NAME } from './store/equipment-set.reducer';
 import { NgModule } from '@angular/core';
@@ -23,7 +24,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   ],
   declarations: [
     EquipmentSetComponent,
-    EquipmentCollectionComponent
+    EquipmentCollectionComponent,
+    EquipmentEntryComponent
   ]
 })
 export class EquipmentSetModule { }
