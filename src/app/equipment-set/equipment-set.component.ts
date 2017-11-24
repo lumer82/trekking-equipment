@@ -43,8 +43,7 @@ export class EquipmentSetComponent implements OnInit {
     this.store.dispatch(new AddEquipmentCollectionAction({
       id: Date.now() + '',
       name: 'New Collection',
-      selectedEntityId: null,
-      entities: []
+      entries: []
     }));
   }
 

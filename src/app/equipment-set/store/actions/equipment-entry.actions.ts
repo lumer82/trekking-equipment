@@ -15,13 +15,13 @@ export class AddEquipmentEntryAction implements Action {
 }
 
 export class DeleteEquipmentEntryAction implements Action {
-  public type = EquipmentEntryActionTypes.ADD;
+  public type = EquipmentEntryActionTypes.DELETE;
 
-  constructor(public payload: {collection: EquipmentCollection, entry: EquipmentEntry}) {}
+  constructor(public payload: {collection: EquipmentCollection, entry: string}) {}
 }
 
 export class UpdateEquipmentEntryAction implements Action {
-  public type = EquipmentEntryActionTypes.ADD;
+  public type = EquipmentEntryActionTypes.UPDATE;
 
   constructor(public payload: {collection: EquipmentCollection, entry: EquipmentEntry}) {}
 }

@@ -1,9 +1,13 @@
 import { EquipmentCollection } from './../../../shared/models/equipment-collection.model';
 import { EquipmentEntry } from './../../../shared/models/equipment-entry.model';
-import { EquipmentEntryActions, EquipmentEntryActionTypes } from './../actions/equipment-entry.actions';
+import {
+  EquipmentEntryActions,
+  EquipmentEntryActionTypes,
+  DeleteEquipmentEntryAction,
+  AddEquipmentEntryAction
+} from './../actions/equipment-entry.actions';
 import { EquipmentCollectionActionTypes } from './../actions/equipment-collection.actions';
 import { EntityState } from '@ngrx/entity';
-import { EquipmentCollection } from '../../../shared/models/equipment-collection.model';
 import { EntityAdapter } from '@ngrx/entity/src/models';
 import { createEntityAdapter } from '@ngrx/entity/src/create_adapter';
 import { EquipmentCollectionActions } from '../actions/equipment-collection.actions';
@@ -40,9 +44,12 @@ export function equipmentCollectionReducer(
         },
         state
       );
-    case EquipmentEntryActionTypes.ADD:
-      const payload = (action as EquipmentEntryActions).payload;
-      const collection = addEntryToCollection(payload.collection, payload.entry);
+    case EquipmentEntryActionTypes.ADD: {
+      const payload = (action as AddEquipmentEntryAction).payload;
+      const collection = addEntryToCollection(
+        payload.collection,
+        payload.entry
+      );
       return adapter.updateOne(
         {
           id: collection.id,
@@ -50,11 +57,39 @@ export function equipmentCollectionReducer(
         },
         state
       );
+    }
+    case EquipmentEntryActionTypes.DELETE: {
+      const payload = (action as DeleteEquipmentEntryAction).payload;
+      const collection = removeEntryFromCollection(
+        payload.collection,
+        payload.entry
+      );
+      return adapter.updateOne(
+        {
+          id: collection.id,
+          changes: collection
+        },
+        state
+      );
+    }
     default:
       return state;
   }
 }
 
-function addEntryToCollection(collection: EquipmentCollection, entry: EquipmentEntry): EquipmentCollection {
-  return {...collection, entries: [...(collection.entries || []), entry.id]};
+function addEntryToCollection(
+  collection: EquipmentCollection,
+  entry: EquipmentEntry
+): EquipmentCollection {
+  return { ...collection, entries: [...(collection.entries || []), entry.id] };
+}
+
+function removeEntryFromCollection(
+  collection: EquipmentCollection,
+  entry: string
+): EquipmentCollection {
+  return {
+    ...collection,
+    entries: (collection.entries || []).filter(id => entry !== id)
+  };
 }

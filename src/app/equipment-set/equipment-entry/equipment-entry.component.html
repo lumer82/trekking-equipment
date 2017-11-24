@@ -1,3 +1,8 @@
-<p>
-  {{entry?.name}}
-</p>
+<div class="header">
+  <span>
+    {{entry?.name}}
+  </span>
+  <button class="delete" mat-icon-button (click)="delete()">
+    <mat-icon>delete</mat-icon>
+  </button>
+</div>

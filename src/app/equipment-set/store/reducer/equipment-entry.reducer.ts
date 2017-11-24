@@ -1,3 +1,4 @@
+import { AddEquipmentEntryAction, DeleteEquipmentEntryAction, UpdateEquipmentEntryAction } from './../actions/equipment-entry.actions';
 import { createEntityAdapter } from '@ngrx/entity/src/create_adapter';
 import { EntityAdapter } from '@ngrx/entity/src/models';
 import { EntityState } from '@ngrx/entity';
@@ -13,12 +14,18 @@ const adapter: EntityAdapter<EquipmentEntry> = createEntityAdapter<EquipmentEntr
 
 export function equipmentEntryReducer(state: State = adapter.getInitialState(), action: EquipmentEntryActions): State {
   switch (action.type) {
-    case EquipmentEntryActionTypes.ADD:
-      return adapter.addOne(action.payload.entry, state);
-    case EquipmentEntryActionTypes.DELETE:
-      return adapter.removeOne(action.payload.entry.id, state);
-      case EquipmentEntryActionTypes.UPDATE:
-      return adapter.updateOne({ id: action.payload.entry.id, changes: action.payload.entry}, state);
+    case EquipmentEntryActionTypes.ADD: {
+      const payload = (action as AddEquipmentEntryAction).payload;
+      return adapter.addOne(payload.entry, state);
+    }
+    case EquipmentEntryActionTypes.DELETE: {
+      const payload = (action as DeleteEquipmentEntryAction).payload;
+      return adapter.removeOne(payload.entry, state);
+    }
+    case EquipmentEntryActionTypes.UPDATE: {
+      const payload = (action as UpdateEquipmentEntryAction).payload;
+      return adapter.updateOne({ id: payload.entry.id, changes: payload.entry}, state);
+    }
     default:
       return state;
   }

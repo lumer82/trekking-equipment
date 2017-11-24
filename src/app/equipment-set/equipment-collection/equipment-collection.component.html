@@ -8,7 +8,7 @@
     </button>
   </div>
   <ng-container *ngIf="entries$ | async as entries">
-    <equip-equipment-entry *ngFor="let entryId of collection.entries" [entry]="entries.entities[entryId]"></equip-equipment-entry>
+    <equip-equipment-entry *ngFor="let entryId of collection.entries" [entry]="entries.entities[entryId]" [collection]="collection"></equip-equipment-entry>
   </ng-container>
   <button mat-button (click)="addEntry()">
     <mat-icon>create_new_folder</mat-icon>Add Entry

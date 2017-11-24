@@ -1,3 +1,4 @@
+import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StartPageModule } from './start-page/start-page.module';
@@ -18,6 +19,7 @@ import { StartPageComponent } from './start-page/start-page.component';
     BrowserAnimationsModule,
     AppRoutingModule,
     StoreModule.forRoot({}),
+    EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({
       maxAge: 25 //  Retains last 25 states
     }),
