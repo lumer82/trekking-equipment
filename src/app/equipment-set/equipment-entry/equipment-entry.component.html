@@ -1,5 +1,6 @@
 <div>
   <div class="header">
+    <mat-icon>folder_open</mat-icon>
     <mat-input-container class="name">
       <input type="text" matInput placeholder="Name" [value]="entry?.name" [formControl]="nameForm">
     </mat-input-container>
@@ -12,6 +13,6 @@
     </equip-equipment-item>
   </ng-container>
   <button mat-button (click)="addItem()">
-    <mat-icon>create_new_folder</mat-icon>Add Item
+    <mat-icon>label</mat-icon>Add Item
   </button>
 </div>
