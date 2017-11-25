@@ -1,6 +1,6 @@
-export class EquipmentEntry {
+export class EquipmentItem {
   id: string;
   collectionId: string;
+  entryId: string;
   name: string;
-  items: Array<string>;
 }

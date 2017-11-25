@@ -1,0 +1,10 @@
+<div>
+  <div class="header">
+    <mat-input-container class="name">
+      <input type="text" matInput placeholder="Name" [value]="item?.name" [formControl]="nameForm">
+    </mat-input-container>
+    <button class="delete" mat-icon-button (click)="delete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>

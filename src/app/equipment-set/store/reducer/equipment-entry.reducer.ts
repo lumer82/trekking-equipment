@@ -1,3 +1,5 @@
+import { EquipmentItem } from './../../../shared/models/equipment-item.model';
+import { EquipmentItemActionTypes, AddEquipmentItemAction, EquipmentItemActions, DeleteEquipmentItemAction } from './../actions/equipment-item.actions';
 import {
   EquipmentCollectionActionTypes,
   DeleteEquipmentCollectionAction,
@@ -19,7 +21,7 @@ const adapter: EntityAdapter<EquipmentEntry> = createEntityAdapter<EquipmentEntr
 
 export function equipmentEntryReducer(
   state: State = adapter.getInitialState(),
-  action: EquipmentEntryActions | EquipmentCollectionActions): State {
+  action: EquipmentEntryActions | EquipmentCollectionActions | EquipmentItemActions): State {
   switch (action.type) {
     case EquipmentEntryActionTypes.ADD: {
       const payload = (action as AddEquipmentEntryAction).payload;
@@ -37,7 +39,52 @@ export function equipmentEntryReducer(
       const collection = (action as DeleteEquipmentCollectionAction).payload;
       return adapter.removeMany(collection.entries, state);
     }
+    case EquipmentItemActionTypes.ADD: {
+      const item = (action as AddEquipmentItemAction).payload;
+      const entry = addItemToEntry(
+        state.entities[item.entryId],
+        item
+      );
+      return adapter.updateOne(
+        {
+          id: entry.id,
+          changes: entry
+        },
+        state
+      );
+    }
+    case EquipmentItemActionTypes.DELETE: {
+      const item = (action as DeleteEquipmentItemAction).payload;
+      const entry = removeItemFromEntry(
+        state.entities[item.entryId],
+        item
+      );
+      return adapter.updateOne(
+        {
+          id: entry.id,
+          changes: entry
+        },
+        state
+      );
+    }
     default:
       return state;
   }
+}
+
+function addItemToEntry(
+  entry: EquipmentEntry,
+  item: EquipmentItem
+): EquipmentEntry {
+  return { ...entry, items: [...(entry.items || []), item.id] };
+}
+
+function removeItemFromEntry(
+  entry: EquipmentEntry,
+  item: EquipmentItem
+): EquipmentEntry {
+  return {
+    ...entry,
+    items: (entry.items || []).filter(id => item.id !== id)
+  };
 }

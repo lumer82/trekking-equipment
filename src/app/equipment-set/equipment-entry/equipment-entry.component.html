@@ -1,8 +1,17 @@
-<div class="header">
-  <mat-input-container class="name">
-    <input type="text" matInput placeholder="Name" [value]="entry?.name" [formControl]="nameForm">
-  </mat-input-container>
-  <button class="delete" mat-icon-button (click)="delete()">
-    <mat-icon>delete</mat-icon>
+<div>
+  <div class="header">
+    <mat-input-container class="name">
+      <input type="text" matInput placeholder="Name" [value]="entry?.name" [formControl]="nameForm">
+    </mat-input-container>
+    <button class="delete" mat-icon-button (click)="delete()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  <ng-container *ngIf="items$ | async as items">
+    <equip-equipment-item *ngFor="let itemId of entry.items" [item]="items.entities[itemId]" [collection]="collection" [entry]="entry">
+    </equip-equipment-item>
+  </ng-container>
+  <button mat-button (click)="addItem()">
+    <mat-icon>create_new_folder</mat-icon>Add Item
   </button>
 </div>

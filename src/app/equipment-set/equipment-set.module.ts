@@ -1,3 +1,4 @@
+import { EquipmentItemComponent } from './equipment-item/equipment-item.component';
 import { EquipmentEntryComponent } from './equipment-entry/equipment-entry.component';
 import { EquipmentCollectionComponent } from './equipment-collection/equipment-collection.component';
 import { EquipmentCollectionEffects } from './store/effects/equipment-collection.effects';
@@ -28,7 +29,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   declarations: [
     EquipmentSetComponent,
     EquipmentCollectionComponent,
-    EquipmentEntryComponent
+    EquipmentEntryComponent,
+    EquipmentItemComponent
   ]
 })
 export class EquipmentSetModule { }
