@@ -14,9 +14,14 @@
         {{entry?.name}}
       </span>
     </ng-template>
-    <button mat-icon-button (click)="editMode = !editMode" *ngIf="collectionEdit">
-      <mat-icon>{{ editMode ? 'check' : 'edit'}}</mat-icon>
-    </button>
+    <ng-container *ngIf="collectionEdit">
+      <button mat-icon-button (click)="doMove()">
+        <mat-icon>swap_vert</mat-icon>
+      </button>
+      <button mat-icon-button (click)="editMode = !editMode" [disabled]="moving">
+        <mat-icon>{{ editMode ? 'check' : 'edit'}}</mat-icon>
+      </button>
+    </ng-container>
   </div>
   <ng-container *ngIf="editMode && collectionEdit; else activeItem">
     <ng-container *ngIf="items$ | async as items">

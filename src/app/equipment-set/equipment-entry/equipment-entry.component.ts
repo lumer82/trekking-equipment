@@ -6,7 +6,7 @@ import { debounceTime } from 'rxjs/operators/debounceTime';
 import { EquipmentCollection } from './../../shared/models/equipment-collection.model';
 import { Store } from '@ngrx/store';
 import { EquipmentEntry } from './../../shared/models/equipment-entry.model';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { EquipmentSetState } from '../store/equipment-set.reducer';
 import { DeleteEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 import { FormControl } from '@angular/forms';
@@ -34,6 +34,12 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
 
   @Input()
   collectionEdit: boolean;
+
+  @Input()
+  moving;
+
+  @Output()
+  move: EventEmitter<void> = new EventEmitter<void>();
 
   editMode = false;
 
@@ -68,6 +74,9 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
     if (changes['collectionEdit']) {
       this.editMode = this.editMode && changes['collectionEdit'].currentValue;
     }
+    if (changes['moving']) {
+      this.editMode = this.editMode && !changes['moving'].currentValue;
+    }
   }
 
   delete(): void {
@@ -89,6 +98,11 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
     if (!!item) {
       this.store.dispatch(new SelectEquipmentItemAction(item));
     }
+  }
+
+  doMove(): void {
+    this.editMode = false;
+    this.move.emit();
   }
 
 }

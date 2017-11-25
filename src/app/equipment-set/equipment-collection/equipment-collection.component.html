@@ -12,11 +12,23 @@
     <ng-template #noEditHeader>
       <span class="name">{{collection?.name}}</span>
     </ng-template>
-    <button mat-icon-button (click)="editMode = !editMode"><mat-icon>{{ editMode ? 'check' : 'edit' }}</mat-icon></button>
+    <button mat-icon-button (click)="toggleEditMode()"><mat-icon>{{ editMode ? 'check' : 'edit' }}</mat-icon></button>
   </div>
   <ng-container *ngIf="entries$ | async as entries">
-    <equip-equipment-entry class="equipment-entry" *ngFor="let entryId of collection.entries" [entry]="entries.entities[entryId]"
-      [collection]="collection" [collectionEdit]="editMode"></equip-equipment-entry>
+    <ng-container *ngFor="let entryId of collection.entries; let index = index" >
+      <ng-container *ngIf="entries.entities[entryId] as entry">
+        <div class="drop-target" @move *ngIf="moveMode && index < moveIndex" (click)="dropTo(index)" ><mat-icon>input</mat-icon></div>
+        <equip-equipment-entry
+          class="equipment-entry"
+          [class.move]="entry.id === this.moveMode?.id"
+          [entry]="entry"
+          [collection]="collection"
+          [collectionEdit]="editMode"
+          [moving]="!!moveMode"
+          (move)="move(entry)"></equip-equipment-entry>
+        <div class="drop-target" @move *ngIf="moveMode && index > moveIndex" (click)="dropTo(index)"><mat-icon>input</mat-icon></div>
+      </ng-container>
+    </ng-container>
   </ng-container>
   <button mat-button (click)="addEntry()" *ngIf="editMode">
     <mat-icon>create_new_folder</mat-icon>Add Entry
