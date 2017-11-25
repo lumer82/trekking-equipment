@@ -43,10 +43,7 @@ export class EquipmentCollectionComponent implements OnInit {
   }
 
   addEntry(): void {
-    this.store.dispatch(new AddEquipmentEntryAction({
-      collection: this.collection,
-      entry: { id: Date.now().toString(), name: 'New Entry' }
-    }));
+    this.store.dispatch(new AddEquipmentEntryAction({ id: Date.now().toString(), name: 'New Entry', collectionId: this.collection.id }));
   }
 
 }

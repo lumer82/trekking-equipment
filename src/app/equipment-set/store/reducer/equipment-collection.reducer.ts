@@ -47,8 +47,8 @@ export function equipmentCollectionReducer(
     case EquipmentEntryActionTypes.ADD: {
       const payload = (action as AddEquipmentEntryAction).payload;
       const collection = addEntryToCollection(
-        payload.collection,
-        payload.entry
+        state.entities[payload.collectionId],
+        payload
       );
       return adapter.updateOne(
         {
@@ -61,8 +61,8 @@ export function equipmentCollectionReducer(
     case EquipmentEntryActionTypes.DELETE: {
       const payload = (action as DeleteEquipmentEntryAction).payload;
       const collection = removeEntryFromCollection(
-        payload.collection,
-        payload.entry
+        state.entities[payload.collectionId],
+        payload
       );
       return adapter.updateOne(
         {
@@ -86,10 +86,10 @@ function addEntryToCollection(
 
 function removeEntryFromCollection(
   collection: EquipmentCollection,
-  entry: string
+  entry: EquipmentEntry
 ): EquipmentCollection {
   return {
     ...collection,
-    entries: (collection.entries || []).filter(id => entry !== id)
+    entries: (collection.entries || []).filter(id => entry.id !== id)
   };
 }

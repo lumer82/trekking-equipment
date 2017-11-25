@@ -24,7 +24,7 @@ export class EquipmentEntryComponent implements OnInit {
   }
 
   delete(): void {
-    this.store.dispatch(new DeleteEquipmentEntryAction({ collection: this.collection, entry: this.entry.id}));
+    this.store.dispatch(new DeleteEquipmentEntryAction(this.entry));
   }
 
 }

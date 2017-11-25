@@ -11,19 +11,19 @@ export const EquipmentEntryActionTypes = {
 export class AddEquipmentEntryAction implements Action {
   public type = EquipmentEntryActionTypes.ADD;
 
-  constructor(public payload: {collection: EquipmentCollection, entry: EquipmentEntry}) {}
+  constructor(public payload: EquipmentEntry) {}
 }
 
 export class DeleteEquipmentEntryAction implements Action {
   public type = EquipmentEntryActionTypes.DELETE;
 
-  constructor(public payload: {collection: EquipmentCollection, entry: string}) {}
+  constructor(public payload: EquipmentEntry) {}
 }
 
 export class UpdateEquipmentEntryAction implements Action {
   public type = EquipmentEntryActionTypes.UPDATE;
 
-  constructor(public payload: {collection: EquipmentCollection, entry: EquipmentEntry}) {}
+  constructor(public payload: EquipmentEntry) {}
 }
 
 export type EquipmentEntryActions =
