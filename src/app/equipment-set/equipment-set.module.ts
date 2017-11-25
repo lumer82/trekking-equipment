@@ -1,3 +1,4 @@
+import { SelectedEquipmentItemComponent } from './selected-equipment-item/selected-equipment-item.component';
 import { EquipmentItemComponent } from './equipment-item/equipment-item.component';
 import { EquipmentEntryComponent } from './equipment-entry/equipment-entry.component';
 import { EquipmentCollectionComponent } from './equipment-collection/equipment-collection.component';
@@ -9,7 +10,7 @@ import { EquipmentSetComponent } from './equipment-set.component';
 import { EquipmentSetRoutingModule } from './equipment-set.routing.module';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { MatInputModule, MatFormFieldModule, MatButtonModule, MatIconModule, MatCardModule } from '@angular/material';
+import { MatInputModule, MatFormFieldModule, MatButtonModule, MatIconModule, MatCardModule, MatRadioModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
@@ -24,13 +25,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatRadioModule
   ],
   declarations: [
     EquipmentSetComponent,
     EquipmentCollectionComponent,
     EquipmentEntryComponent,
-    EquipmentItemComponent
+    EquipmentItemComponent,
+    SelectedEquipmentItemComponent
   ]
 })
 export class EquipmentSetModule { }

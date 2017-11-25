@@ -20,18 +20,20 @@
   </div>
   <ng-container *ngIf="editMode && collectionEdit; else activeItem">
     <ng-container *ngIf="items$ | async as items">
-      <equip-equipment-item
-        *ngFor="let itemId of entry.items"
-        [item]="items.entities[itemId]"
-        [collection]="collection"
-        [entry]="entry">
-      </equip-equipment-item>
+      <mat-radio-group (change)="selectItem($event.value)">
+        <div class="equipment-item" *ngFor="let itemId of entry.items">
+          <mat-radio-button [value]="items.entities[itemId]" [checked]="(selectedItem$ | async)?.id === itemId"></mat-radio-button>
+          <equip-equipment-item  [item]="items.entities[itemId]" [collection]="collection" [entry]="entry">
+          </equip-equipment-item>
+        </div>
+      </mat-radio-group>
     </ng-container>
     <button mat-button (click)="addItem()">
       <mat-icon>label</mat-icon>Add Item
     </button>
   </ng-container>
   <ng-template #activeItem>
-    <span>active item</span>
+    <equip-selected-equipment-item class="selected-item" *ngIf="selectedItem$ | async as selectedItem" [item]="selectedItem">
+    </equip-selected-equipment-item>
   </ng-template>
 </div>

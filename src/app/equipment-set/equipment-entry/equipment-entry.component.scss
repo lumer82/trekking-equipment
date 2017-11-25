@@ -12,3 +12,17 @@
   border-left: 3px solid rgb(180,180,180);
   margin-bottom: 5px;
 }
+
+.selected-item {
+  display: block;
+  margin: 3px 0 3px 5px;
+}
+
+.equipment-item {
+  display: flex;
+  align-items: center;
+
+  equip-equipment-item {
+    flex: 1;
+  }
+}

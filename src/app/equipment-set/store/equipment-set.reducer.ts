@@ -1,3 +1,4 @@
+import { EquipmentVariantState, equipmentVariantReducer, getSelectedVariantId } from './reducer/equipment-variant.reducer';
 import { EquipmentEntry } from './../../shared/models/equipment-entry.model';
 import { EntityState } from '@ngrx/entity';
 import { equipmentCollectionReducer } from './reducer/equipment-collection.reducer';
@@ -16,13 +17,15 @@ export interface EquipmentSetState {
   collections: EntityState<EquipmentCollection>;
   entries: EntityState<EquipmentEntry>;
   items: EntityState<EquipmentItem>;
+  variants: EquipmentVariantState;
 }
 
 export const equipmentSetReducer: ActionReducerMap<any> = {
   name: equipmentSetNameReducer,
   collections: equipmentCollectionReducer,
   entries: equipmentEntryReducer,
-  items: equipmentItemReducer
+  items: equipmentItemReducer,
+  variants: equipmentVariantReducer
 };
 
 export const selectEquipmentSet = createFeatureSelector<EquipmentSetState>(EQUIPMENT_SET_FEATURE_NAME);
@@ -30,3 +33,7 @@ export const selectEquipmentSet = createFeatureSelector<EquipmentSetState>(EQUIP
 export const selectEquipmentEntries = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.entries);
 
 export const selectEquipmentItems = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.items);
+
+export const selectEquipmentVariants = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.variants);
+
+export const selectSelectedVariantId = createSelector(selectEquipmentVariants, getSelectedVariantId);
