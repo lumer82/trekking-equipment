@@ -11,3 +11,12 @@
     flex: 1;
   }
 }
+
+.settings {
+  display: flex;
+
+  .mat-input-container {
+    width: 90px;
+    margin-right: 5px;
+  }
+}

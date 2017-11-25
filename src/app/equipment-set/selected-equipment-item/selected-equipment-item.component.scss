@@ -1,4 +1,12 @@
-.selected-item {
+.selected-item, .settings-container, .setting {
   display: flex;
   align-items: center;
+}
+
+.settings-container {
+  justify-content: space-between;
+}
+
+.setting {
+  width: 30%;
 }

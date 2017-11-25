@@ -3,4 +3,7 @@ export class EquipmentItem {
   collectionId: string;
   entryId: string;
   name: string;
+  price?: number;
+  weight?: number;
+  volume?: string;
 }

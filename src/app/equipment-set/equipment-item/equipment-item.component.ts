@@ -1,6 +1,6 @@
 import { UpdateEquipmentItemAction } from './../store/actions/equipment-item.actions';
 import { debounceTime } from 'rxjs/operators/debounceTime';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { EquipmentItem } from './../../shared/models/equipment-item.model';
 import { EquipmentEntry } from './../../shared/models/equipment-entry.model';
@@ -16,7 +16,7 @@ import { EquipmentSetState } from '../store/equipment-set.reducer';
 })
 export class EquipmentItemComponent implements OnInit {
 
-  nameForm: FormControl;
+  form: FormGroup;
 
   @Input()
   item: EquipmentItem;
@@ -27,15 +27,20 @@ export class EquipmentItemComponent implements OnInit {
   @Input()
   collection: EquipmentCollection;
 
-  constructor(private store: Store<{ equipmentSet: EquipmentSetState }>) { }
+  constructor(private store: Store<{ equipmentSet: EquipmentSetState }>, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.nameForm = new FormControl();
-    this.nameForm.valueChanges
+    this.form = this.formBuilder.group({
+      name: this.item.name,
+      price: this.item.price,
+      weight: this.item.weight,
+      volume: this.item.volume
+    });
+    this.form.valueChanges
       .pipe(
         debounceTime(800)
       )
-      .subscribe(name => this.store.dispatch(new UpdateEquipmentItemAction({...this.item, name})));
+      .subscribe(values => this.store.dispatch(new UpdateEquipmentItemAction({...this.item, ...values})));
   }
 
   delete(): void {
