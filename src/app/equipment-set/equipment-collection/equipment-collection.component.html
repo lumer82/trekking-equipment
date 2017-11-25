@@ -1,18 +1,24 @@
 <div class="collection">
   <div class="header">
     <mat-icon>list</mat-icon>
-    <mat-input-container class="name">
-      <input type="text" matInput placeholder="Name" [value]="collection?.name" [formControl]="nameForm">
-    </mat-input-container>
-    <button class="delete" mat-icon-button (click)="delete()">
-      <mat-icon>delete</mat-icon>
-    </button>
+    <ng-container *ngIf="editMode; else noEditHeader">
+      <mat-input-container class="name">
+        <input type="text" matInput placeholder="Name" [value]="collection?.name" [formControl]="nameForm">
+      </mat-input-container>
+      <button class="delete" mat-icon-button (click)="delete()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-container>
+    <ng-template #noEditHeader>
+      <span class="name">{{collection?.name}}</span>
+    </ng-template>
+    <button mat-icon-button (click)="editMode = !editMode"><mat-icon>{{ editMode ? 'check' : 'edit' }}</mat-icon></button>
   </div>
   <ng-container *ngIf="entries$ | async as entries">
     <equip-equipment-entry class="equipment-entry" *ngFor="let entryId of collection.entries" [entry]="entries.entities[entryId]"
-      [collection]="collection"></equip-equipment-entry>
+      [collection]="collection" [collectionEdit]="editMode"></equip-equipment-entry>
   </ng-container>
-  <button mat-button (click)="addEntry()">
+  <button mat-button (click)="addEntry()" *ngIf="editMode">
     <mat-icon>create_new_folder</mat-icon>Add Entry
   </button>
 </div>

@@ -33,6 +33,8 @@ export class EquipmentCollectionComponent implements OnInit {
 
   entries$: Observable<EquipmentEntryState>;
 
+  editMode = false;
+
   constructor(private store: Store<{ equipmentSet: EquipmentSetState }>) {}
 
   ngOnInit() {

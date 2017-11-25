@@ -2,3 +2,12 @@
   margin-left: 5px;
   margin-bottom: 5px;
 }
+
+.header {
+  display: flex;
+  align-items: center;
+
+  .name {
+    flex: 1;
+  }
+}

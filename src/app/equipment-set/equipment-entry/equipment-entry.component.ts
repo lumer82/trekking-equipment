@@ -11,13 +11,14 @@ import { DeleteEquipmentEntryAction } from '../store/actions/equipment-entry.act
 import { FormControl } from '@angular/forms';
 import { EquipmentItemState } from '../store/reducer/equipment-item.reducer';
 import { Observable } from 'rxjs/Observable';
+import { OnChanges, SimpleChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: 'equip-equipment-entry',
   templateUrl: './equipment-entry.component.html',
   styleUrls: ['./equipment-entry.component.scss']
 })
-export class EquipmentEntryComponent implements OnInit {
+export class EquipmentEntryComponent implements OnInit, OnChanges {
 
   nameForm: FormControl;
 
@@ -26,6 +27,11 @@ export class EquipmentEntryComponent implements OnInit {
 
   @Input()
   collection: EquipmentCollection;
+
+  @Input()
+  collectionEdit: boolean;
+
+  editMode = false;
 
   items$: Observable<EquipmentItemState>;
 
@@ -41,6 +47,12 @@ export class EquipmentEntryComponent implements OnInit {
 
 
       this.items$ = this.store.select(selectEquipmentItems);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['collectionEdit']) {
+      this.editMode = this.editMode && changes['collectionEdit'].currentValue;
+    }
   }
 
   delete(): void {
