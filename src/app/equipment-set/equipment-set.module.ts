@@ -12,12 +12,20 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { MatInputModule, MatFormFieldModule, MatButtonModule, MatIconModule, MatCardModule, MatRadioModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { environment } from '../../environments/environment';
+
+export function loadInitialState() {
+  if (!environment.production) {
+    return JSON.parse(localStorage.getItem('state'));
+  }
+  return null;
+}
 
 @NgModule({
   imports: [
     CommonModule,
     EquipmentSetRoutingModule,
-    StoreModule.forFeature(EQUIPMENT_SET_FEATURE_NAME, equipmentSetReducer),
+    StoreModule.forFeature(EQUIPMENT_SET_FEATURE_NAME, equipmentSetReducer, { initialState: loadInitialState() }),
     EffectsModule.forFeature([EquipmentCollectionEffects]),
     FormsModule,
     ReactiveFormsModule,
