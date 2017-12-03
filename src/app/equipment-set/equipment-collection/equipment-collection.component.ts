@@ -1,29 +1,13 @@
-import { EquipmentEntry } from './../../shared/models/equipment-entry.model';
-import { EquipmentEntryState } from './../store/reducer/equipment-entry.reducer';
-import { EquipmentCollection } from './../../shared/models/equipment-collection.model';
-import {
-  Component,
-  OnInit,
-  Input,
-  ChangeDetectionStrategy
-} from '@angular/core';
-import {
-  trigger,
-  transition,
-  style,
-  animate
-} from '@angular/animations';
+import { EquipmentEntry } from '../../shared/models/equipment-entry.model';
+import { EquipmentEntryState } from '../store/reducer/equipment-entry.reducer';
+import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Store } from '@ngrx/store';
-import {
-  DeleteEquipmentCollectionAction,
-  UpdateEquipmentCollectionAction
-} from '../store/actions/equipment-collection.actions';
+import { DeleteEquipmentCollectionAction, UpdateEquipmentCollectionAction } from '../store/actions/equipment-collection.actions';
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators/debounceTime';
-import {
-  EquipmentSetState,
-  selectEquipmentEntries
-} from '../store/equipment-set.reducer';
+import { EquipmentSetState, selectEquipmentEntries } from '../store/equipment-set.reducer';
 import { Observable } from 'rxjs/Observable';
 import { AddEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 import { Subject } from 'rxjs/Subject';

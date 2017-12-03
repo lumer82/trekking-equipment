@@ -1,21 +1,18 @@
-import { EquipmentItem } from './../../shared/models/equipment-item.model';
-import { AddEquipmentItemAction, SelectEquipmentItemAction } from './../store/actions/equipment-item.actions';
-import { selectEquipmentItems, selectSelectedVariantId, selectEquipmentVariants } from './../store/equipment-set.reducer';
-import { UpdateEquipmentEntryAction } from './../store/actions/equipment-entry.actions';
+import { EquipmentItem } from '../../shared/models/equipment-item.model';
+import { AddEquipmentItemAction, SelectEquipmentItemAction } from '../store/actions/equipment-item.actions';
+import { EquipmentSetState, selectEquipmentItems, selectEquipmentVariants, selectSelectedVariantId } from '../store/equipment-set.reducer';
+import { DeleteEquipmentEntryAction, UpdateEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 import { debounceTime } from 'rxjs/operators/debounceTime';
-import { EquipmentCollection } from './../../shared/models/equipment-collection.model';
+import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
 import { Store } from '@ngrx/store';
-import { EquipmentEntry } from './../../shared/models/equipment-entry.model';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { EquipmentSetState } from '../store/equipment-set.reducer';
-import { DeleteEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
+import { EquipmentEntry } from '../../shared/models/equipment-entry.model';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { EquipmentItemState } from '../store/reducer/equipment-item.reducer';
 import { Observable } from 'rxjs/Observable';
 import { OnChanges, SimpleChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 import { switchMap } from 'rxjs/operators/switchMap';
 import { map } from 'rxjs/operators/map';
-import { filter } from 'rxjs/operators/filter';
 
 @Component({
   selector: 'equip-equipment-entry',

@@ -1,5 +1,5 @@
-import { EquipmentItem } from './../../shared/models/equipment-item.model';
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { EquipmentItem } from '../../shared/models/equipment-item.model';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'equip-selected-equipment-item',

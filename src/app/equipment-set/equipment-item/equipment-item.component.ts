@@ -1,12 +1,11 @@
-import { UpdateEquipmentItemAction } from './../store/actions/equipment-item.actions';
+import { DeleteEquipmentItemAction, UpdateEquipmentItemAction } from '../store/actions/equipment-item.actions';
 import { debounceTime } from 'rxjs/operators/debounceTime';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { EquipmentItem } from './../../shared/models/equipment-item.model';
-import { EquipmentEntry } from './../../shared/models/equipment-entry.model';
-import { Component, OnInit, Input } from '@angular/core';
+import { EquipmentItem } from '../../shared/models/equipment-item.model';
+import { EquipmentEntry } from '../../shared/models/equipment-entry.model';
+import { Component, Input, OnInit } from '@angular/core';
 import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
-import { DeleteEquipmentItemAction } from '../store/actions/equipment-item.actions';
 import { EquipmentSetState } from '../store/equipment-set.reducer';
 
 @Component({

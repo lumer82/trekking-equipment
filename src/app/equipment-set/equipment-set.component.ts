@@ -1,19 +1,14 @@
 import { debounceTime } from 'rxjs/operators/debounceTime';
 import { AddEquipmentCollectionAction } from './store/actions/equipment-collection.actions';
 import { SetEquipmentSetAction } from './store/actions/equipment-set.actions';
-import {
-  EquipmentSetState,
-  selectEquipmentSet
-} from './store/equipment-set.reducer';
+import { EquipmentSetState, selectEquipmentSet } from './store/equipment-set.reducer';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { EquipmentSet } from './../../shared/models/equipment-set.model';
+import { EquipmentSet } from '../../shared/models/equipment-set.model';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { map } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { SetEquipmentSetNameAction } from './store/actions/equipment-set-name.actions';
-import { takeUntil } from 'rxjs/operators/takeUntil';
 import { environment } from '../../environments/environment';
 
 @Component({

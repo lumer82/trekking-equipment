@@ -1,14 +1,14 @@
-import { EquipmentVariant } from './../../../shared/models/equipment-variant.model';
-import { EquipmentVariantActions, EquipmentVariantActionTypes } from './../actions/equipment-variant.actions';
-import { EquipmentCollectionActions } from './../actions/equipment-collection.actions';
-import { EquipmentEntryActions } from './../actions/equipment-entry.actions';
+import { EquipmentVariant } from '../../../shared/models/equipment-variant.model';
+import { EquipmentVariantActions, EquipmentVariantActionTypes } from '../actions/equipment-variant.actions';
+import { EquipmentCollectionActions } from '../actions/equipment-collection.actions';
+import { EquipmentEntryActions } from '../actions/equipment-entry.actions';
 import {
-  EquipmentItemActions,
-  EquipmentItemActionTypes,
   AddEquipmentItemAction,
   DeleteEquipmentItemAction,
+  EquipmentItemActions,
+  EquipmentItemActionTypes,
   SelectEquipmentItemAction
-} from './../actions/equipment-item.actions';
+} from '../actions/equipment-item.actions';
 import { createEntityAdapter } from '@ngrx/entity/src/create_adapter';
 import { EntityState } from '@ngrx/entity';
 import { EntityAdapter } from '@ngrx/entity/src/models';

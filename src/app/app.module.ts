@@ -4,11 +4,9 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StartPageModule } from './start-page/start-page.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { LOCALE_ID, NgModule } from '@angular/core';
-
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app.routing.module';
-import { StartPageComponent } from './start-page/start-page.component';
 
 @NgModule({
   declarations: [
