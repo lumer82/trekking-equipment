@@ -1,4 +1,4 @@
-import { EquipmentVariant } from './../../../shared/models/equipment-variant.model';
+import { EquipmentVariant, EquipmentVariantEntry } from './../../../shared/models/equipment-variant.model';
 import { EquipmentCollection } from './../../../shared/models/equipment-collection.model';
 import { Action } from '@ngrx/store';
 
@@ -7,7 +7,9 @@ export const EquipmentVariantActionTypes = {
   DELETE: '[EquipmentVariant] Delete',
   UPDATE: '[EquipmentVariant] Update',
   SELECT: '[EquipmentVariant] Select',
-  MOVE_ENTRY: '[EquipmentVariant] Move Entry'
+  MOVE_ENTRY: '[EquipmentVariant] Move Entry',
+  RECALCULATE_TOTALS: '[EquipmentVariant] Recalculate EquipmentVariantTotals',
+  UPDATE_TOTALS: '[EquipmentVariant] Update EquipmentVariantTotals'
 };
 
 export class AddEquipmentVariantAction implements Action {
@@ -40,9 +42,24 @@ export class MoveEntryEquipmentVariantAction implements Action {
   constructor(public payload: { collectionId: string, entryId: string, moveTo: number}) {}
 }
 
+export class RecalculateTotalsEquipmentVariantAction implements Action {
+  public type = EquipmentVariantActionTypes.RECALCULATE_TOTALS;
+
+  /**
+   * @param {string} payload CollectionId
+   */
+  constructor(public payload: string) {}
+}
+
+export class UpdateTotalsEquipmentVariantAction implements Action {
+  public type = EquipmentVariantActionTypes.UPDATE_TOTALS;
+  constructor(public payload: { variantId: string, entries: Array<EquipmentVariantEntry> }) {}
+}
+
 export type EquipmentVariantActions =
   AddEquipmentVariantAction
   | DeleteEquipmentVariantAction
   | UpdateEquipmentVariantAction
   | SelectEquipmentVariantAction
-  | MoveEntryEquipmentVariantAction;
+  | MoveEntryEquipmentVariantAction
+  | UpdateTotalsEquipmentVariantAction;

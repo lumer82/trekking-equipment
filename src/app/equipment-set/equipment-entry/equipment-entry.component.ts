@@ -12,6 +12,7 @@ import { EquipmentItemState } from '../store/reducer/equipment-item.reducer';
 import { Observable } from 'rxjs/Observable';
 import { OnChanges, SimpleChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 import { map } from 'rxjs/operators/map';
+import { EquipmentVariantTotals } from '../../shared/models/equipment-variant.model';
 
 @Component({
   selector: 'equip-equipment-entry',
@@ -36,6 +37,9 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
 
   @Input()
   moving;
+
+  @Input()
+  totals: EquipmentVariantTotals;
 
   @Output()
   move: EventEmitter<void> = new EventEmitter<void>();

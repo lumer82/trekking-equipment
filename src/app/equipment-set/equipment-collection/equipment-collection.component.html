@@ -20,8 +20,9 @@
         <div class="drop-target" @move *ngIf="moveMode && index < moveIndex" (click)="dropTo(index)" ><mat-icon>input</mat-icon></div>
         <equip-equipment-entry
           class="equipment-entry"
-          [class.move]="entry.id === this.moveMode?.entry.id"
+          [class.move]="entry?.id === this.moveMode?.entry?.id"
           [entry]="entry"
+          [totals]="variantEntry.totals"
           [collection]="collection"
           [collectionEdit]="editMode"
           [selectedItemId]="variantEntry.itemId"

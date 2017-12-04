@@ -2,7 +2,6 @@ import { SelectedEquipmentItemComponent } from './selected-equipment-item/select
 import { EquipmentItemComponent } from './equipment-item/equipment-item.component';
 import { EquipmentEntryComponent } from './equipment-entry/equipment-entry.component';
 import { EquipmentCollectionComponent } from './equipment-collection/equipment-collection.component';
-import { EquipmentCollectionEffects } from './store/effects/equipment-collection.effects';
 import { EQUIPMENT_SET_FEATURE_NAME, equipmentSetReducer } from './store/equipment-set.reducer';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -13,6 +12,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatRadioModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from '../../environments/environment';
+import { UpdateTotalsEffects } from './store/effects/update-totals.effects';
+import { CalculateTotalsService } from './services/calculate-totals.service';
 
 export function loadInitialState() {
   if (!environment.production) {
@@ -26,7 +27,7 @@ export function loadInitialState() {
     CommonModule,
     EquipmentSetRoutingModule,
     StoreModule.forFeature(EQUIPMENT_SET_FEATURE_NAME, equipmentSetReducer),
-    EffectsModule.forFeature([EquipmentCollectionEffects]),
+    EffectsModule.forFeature([UpdateTotalsEffects]),
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -42,6 +43,9 @@ export function loadInitialState() {
     EquipmentEntryComponent,
     EquipmentItemComponent,
     SelectedEquipmentItemComponent
+  ],
+  providers: [
+    CalculateTotalsService
   ]
 })
 export class EquipmentSetModule { }

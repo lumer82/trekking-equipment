@@ -3,20 +3,25 @@ import {
   AddEquipmentVariantAction,
   DeleteEquipmentVariantAction,
   EquipmentVariantActions,
-  EquipmentVariantActionTypes, MoveEntryEquipmentVariantAction,
-  SelectEquipmentVariantAction, UpdateEquipmentVariantAction
+  EquipmentVariantActionTypes,
+  MoveEntryEquipmentVariantAction,
+  SelectEquipmentVariantAction,
+  UpdateEquipmentVariantAction, UpdateTotalsEquipmentVariantAction
 } from '../actions/equipment-variant.actions';
 import {
-  AddEquipmentCollectionAction, DeleteEquipmentCollectionAction, EquipmentCollectionActions,
+  AddEquipmentCollectionAction,
+  DeleteEquipmentCollectionAction,
+  EquipmentCollectionActions,
   EquipmentCollectionActionTypes
 } from '../actions/equipment-collection.actions';
 import {
-  AddEquipmentEntryAction, DeleteEquipmentEntryAction, EquipmentEntryActions,
+  AddEquipmentEntryAction,
+  DeleteEquipmentEntryAction,
+  EquipmentEntryActions,
   EquipmentEntryActionTypes
 } from '../actions/equipment-entry.actions';
 import {
   AddEquipmentItemAction,
-  DeleteEquipmentItemAction,
   EquipmentItemActions,
   EquipmentItemActionTypes,
   SelectEquipmentItemAction
@@ -24,7 +29,6 @@ import {
 import { createEntityAdapter } from '@ngrx/entity/src/create_adapter';
 import { EntityState } from '@ngrx/entity';
 import { EntityAdapter } from '@ngrx/entity/src/models';
-import { isNullOrUndefined } from 'util';
 
 export interface EquipmentVariantState extends EntityState<EquipmentVariant> {
   selectedVariantIds: {
@@ -34,7 +38,7 @@ export interface EquipmentVariantState extends EntityState<EquipmentVariant> {
 
 type State = EquipmentVariantState;
 
-const adapter: EntityAdapter<EquipmentVariant> = createEntityAdapter<EquipmentVariant>()
+const adapter: EntityAdapter<EquipmentVariant> = createEntityAdapter<EquipmentVariant>();
 
 const initialState = adapter.getInitialState({ selectedVariantIds: {} });
 
@@ -125,6 +129,10 @@ export function equipmentVariantReducer(
      const entries = [...variant.entries.slice(0, entryIndex), entry, ...variant.entries.slice(entryIndex + 1)];
      return adapter.updateOne({ id: variant.id, changes: { entries } }, state);
    }
+    case EquipmentVariantActionTypes.UPDATE_TOTALS: {
+      const payload = (action as UpdateTotalsEquipmentVariantAction).payload;
+      return adapter.updateOne({ id: payload.variantId, changes: { entries: payload.entries }}, state);
+    }
     default:
       return state;
   }

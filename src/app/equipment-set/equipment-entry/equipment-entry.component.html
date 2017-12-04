@@ -38,7 +38,11 @@
     </button>
   </ng-container>
   <ng-template #activeItem>
-    <equip-selected-equipment-item class="selected-item" *ngIf="selectedItem$ | async as selectedItem" [item]="selectedItem">
+    <equip-selected-equipment-item
+      class="selected-item"
+      *ngIf="selectedItem$ | async as selectedItem"
+      [item]="selectedItem"
+      [totals]="totals">
     </equip-selected-equipment-item>
   </ng-template>
 </div>
