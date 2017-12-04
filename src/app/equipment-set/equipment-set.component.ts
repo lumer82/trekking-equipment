@@ -10,6 +10,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { SetEquipmentSetNameAction } from './store/actions/equipment-set-name.actions';
 import { environment } from '../../environments/environment';
+import { empty } from 'rxjs/observable/empty';
 
 @Component({
   selector: 'equip-equipment-set',
@@ -39,12 +40,12 @@ export class EquipmentSetComponent implements OnInit {
     );
 
     if (!environment.production) {
-      this.store
-        .select(selectEquipmentSet)
-        .pipe(debounceTime(5000))
-        .subscribe(state =>
-          localStorage.setItem('state', JSON.stringify(state))
-        );
+     // this.store
+     //   .select(selectEquipmentSet)
+     //   .pipe(debounceTime(5000))
+     //   .subscribe(state =>
+     //     localStorage.setItem('state', JSON.stringify(state))
+     //   );
     }
   }
 

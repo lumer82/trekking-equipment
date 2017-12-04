@@ -7,10 +7,18 @@ import { Store } from '@ngrx/store';
 import { DeleteEquipmentCollectionAction, UpdateEquipmentCollectionAction } from '../store/actions/equipment-collection.actions';
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators/debounceTime';
-import { EquipmentSetState, selectEquipmentEntries } from '../store/equipment-set.reducer';
+import {
+  EquipmentSetState,
+  selectEquipmentEntries,
+  selectEquipmentVariants,
+  selectSelectedVariantIds
+} from '../store/equipment-set.reducer';
 import { Observable } from 'rxjs/Observable';
 import { AddEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 import { Subject } from 'rxjs/Subject';
+import { EquipmentVariant } from '../../shared/models/equipment-variant.model';
+import { map, switchMap } from 'rxjs/operators';
+import { MoveEntryEquipmentVariantAction } from '../store/actions/equipment-variant.actions';
 
 @Component({
   selector: 'equip-equipment-collection',
@@ -36,9 +44,10 @@ export class EquipmentCollectionComponent implements OnInit {
   @Input() collection: EquipmentCollection;
 
   entries$: Observable<EquipmentEntryState>;
+  selectedVariant$: Observable<EquipmentVariant>;
 
   editMode = false;
-  moveMode: EquipmentEntry = null;
+  moveMode: { entry: EquipmentEntry, index: number } = null;
   resetEntryEditMode$: Subject<void> = new Subject<void>();
 
   constructor(private store: Store<{ equipmentSet: EquipmentSetState }>) {}
@@ -55,6 +64,12 @@ export class EquipmentCollectionComponent implements OnInit {
       );
 
     this.entries$ = this.store.select(selectEquipmentEntries);
+    this.selectedVariant$ = this.store.select(selectSelectedVariantIds).pipe(
+      map(selectedVariantIds => selectedVariantIds[this.collection.id]),
+      switchMap((variantId: string) => this.store.select(selectEquipmentVariants).pipe(
+        map(variants => variants.entities[variantId]))
+      )
+    );
   }
 
   delete(): void {
@@ -77,24 +92,24 @@ export class EquipmentCollectionComponent implements OnInit {
     this.moveMode = this.editMode && this.moveMode;
   }
 
-  move(entry: EquipmentEntry): void {
-    this.moveMode = entry !== this.moveMode ? entry : null;
+  move(entry: EquipmentEntry, index: number): void {
+    this.moveMode = entry.id !== (this.moveMode && this.moveMode.entry.id) ? { entry, index } : null;
     this.resetEntryEditMode$.next();
   }
 
   dropTo(index: number): void {
-    const filter = (id: string) => id !== this.moveMode.id;
-    const oldEntries = this.collection.entries.filter(filter);
-    const entries = [
-      ...oldEntries.slice(0, index),
-      this.moveMode.id,
-      ...oldEntries.slice(index)
-    ];
+    this.store.dispatch(new MoveEntryEquipmentVariantAction({
+      collectionId: this.collection.id,
+      entryId: this.moveMode.entry.id,
+      moveTo: index }));
     this.moveMode = null;
-    this.store.dispatch(new UpdateEquipmentCollectionAction({ ...this.collection, entries }));
   }
 
   get moveIndex(): number {
-    return this.moveMode ? this.collection.entries.findIndex(e => e === this.moveMode.id) : 0;
+    return this.moveMode ? this.moveMode.index : 0;
+  }
+
+  variantEntryId(index: number, variantEntry: { entryId: string}): string {
+    return variantEntry.entryId;
   }
 }

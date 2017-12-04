@@ -1,6 +1,6 @@
 import { EquipmentItem } from '../../shared/models/equipment-item.model';
 import { AddEquipmentItemAction, SelectEquipmentItemAction } from '../store/actions/equipment-item.actions';
-import { EquipmentSetState, selectEquipmentItems, selectEquipmentVariants, selectSelectedVariantId } from '../store/equipment-set.reducer';
+import { EquipmentSetState, selectEquipmentItems } from '../store/equipment-set.reducer';
 import { DeleteEquipmentEntryAction, UpdateEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 import { debounceTime } from 'rxjs/operators/debounceTime';
 import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
@@ -11,7 +11,6 @@ import { FormControl } from '@angular/forms';
 import { EquipmentItemState } from '../store/reducer/equipment-item.reducer';
 import { Observable } from 'rxjs/Observable';
 import { OnChanges, SimpleChanges } from '@angular/core/src/metadata/lifecycle_hooks';
-import { switchMap } from 'rxjs/operators/switchMap';
 import { map } from 'rxjs/operators/map';
 
 @Component({
@@ -28,6 +27,9 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
 
   @Input()
   collection: EquipmentCollection;
+
+  @Input()
+  selectedItemId: string;
 
   @Input()
   collectionEdit: boolean;
@@ -56,15 +58,9 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
 
 
       this.items$ = this.store.select(selectEquipmentItems);
-      this.selectedItem$ = this.store.select(selectSelectedVariantId).pipe(
-        switchMap(selectedVariantId => this.store.select(selectEquipmentVariants).pipe(
-          map(variants => variants.entities[selectedVariantId])
-        )),
-        map(variant => variant.selectedItems[this.entry.id]),
-        switchMap(selectedItemId => this.store.select(selectEquipmentItems).pipe(
-          map(items => items.entities[selectedItemId])
-        ))
-      );
+      this.selectedItem$ = this.store.select(selectEquipmentItems).pipe(
+          map(items => items.entities[this.selectedItemId])
+        );
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -73,6 +69,11 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
     }
     if (changes['moving']) {
       this.editMode = this.editMode && !changes['moving'].currentValue;
+    }
+    if (changes['selectedItemId']) {
+       this.selectedItem$ = this.store.select(selectEquipmentItems).pipe(
+          map(items => items.entities[changes['selectedItemId'].currentValue])
+        );
     }
   }
 

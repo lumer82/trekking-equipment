@@ -6,7 +6,8 @@ export const EquipmentVariantActionTypes = {
   ADD: '[EquipmentVariant] Add',
   DELETE: '[EquipmentVariant] Delete',
   UPDATE: '[EquipmentVariant] Update',
-  SELECT: '[EquipmentVariant] Select'
+  SELECT: '[EquipmentVariant] Select',
+  MOVE_ENTRY: '[EquipmentVariant] Move Entry'
 };
 
 export class AddEquipmentVariantAction implements Action {
@@ -30,10 +31,18 @@ export class UpdateEquipmentVariantAction implements Action {
 export class SelectEquipmentVariantAction implements Action {
   public type = EquipmentVariantActionTypes.SELECT;
 
-  constructor(public payload: EquipmentVariant) {}
+  constructor(public payload: { variant: EquipmentVariant, collectionId: string }) {}
+}
+
+export class MoveEntryEquipmentVariantAction implements Action {
+  public type = EquipmentVariantActionTypes.MOVE_ENTRY;
+
+  constructor(public payload: { collectionId: string, entryId: string, moveTo: number}) {}
 }
 
 export type EquipmentVariantActions =
   AddEquipmentVariantAction
   | DeleteEquipmentVariantAction
-  | UpdateEquipmentVariantAction;
+  | UpdateEquipmentVariantAction
+  | SelectEquipmentVariantAction
+  | MoveEntryEquipmentVariantAction;

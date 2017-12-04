@@ -27,7 +27,7 @@
     <ng-container *ngIf="items$ | async as items">
       <mat-radio-group (change)="selectItem($event.value)">
         <div class="equipment-item" *ngFor="let itemId of entry.items">
-          <mat-radio-button [value]="items.entities[itemId]" [checked]="(selectedItem$ | async)?.id === itemId"></mat-radio-button>
+          <mat-radio-button [value]="items.entities[itemId]" [checked]="selectedItemId === itemId"></mat-radio-button>
           <equip-equipment-item  [item]="items.entities[itemId]" [collection]="collection" [entry]="entry">
           </equip-equipment-item>
         </div>

@@ -15,17 +15,18 @@
     <button mat-icon-button (click)="toggleEditMode()"><mat-icon>{{ editMode ? 'check' : 'edit' }}</mat-icon></button>
   </div>
   <ng-container *ngIf="entries$ | async as entries">
-    <ng-container *ngFor="let entryId of collection.entries; let index = index" >
-      <ng-container *ngIf="entries.entities[entryId] as entry">
+    <ng-container *ngFor="let variantEntry of (selectedVariant$ | async).entries; trackBy: variantEntryId; let index = index;">
+      <ng-container *ngIf="entries.entities[variantEntry.entryId] as entry">
         <div class="drop-target" @move *ngIf="moveMode && index < moveIndex" (click)="dropTo(index)" ><mat-icon>input</mat-icon></div>
         <equip-equipment-entry
           class="equipment-entry"
-          [class.move]="entry.id === this.moveMode?.id"
+          [class.move]="entry.id === this.moveMode?.entry.id"
           [entry]="entry"
           [collection]="collection"
           [collectionEdit]="editMode"
+          [selectedItemId]="variantEntry.itemId"
           [moving]="!!moveMode"
-          (move)="move(entry)"></equip-equipment-entry>
+          (move)="move(entry, index)"></equip-equipment-entry>
         <div class="drop-target" @move *ngIf="moveMode && index > moveIndex" (click)="dropTo(index)"><mat-icon>input</mat-icon></div>
       </ng-container>
     </ng-container>

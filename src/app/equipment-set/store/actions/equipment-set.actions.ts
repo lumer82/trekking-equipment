@@ -1,5 +1,5 @@
-import { EquipmentSet } from './../../../../shared/models/equipment-set.model';
-import { Action } from "@ngrx/store";
+import { EquipmentSet } from '../../../../shared/models/equipment-set.model';
+import { Action } from '@ngrx/store';
 
 export const EquipmentSetActionTypes = {
   SET: '[EquipmentSet] Set'

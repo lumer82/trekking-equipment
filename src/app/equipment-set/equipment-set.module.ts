@@ -25,7 +25,7 @@ export function loadInitialState() {
   imports: [
     CommonModule,
     EquipmentSetRoutingModule,
-    StoreModule.forFeature(EQUIPMENT_SET_FEATURE_NAME, equipmentSetReducer, { initialState: loadInitialState() }),
+    StoreModule.forFeature(EQUIPMENT_SET_FEATURE_NAME, equipmentSetReducer),
     EffectsModule.forFeature([EquipmentCollectionEffects]),
     FormsModule,
     ReactiveFormsModule,
