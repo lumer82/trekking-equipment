@@ -76,15 +76,21 @@ export class EquipmentCollectionComponent implements OnInit {
     this.store.dispatch(new DeleteEquipmentCollectionAction(this.collection));
   }
 
-  addEntry(): void {
+  addEntry(input: HTMLInputElement): void {
+    if (!input.value) {
+      return;
+    }
+
     this.store.dispatch(
       new AddEquipmentEntryAction({
         id: Date.now().toString(),
-        name: 'New Entry',
+        name: input.value,
         collectionId: this.collection.id,
         items: []
       })
     );
+
+    input.value = null;
   }
 
   toggleEditMode(): void {

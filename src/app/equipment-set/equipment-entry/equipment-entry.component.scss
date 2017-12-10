@@ -21,7 +21,17 @@
   display: flex;
   align-items: center;
 
-  equip-equipment-item {
+  equip-selected-equipment-item {
+    flex: 1;
+  }
+}
+
+.add-item {
+  margin-left: 28px;
+  display: flex;
+  align-items: center;
+
+  mat-input-container {
     flex: 1;
   }
 }

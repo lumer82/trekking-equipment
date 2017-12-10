@@ -9,11 +9,15 @@ import { EquipmentSetComponent } from './equipment-set.component';
 import { EquipmentSetRoutingModule } from './equipment-set.routing.module';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatRadioModule } from '@angular/material';
+import {
+  MatButtonModule, MatCardModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule,
+  MatRadioModule
+} from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { UpdateTotalsEffects } from './store/effects/update-totals.effects';
 import { CalculateTotalsService } from './services/calculate-totals.service';
+import { EditEquipmentItemComponent } from './edit-equipment-item/edit-equipment-item.component';
 
 export function loadInitialState() {
   if (!environment.production) {
@@ -35,17 +39,22 @@ export function loadInitialState() {
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatRadioModule
+    MatRadioModule,
+    MatDialogModule
   ],
   declarations: [
     EquipmentSetComponent,
     EquipmentCollectionComponent,
     EquipmentEntryComponent,
     EquipmentItemComponent,
-    SelectedEquipmentItemComponent
+    SelectedEquipmentItemComponent,
+    EditEquipmentItemComponent
   ],
   providers: [
     CalculateTotalsService
+  ],
+  entryComponents: [
+    EditEquipmentItemComponent
   ]
 })
 export class EquipmentSetModule { }

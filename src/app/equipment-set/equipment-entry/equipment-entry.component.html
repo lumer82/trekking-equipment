@@ -1,7 +1,7 @@
 <div class="entry">
   <div class="header">
     <mat-icon>folder_open</mat-icon>
-    <ng-container *ngIf="editMode && collectionEdit; else noEditHeader">
+    <ng-container *ngIf="editMode; else noEditHeader">
       <mat-input-container class="name">
         <input type="text" matInput placeholder="Name" [value]="entry?.name" [formControl]="nameForm">
       </mat-input-container>
@@ -14,28 +14,33 @@
         {{entry?.name}}
       </span>
     </ng-template>
-    <ng-container *ngIf="collectionEdit">
+    <ng-container *ngIf="editMode">
       <button mat-icon-button (click)="doMove()">
         <mat-icon>swap_vert</mat-icon>
       </button>
-      <button mat-icon-button (click)="editMode = !editMode" [disabled]="moving">
-        <mat-icon>{{ editMode ? 'check' : 'edit'}}</mat-icon>
-      </button>
     </ng-container>
   </div>
-  <ng-container *ngIf="editMode && collectionEdit; else activeItem">
+  <ng-container *ngIf="editMode; else activeItem">
     <ng-container *ngIf="items$ | async as items">
       <mat-radio-group (change)="selectItem($event.value)">
         <div class="equipment-item" *ngFor="let itemId of entry.items">
           <mat-radio-button [value]="items.entities[itemId]" [checked]="selectedItemId === itemId"></mat-radio-button>
-          <equip-equipment-item  [item]="items.entities[itemId]" [collection]="collection" [entry]="entry">
-          </equip-equipment-item>
+          <equip-selected-equipment-item
+            [item]="items.entities[itemId]"
+            [totals]="totals">
+          </equip-selected-equipment-item>
+          <button mat-icon-button (click)="deleteItem(items.entities[itemId])"><mat-icon>delete</mat-icon></button>
+          <button mat-icon-button (click)="editItem(items.entities[itemId])"><mat-icon>edit</mat-icon></button>
         </div>
       </mat-radio-group>
+      <div class="add-item">
+        <mat-icon>label</mat-icon>
+        <mat-input-container>
+          <input type="text" matInput placeholder="Name" #newItemName (keyup.enter)="newItem(newItemName)">
+        </mat-input-container>
+        <button mat-icon-button (click)="newItem(newItemName)"><mat-icon>add</mat-icon></button>
+      </div>
     </ng-container>
-    <button mat-button (click)="addItem()">
-      <mat-icon>label</mat-icon>Add Item
-    </button>
   </ng-container>
   <ng-template #activeItem>
     <equip-selected-equipment-item

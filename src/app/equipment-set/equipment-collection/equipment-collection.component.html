@@ -24,7 +24,7 @@
           [entry]="entry"
           [totals]="variantEntry.totals"
           [collection]="collection"
-          [collectionEdit]="editMode"
+          [editMode]="editMode && !moveMode"
           [selectedItemId]="variantEntry.itemId"
           [moving]="!!moveMode"
           (move)="move(entry, index)"></equip-equipment-entry>
@@ -32,7 +32,11 @@
       </ng-container>
     </ng-container>
   </ng-container>
-  <button mat-button (click)="addEntry()" *ngIf="editMode">
-    <mat-icon>create_new_folder</mat-icon>Add Entry
-  </button>
+  <div class="new-entry" *ngIf="editMode">
+    <mat-icon>create_new_folder</mat-icon>
+    <mat-input-container>
+      <input type="text" matInput placeholder="Name" (keyup.enter)="addEntry(newEntryName)" #newEntryName>
+    </mat-input-container>
+    <button mat-icon-button (click)="addEntry(newEntryName)"><mat-icon>add</mat-icon></button>
+  </div>
 </div>

@@ -1,5 +1,8 @@
 import { EquipmentItem } from '../../shared/models/equipment-item.model';
-import { AddEquipmentItemAction, SelectEquipmentItemAction } from '../store/actions/equipment-item.actions';
+import {
+  AddEquipmentItemAction, DeleteEquipmentItemAction, SelectEquipmentItemAction,
+  UpdateEquipmentItemAction
+} from '../store/actions/equipment-item.actions';
 import { EquipmentSetState, selectEquipmentItems } from '../store/equipment-set.reducer';
 import { DeleteEquipmentEntryAction, UpdateEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 import { debounceTime } from 'rxjs/operators/debounceTime';
@@ -13,6 +16,8 @@ import { Observable } from 'rxjs/Observable';
 import { OnChanges, SimpleChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 import { map } from 'rxjs/operators/map';
 import { EquipmentVariantTotals } from '../../shared/models/equipment-variant.model';
+import { MatDialog } from '@angular/material';
+import { EditEquipmentItemComponent } from '../edit-equipment-item/edit-equipment-item.component';
 
 @Component({
   selector: 'equip-equipment-entry',
@@ -33,7 +38,7 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
   selectedItemId: string;
 
   @Input()
-  collectionEdit: boolean;
+  editMode: boolean;
 
   @Input()
   moving;
@@ -44,13 +49,12 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
   @Output()
   move: EventEmitter<void> = new EventEmitter<void>();
 
-  editMode = false;
-
   items$: Observable<EquipmentItemState>;
 
   selectedItem$: Observable<EquipmentItem>;
 
-  constructor(private store: Store<{ equipmentSet: EquipmentSetState }>) { }
+  constructor(private store: Store<{ equipmentSet: EquipmentSetState }>, private matDialog: MatDialog) {
+  }
 
   ngOnInit() {
     this.nameForm = new FormControl();
@@ -61,10 +65,10 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
       .subscribe(name => this.store.dispatch(new UpdateEquipmentEntryAction({...this.entry, name})));
 
 
-      this.items$ = this.store.select(selectEquipmentItems);
-      this.selectedItem$ = this.store.select(selectEquipmentItems).pipe(
-          map(items => items.entities[this.selectedItemId])
-        );
+    this.items$ = this.store.select(selectEquipmentItems);
+    this.selectedItem$ = this.store.select(selectEquipmentItems).pipe(
+      map(items => items.entities[this.selectedItemId])
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -75,25 +79,14 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
       this.editMode = this.editMode && !changes['moving'].currentValue;
     }
     if (changes['selectedItemId']) {
-       this.selectedItem$ = this.store.select(selectEquipmentItems).pipe(
-          map(items => items.entities[changes['selectedItemId'].currentValue])
-        );
+      this.selectedItem$ = this.store.select(selectEquipmentItems).pipe(
+        map(items => items.entities[changes['selectedItemId'].currentValue])
+      );
     }
   }
 
   delete(): void {
     this.store.dispatch(new DeleteEquipmentEntryAction(this.entry));
-  }
-
-  addItem(): void {
-    this.store.dispatch(
-      new AddEquipmentItemAction({
-        id: Date.now().toString(),
-        name: 'New Item',
-        collectionId: this.collection.id,
-        entryId: this.entry.id
-      })
-    );
   }
 
   selectItem(item: EquipmentItem): void {
@@ -103,8 +96,38 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
   }
 
   doMove(): void {
-    this.editMode = false;
     this.move.emit();
+  }
+
+  editItem(item: EquipmentItem): void {
+    this.editItemDialog(item, resultItem => this.store.dispatch(new UpdateEquipmentItemAction({...item, ...resultItem})));
+  }
+
+  deleteItem(item: EquipmentItem): void {
+    this.store.dispatch(new DeleteEquipmentItemAction(item));
+  }
+
+  newItem(input: HTMLInputElement, ev: Event): void {
+    if (!input.value) {
+      return;
+    }
+    const item = {
+      name: input.value,
+      id: Date.now().toString(),
+      collectionId: this.collection.id,
+      entryId: this.entry.id
+    };
+    input.value = null;
+    this.editItemDialog(item, resultItem => this.store.dispatch(new AddEquipmentItemAction({...item, ...resultItem})));
+  }
+
+  private editItemDialog(item: EquipmentItem, resultAction: (resultItem: EquipmentItem) => void): void {
+    const dialogRef = this.matDialog.open(EditEquipmentItemComponent, {data: item});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        resultAction(result);
+      }
+    });
   }
 
 }

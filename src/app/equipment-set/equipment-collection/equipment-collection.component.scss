@@ -28,3 +28,15 @@
   display: block;
   background-color: rgba(208, 208, 208, 0.5);
 }
+
+.new-entry {
+  border-bottom: 1px solid rgb(200, 200, 200);
+  border-left: 3px solid rgb(180, 180, 180);
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+
+  mat-input-container {
+    flex: 1;
+  }
+}
