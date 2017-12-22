@@ -26,6 +26,9 @@ export class EquipmentItemComponent implements OnInit {
   @Input()
   collection: EquipmentCollection;
 
+  @Input()
+  showTotals: boolean = true;
+
   constructor(private store: Store<{ equipmentSet: EquipmentSetState }>, private formBuilder: FormBuilder) { }
 
   ngOnInit() {

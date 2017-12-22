@@ -1,5 +1,4 @@
 import { EquipmentItem } from './../../../shared/models/equipment-item.model';
-import { EquipmentCollection } from './../../../shared/models/equipment-collection.model';
 import { Action } from '@ngrx/store';
 
 export const EquipmentItemActionTypes = {

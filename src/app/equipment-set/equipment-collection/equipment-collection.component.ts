@@ -46,7 +46,7 @@ export class EquipmentCollectionComponent implements OnInit {
   entries$: Observable<EquipmentEntryState>;
   selectedVariant$: Observable<EquipmentVariant>;
 
-  editMode = false;
+  editMode = true;
   moveMode: { entry: EquipmentEntry, index: number } = null;
   resetEntryEditMode$: Subject<void> = new Subject<void>();
 

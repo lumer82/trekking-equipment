@@ -55,10 +55,14 @@ export function equipmentEntryReducer(
     }
     case EquipmentItemActionTypes.DELETE: {
       const item = (action as DeleteEquipmentItemAction).payload;
+      console.log(`deleting item ${item.id} from entry ${item.entryId}`);
+      console.log('entry before delete', state.entities[item.entryId].items);
       const entry = removeItemFromEntry(
         state.entities[item.entryId],
         item
       );
+
+      console.log('entry after delete', entry.items);
       return adapter.updateOne(
         {
           id: entry.id,
@@ -83,6 +87,7 @@ function removeItemFromEntry(
   entry: EquipmentEntry,
   item: EquipmentItem
 ): EquipmentEntry {
+  console.log('calling removeItemFromEntry', item)
   return {
     ...entry,
     items: (entry.items || []).filter(id => item.id !== id)

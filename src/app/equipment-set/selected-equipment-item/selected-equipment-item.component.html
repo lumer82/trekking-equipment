@@ -4,14 +4,23 @@
 <div class="settings-container" *ngIf="item.price || item.weight || item.volume">
     <span class="setting">
       <mat-icon>attach_money</mat-icon>
-      {{ item.price }}<br>({{totals?.price}})
+      <span class="value">
+        <span>{{ item.price }}</span>
+        <span *ngIf="showTotals">({{totals?.price}})</span>
+      </span>
     </span>
     <span class="setting">
       <mat-icon>fitness_center</mat-icon>
-      {{ item?.weight }}<br>({{totals?.weight}})
+      <span class="value">
+        <span>{{ item.weight }}</span>
+        <span *ngIf="showTotals">({{totals?.weight}})</span>
+      </span>
     </span>
     <span class="setting">
       <mat-icon>border_outer</mat-icon>
-      {{ item?.volume }}<br>({{totals?.volume}})
+      <span class="value">
+        <span>{{ item.volume }}</span>
+        <span *ngIf="showTotals">({{totals?.volume}})</span>
+      </span>
     </span>
 </div>

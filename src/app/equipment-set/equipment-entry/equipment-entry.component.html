@@ -27,6 +27,7 @@
           <mat-radio-button [value]="items.entities[itemId]" [checked]="selectedItemId === itemId"></mat-radio-button>
           <equip-selected-equipment-item
             [item]="items.entities[itemId]"
+            [showTotals]="false"
             [totals]="totals">
           </equip-selected-equipment-item>
           <button mat-icon-button (click)="deleteItem(items.entities[itemId])"><mat-icon>delete</mat-icon></button>
@@ -36,7 +37,7 @@
       <div class="add-item">
         <mat-icon>label</mat-icon>
         <mat-input-container>
-          <input type="text" matInput placeholder="Name" #newItemName (keyup.enter)="newItem(newItemName)">
+          <input autofocus type="text" matInput placeholder="Name" #newItemName (keyup.enter)="newItem(newItemName)">
         </mat-input-container>
         <button mat-icon-button (click)="newItem(newItemName)"><mat-icon>add</mat-icon></button>
       </div>

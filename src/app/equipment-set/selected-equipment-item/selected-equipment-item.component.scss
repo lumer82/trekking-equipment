@@ -10,3 +10,9 @@
 .setting {
   width: 30%;
 }
+
+.value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

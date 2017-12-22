@@ -1,3 +1,4 @@
+import { EquipmentItem } from '../../../shared/models/equipment-item.model';
 import { EquipmentVariant } from '../../../shared/models/equipment-variant.model';
 import {
   AddEquipmentVariantAction,
@@ -21,7 +22,6 @@ import {
   EquipmentEntryActionTypes
 } from '../actions/equipment-entry.actions';
 import {
-  AddEquipmentItemAction,
   EquipmentItemActions,
   EquipmentItemActionTypes,
   SelectEquipmentItemAction
@@ -50,6 +50,13 @@ export function equipmentVariantReducer(
     | EquipmentCollectionActions
     | EquipmentVariantActions
 ): State {
+  function selectItemOnVariant(variant: EquipmentVariant, item: EquipmentItem) {
+    const entryIndex = variant.entries.findIndex(e => e.entryId === item.entryId);
+    const entry = {...variant.entries.find(e => e.entryId === item.entryId), itemId: item.id};
+    const entries = [...variant.entries.slice(0, entryIndex), entry, ...variant.entries.slice(entryIndex + 1)];
+    return adapter.updateOne({id: variant.id, changes: {entries}}, state);
+  }
+
   switch (action.type) {
     case EquipmentVariantActionTypes.ADD: {
       const payload = (action as AddEquipmentVariantAction).payload;
@@ -110,25 +117,11 @@ export function equipmentVariantReducer(
       ];
       return adapter.updateOne({id: variant.id, changes: { entries }}, state);
     }
-   case EquipmentItemActionTypes.ADD: {
-     const item = (action as AddEquipmentItemAction).payload;
-     const variant = getVariant(state, item.collectionId);
-     const entryIndex = variant.entries.findIndex(e => e.entryId === item.entryId);
-     if (!variant.entries[entryIndex].itemId) {
-       const entry = {...variant.entries.find(e => e.entryId === item.entryId), itemId: item.id };
-       const entries = [...variant.entries.slice(0, entryIndex), entry, ...variant.entries.slice(entryIndex + 1)];
-       return adapter.updateOne({ id: variant.id, changes: { entries } }, state);
-     }
-     break;
-   }
-   case EquipmentItemActionTypes.SELECT: {
-     const item = (action as SelectEquipmentItemAction).payload;
-     const variant = getVariant(state, item.collectionId);
-     const entryIndex = variant.entries.findIndex(e => e.entryId === item.entryId);
-     const entry = {...variant.entries.find(e => e.entryId === item.entryId), itemId: item.id };
-     const entries = [...variant.entries.slice(0, entryIndex), entry, ...variant.entries.slice(entryIndex + 1)];
-     return adapter.updateOne({ id: variant.id, changes: { entries } }, state);
-   }
+    case EquipmentItemActionTypes.SELECT: {
+      const item = (action as SelectEquipmentItemAction).payload;
+      const variant = getVariant(state, item.collectionId);
+      return selectItemOnVariant(variant, item);
+    }
     case EquipmentVariantActionTypes.UPDATE_TOTALS: {
       const payload = (action as UpdateTotalsEquipmentVariantAction).payload;
       return adapter.updateOne({ id: payload.variantId, changes: { entries: payload.entries }}, state);

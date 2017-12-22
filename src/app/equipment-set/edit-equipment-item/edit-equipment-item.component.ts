@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { EquipmentItem } from '../../shared/models/equipment-item.model';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -12,8 +12,17 @@ export class EditEquipmentItemComponent implements OnInit {
 
   form: FormGroup;
 
+  @HostListener('keyup', ['$event'])
+  onEnter($event: KeyboardEvent) {
+    if ($event.key === 'Enter') {
+      this.dialogRef.close(this.value);
+    }
+  }
+
   constructor(@Inject(MAT_DIALOG_DATA) private item: EquipmentItem,
-              private formBuilder: FormBuilder) { }
+              private dialogRef: MatDialogRef<EditEquipmentItemComponent>,
+              private formBuilder: FormBuilder) {
+  }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -25,7 +34,6 @@ export class EditEquipmentItemComponent implements OnInit {
   }
 
   get value(): EquipmentItem {
-    return { ...this.item, ...this.form.getRawValue() };
+    return {...this.item, ...this.form.getRawValue()};
   }
-
 }

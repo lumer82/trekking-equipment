@@ -16,4 +16,7 @@ export class SelectedEquipmentItemComponent {
   @Input()
   totals: EquipmentVariantTotals;
 
+  @Input()
+  showTotals: boolean = true;
+
 }
