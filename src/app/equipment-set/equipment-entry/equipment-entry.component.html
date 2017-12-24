@@ -14,7 +14,7 @@
         {{entry?.name}}
       </span>
     </ng-template>
-    <ng-container *ngIf="editMode">
+    <ng-container *ngIf="editMode || moving">
       <button mat-icon-button (click)="doMove()">
         <mat-icon>swap_vert</mat-icon>
       </button>
