@@ -19,6 +19,8 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "equip",
       "styles": [
+        "../node_modules/@fortawesome/fontawesome/styles.css",
+        "../node_modules/material-design-icons/iconfont/material-icons.css",
         "styles.scss"
       ],
       "scripts": [],
