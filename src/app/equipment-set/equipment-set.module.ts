@@ -1,3 +1,5 @@
+import { EditEquipmentSetSettingsComponent } from './edit-equipment-set-settings/edit-equipment-set-settings.component';
+import { EquipmentSetSettingsComponent } from './equipment-set-settings/equipment-set-settings.component';
 import { SelectedEquipmentItemComponent } from './selected-equipment-item/selected-equipment-item.component';
 import { EquipmentItemComponent } from './equipment-item/equipment-item.component';
 import { EquipmentEntryComponent } from './equipment-entry/equipment-entry.component';
@@ -48,14 +50,17 @@ export function loadInitialState() {
     EquipmentCollectionComponent,
     EquipmentEntryComponent,
     EquipmentItemComponent,
+    EquipmentSetSettingsComponent,
     SelectedEquipmentItemComponent,
-    EditEquipmentItemComponent
+    EditEquipmentItemComponent,
+    EditEquipmentSetSettingsComponent
   ],
   providers: [
     CalculateTotalsService
   ],
   entryComponents: [
-    EditEquipmentItemComponent
+    EditEquipmentItemComponent,
+    EditEquipmentSetSettingsComponent
   ]
 })
 export class EquipmentSetModule { }

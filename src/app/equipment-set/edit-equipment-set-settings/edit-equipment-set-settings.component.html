@@ -1,0 +1,29 @@
+<ng-container *ngIf="settings$ | async as settings">
+  <form *ngIf="form" [formGroup]="form">
+    <h1 mat-dialog-title>Edit Equipment Settings</h1>
+    <div mat-dialog-content>
+      <mat-input-container>
+        <mat-icon matPrefix>archive</mat-icon>
+        <input matInput placeholder="Name" formControlName="name">
+      </mat-input-container>
+      <div formGroupName="limits">
+        <mat-input-container>
+          <mat-icon matPrefix>attach_money</mat-icon>
+          <input matInput placeholder="Budget" formControlName="budget">
+        </mat-input-container>
+        <mat-input-container>
+          <mat-icon matPrefix>fitness_center</mat-icon>
+          <input matInput placeholder="Weight" formControlName="weight">
+        </mat-input-container>
+        <mat-input-container>
+          <mat-icon matPrefix>border_outer</mat-icon>
+          <input matInput placeholder="Volume" formControlName="volume">
+        </mat-input-container>
+      </div>
+    </div>
+    <div mat-dialog-action>
+      <button mat-button [mat-dialog-close]="form.getRawValue()">OK</button>
+      <button mat-button mat-dialog-close>CANCEL</button>
+    </div>
+  </form>
+</ng-container>

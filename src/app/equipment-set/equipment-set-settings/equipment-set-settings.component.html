@@ -1,0 +1,8 @@
+<ng-container *ngIf="settings$ | async as settings">
+  <div class="name">
+    <mat-icon>archive</mat-icon>
+    <span>{{ settings.name }}</span>
+    <button mat-icon-button (click)="edit()"><mat-icon>settings</mat-icon></button>
+  </div>
+  <p>{{ settings.limits?.budget }} / {{ settings.limits?.weight }} / {{ settings.limits?.volume}}</p>
+</ng-container>

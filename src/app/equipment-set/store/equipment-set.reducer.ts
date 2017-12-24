@@ -1,23 +1,22 @@
+import { EntityState } from '@ngrx/entity';
+import { ActionReducerMap } from '@ngrx/store';
+import { createFeatureSelector, createSelector } from '@ngrx/store/src/selector';
+import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
+import { EquipmentEntry } from '../../shared/models/equipment-entry.model';
+import { EquipmentItem } from '../../shared/models/equipment-item.model';
+import { equipmentCollectionReducer } from './reducer/equipment-collection.reducer';
+import { equipmentEntryReducer } from './reducer/equipment-entry.reducer';
+import { equipmentItemReducer } from './reducer/equipment-item.reducer';
+import { equipmentSetSettingsReducer, EquipmentSetSettingsState } from './reducer/equipment-set-settings.reducer';
 import {
-  equipmentVariantReducer,
-  EquipmentVariantState,
+  equipmentVariantReducer, EquipmentVariantState,
   getSelectedVariantIds
 } from './reducer/equipment-variant.reducer';
-import { EquipmentEntry } from '../../shared/models/equipment-entry.model';
-import { EntityState } from '@ngrx/entity';
-import { equipmentCollectionReducer } from './reducer/equipment-collection.reducer';
-import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
-import { ActionReducerMap } from '@ngrx/store';
-import { equipmentSetNameReducer } from './reducer/equipment-set.name.reducer';
-import { createFeatureSelector, createSelector } from '@ngrx/store/src/selector';
-import { equipmentEntryReducer } from './reducer/equipment-entry.reducer';
-import { EquipmentItem } from '../../shared/models/equipment-item.model';
-import { equipmentItemReducer } from './reducer/equipment-item.reducer';
 
 export const EQUIPMENT_SET_FEATURE_NAME = 'equipmentSet';
 
 export interface EquipmentSetState {
-  name: string;
+  settings: EquipmentSetSettingsState;
   collections: EntityState<EquipmentCollection>;
   entries: EntityState<EquipmentEntry>;
   items: EntityState<EquipmentItem>;
@@ -25,7 +24,7 @@ export interface EquipmentSetState {
 }
 
 export const equipmentSetReducer: ActionReducerMap<any> = {
-  name: equipmentSetNameReducer,
+  settings: equipmentSetSettingsReducer,
   collections: equipmentCollectionReducer,
   entries: equipmentEntryReducer,
   items: equipmentItemReducer,
@@ -33,6 +32,8 @@ export const equipmentSetReducer: ActionReducerMap<any> = {
 };
 
 export const selectEquipmentSet = createFeatureSelector<EquipmentSetState>(EQUIPMENT_SET_FEATURE_NAME);
+
+export const selectEquipmentSetSettings = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.settings);
 
 export const selectEquipmentEntries = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.entries);
 

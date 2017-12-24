@@ -1,0 +1,18 @@
+.equipment-set-info {
+  display: flex;
+  align-items: center;
+
+  equip-equipment-set-settings {
+    width: 100%;
+  }
+
+  .edit {
+    display: flex;
+    align-items: center;
+    flex: 1;
+
+    mat-input-container {
+      flex: 1;
+    }
+  }
+}

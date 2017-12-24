@@ -8,9 +8,7 @@ import { EquipmentSet } from '../../shared/models/equipment-set.model';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { SetEquipmentSetNameAction } from './store/actions/equipment-set-name.actions';
 import { environment } from '../../environments/environment';
-import { empty } from 'rxjs/observable/empty';
 
 @Component({
   selector: 'equip-equipment-set',
@@ -18,8 +16,10 @@ import { empty } from 'rxjs/observable/empty';
   styleUrls: ['./equipment-set.component.scss']
 })
 export class EquipmentSetComponent implements OnInit {
-  equipmentSet$: Observable<EquipmentSet>;
+  equipmentSet$: Observable<EquipmentSetState>;
   nameForm: FormControl;
+
+  editmode: boolean = true;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -27,12 +27,6 @@ export class EquipmentSetComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.nameForm = new FormControl();
-    this.nameForm.valueChanges
-      .pipe(debounceTime(800))
-      .subscribe(name =>
-        this.store.dispatch(new SetEquipmentSetNameAction(name))
-      );
     this.equipmentSet$ = this.store.select(selectEquipmentSet);
 
     this.activatedRoute.data.subscribe((data: { equipmentSet: EquipmentSet }) =>
