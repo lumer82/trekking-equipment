@@ -3,7 +3,7 @@ export enum IconType {
   FONTAWESOME
 }
 
-export interface EquipmentLimit {
+export interface EquipmentLimitDefinition {
   name: string;
   displayName?: string;
   icon?: {

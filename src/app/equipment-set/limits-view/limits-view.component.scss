@@ -1,0 +1,19 @@
+.grid {
+  display: grid;
+  grid-template-columns: min-content min-content min-content;
+  grid-column-gap: 5px;
+}
+
+.header {
+  margin-bottom: 5px;
+}
+
+.limit {
+  display: flex;
+  align-items: center;
+
+  .name {
+    display: inline-block;
+    margin: 0 5px;
+  }
+}

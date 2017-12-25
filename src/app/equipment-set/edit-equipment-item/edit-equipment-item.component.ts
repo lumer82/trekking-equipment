@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { map, take } from 'rxjs/operators';
 import { EquipmentItem } from '../../shared/models/equipment-item.model';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { EquipmentLimit } from '../../shared/models/equipment-limit.model';
+import { EquipmentLimitDefinition } from '../../shared/models/equipment-limit-definition.model';
 import { EquipmentSetFeatureState, selectEquipmentLimits } from '../store/equipment-set.reducer';
 
 @Component({
@@ -16,7 +16,7 @@ import { EquipmentSetFeatureState, selectEquipmentLimits } from '../store/equipm
 export class EditEquipmentItemComponent implements OnInit {
 
   form: FormGroup;
-  limits$: Observable<Array<EquipmentLimit>>;
+  limits$: Observable<Array<EquipmentLimitDefinition>>;
 
   @HostListener('keyup', ['$event'])
   onEnter($event: KeyboardEvent) {
@@ -32,10 +32,9 @@ export class EditEquipmentItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.limits$ =
-      this.limits$ = this.store.select(selectEquipmentLimits).pipe(
-        map(limits => (limits.ids as string[]).map(id => limits.entities[id]))
-      );
+    this.limits$ = this.store.select(selectEquipmentLimits).pipe(
+      map(limits => (limits.ids as string[]).map(id => limits.entities[id]))
+    );
 
     this.limits$.pipe(take(1))
       .subscribe(limits => {

@@ -1,6 +1,8 @@
+import { EditCollectionLimitsComponent } from './edit-collection-limits/edit-collection-limits.component';
 import { EditEquipmentSetSettingsComponent } from './edit-equipment-set-settings/edit-equipment-set-settings.component';
 import { EquipmentSetSettingsComponent } from './equipment-set-settings/equipment-set-settings.component';
 import { LimitIconComponent } from './limit-icon/limit-icon.component';
+import { LimitsViewComponent } from './limits-view/limits-view.component';
 import { SelectedEquipmentItemComponent } from './selected-equipment-item/selected-equipment-item.component';
 import { EquipmentEntryComponent } from './equipment-entry/equipment-entry.component';
 import { EquipmentCollectionComponent } from './equipment-collection/equipment-collection.component';
@@ -21,6 +23,7 @@ import { environment } from '../../environments/environment';
 import { UpdateTotalsEffects } from './store/effects/update-totals.effects';
 import { CalculateTotalsService } from './services/calculate-totals.service';
 import { EditEquipmentItemComponent } from './edit-equipment-item/edit-equipment-item.component';
+import { StoreSelectHelperService } from './store/store-select-helper.service';
 
 export function loadInitialState() {
   if (!environment.production) {
@@ -53,14 +56,18 @@ export function loadInitialState() {
     SelectedEquipmentItemComponent,
     EditEquipmentItemComponent,
     EditEquipmentSetSettingsComponent,
-    LimitIconComponent
+    LimitIconComponent,
+    LimitsViewComponent,
+    EditCollectionLimitsComponent
   ],
   providers: [
-    CalculateTotalsService
+    CalculateTotalsService,
+    StoreSelectHelperService
   ],
   entryComponents: [
     EditEquipmentItemComponent,
-    EditEquipmentSetSettingsComponent
+    EditEquipmentSetSettingsComponent,
+    EditCollectionLimitsComponent
   ]
 })
 export class EquipmentSetModule { }

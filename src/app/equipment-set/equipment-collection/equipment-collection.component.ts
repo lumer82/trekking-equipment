@@ -1,4 +1,7 @@
+import { MatDialog } from '@angular/material';
 import { EquipmentEntry } from '../../shared/models/equipment-entry.model';
+import { EquipmentLimitDefinition } from '../../shared/models/equipment-limit-definition.model';
+import { EditCollectionLimitsComponent } from '../edit-collection-limits/edit-collection-limits.component';
 import { EquipmentEntryState } from '../store/reducer/equipment-entry.reducer';
 import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
@@ -8,6 +11,7 @@ import { DeleteEquipmentCollectionAction, UpdateEquipmentCollectionAction } from
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators/debounceTime';
 import {
+  EquipmentSetFeatureState,
   EquipmentSetState,
   selectEquipmentEntries,
   selectEquipmentVariants,
@@ -17,8 +21,9 @@ import { Observable } from 'rxjs/Observable';
 import { AddEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 import { Subject } from 'rxjs/Subject';
 import { EquipmentVariant } from '../../shared/models/equipment-variant.model';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { MoveEntryEquipmentVariantAction } from '../store/actions/equipment-variant.actions';
+import { StoreSelectHelperService } from '../store/store-select-helper.service';
 
 @Component({
   selector: 'equip-equipment-collection',
@@ -50,18 +55,23 @@ export class EquipmentCollectionComponent implements OnInit {
   moveMode: { entry: EquipmentEntry, index: number } = null;
   resetEntryEditMode$: Subject<void> = new Subject<void>();
 
-  constructor(private store: Store<{ equipmentSet: EquipmentSetState }>) {}
+  limitDefinitions$: Observable<Array<EquipmentLimitDefinition>>;
+
+  constructor(private store: Store<EquipmentSetFeatureState>,
+              private storeSelect: StoreSelectHelperService,
+              private matDialog: MatDialog) {}
 
   ngOnInit() {
-    console.log('OnInit for id', this.collection.id);
     this.nameForm = new FormControl();
     this.nameForm.valueChanges
       .pipe(debounceTime(800))
       .subscribe(name =>
         this.store.dispatch(
-          new UpdateEquipmentCollectionAction({ ...this.collection, name })
+          new UpdateEquipmentCollectionAction({ id: this.collection.id, changes: { name } })
         )
       );
+
+    this.limitDefinitions$ = this.storeSelect.getLimitDefinitions();
 
     this.entries$ = this.store.select(selectEquipmentEntries);
     this.selectedVariant$ = this.store.select(selectSelectedVariantIds).pipe(
@@ -117,5 +127,18 @@ export class EquipmentCollectionComponent implements OnInit {
 
   variantEntryId(index: number, variantEntry: { entryId: string}): string {
     return variantEntry.entryId;
+  }
+
+  editLimits(): void {
+    const dialogRef = this.matDialog.open(EditCollectionLimitsComponent, { data: this.collection.limits });
+    dialogRef.afterClosed()
+      .pipe(filter(value => !!value))
+      .subscribe(value =>
+      this.store.dispatch(new UpdateEquipmentCollectionAction({
+        id: this.collection.id,
+        // check that there are some set limits, else set undefined
+        changes: { limits: Object.keys(value).some(k => !!value[k]) ? value : undefined }
+      }))
+    );
   }
 }

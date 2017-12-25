@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { debounceTime, map, take, withLatestFrom } from 'rxjs/operators';
-import { EquipmentLimit } from '../../shared/models/equipment-limit.model';
+import { EquipmentLimitDefinition } from '../../shared/models/equipment-limit-definition.model';
 import { EditEquipmentItemComponent } from '../edit-equipment-item/edit-equipment-item.component';
 import { EquipmentSetSettingsSetAction } from '../store/actions/equipment-set-settings.actions';
 import {
@@ -21,7 +21,7 @@ import { EquipmentSetSettingsState } from '../store/reducer/equipment-set-settin
 export class EditEquipmentSetSettingsComponent implements OnInit {
 
   private settings$: Observable<EquipmentSetSettingsState>;
-  limits$: Observable<Array<EquipmentLimit>>;
+  limits$: Observable<Array<EquipmentLimitDefinition>>;
   private form: FormGroup;
 
   @HostListener('keyup', ['$event'])

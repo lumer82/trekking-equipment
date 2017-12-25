@@ -2,17 +2,17 @@ import { EntityState } from '@ngrx/entity';
 import { createEntityAdapter } from '@ngrx/entity/src/create_adapter';
 import { EntityAdapter } from '@ngrx/entity/src/models';
 import { Action } from '@ngrx/store';
-import { EquipmentLimit, IconType } from '../../../shared/models/equipment-limit.model';
+import { EquipmentLimitDefinition, IconType } from '../../../shared/models/equipment-limit-definition.model';
 
 
-export interface EquipmentLimitsState extends EntityState<EquipmentLimit> {
+export interface EquipmentLimitsState extends EntityState<EquipmentLimitDefinition> {
 
 }
 
-const adapter: EntityAdapter<EquipmentLimit> =
-  createEntityAdapter<EquipmentLimit>({ selectId: l => l.name});
+const adapter: EntityAdapter<EquipmentLimitDefinition> =
+  createEntityAdapter<EquipmentLimitDefinition>({ selectId: l => l.name});
 
-const initialLimits: Array<EquipmentLimit> = [
+const initialLimits: Array<EquipmentLimitDefinition> = [
   {
     name: 'price',
     displayName: 'Price',

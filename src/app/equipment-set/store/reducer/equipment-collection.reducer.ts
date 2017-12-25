@@ -10,7 +10,10 @@ import { EquipmentCollectionActionTypes } from './../actions/equipment-collectio
 import { EntityState } from '@ngrx/entity';
 import { EntityAdapter } from '@ngrx/entity/src/models';
 import { createEntityAdapter } from '@ngrx/entity/src/create_adapter';
-import { EquipmentCollectionActions } from '../actions/equipment-collection.actions';
+import {
+  AddEquipmentCollectionAction, DeleteEquipmentCollectionAction,
+  EquipmentCollectionActions, UpdateEquipmentCollectionAction
+} from '../actions/equipment-collection.actions';
 
 export interface EquipmentCollectionState
   extends EntityState<EquipmentCollection> {}
@@ -28,20 +31,17 @@ export function equipmentCollectionReducer(
   switch (action.type) {
     case EquipmentCollectionActionTypes.ADD:
       return adapter.addOne(
-        (action as EquipmentCollectionActions).payload,
+        (action as AddEquipmentCollectionAction).payload,
         state
       );
     case EquipmentCollectionActionTypes.DELETE:
       return adapter.removeOne(
-        (action as EquipmentCollectionActions).payload.id,
+        (action as DeleteEquipmentCollectionAction).payload.id,
         state
       );
     case EquipmentCollectionActionTypes.UPDATE:
       return adapter.updateOne(
-        {
-          id: (action as EquipmentCollectionActions).payload.id,
-          changes: (action as EquipmentCollectionActions).payload
-        },
+        (action as UpdateEquipmentCollectionAction).payload,
         state
       );
     case EquipmentEntryActionTypes.ADD: {

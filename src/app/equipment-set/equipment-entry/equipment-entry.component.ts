@@ -1,11 +1,14 @@
-import { tap } from 'rxjs/operators';
+import { tap, withLatestFrom } from 'rxjs/operators';
 import { EquipmentItem } from '../../shared/models/equipment-item.model';
 import { EquipmentLimits } from '../../shared/models/equipment-limits.model';
 import {
   AddEquipmentItemAction, DeleteEquipmentItemAction, SelectEquipmentItemAction,
   UpdateEquipmentItemAction
 } from '../store/actions/equipment-item.actions';
-import { EquipmentSetState, selectEquipmentItems, selectEquipmentSetSettings } from '../store/equipment-set.reducer';
+import {
+  EquipmentSetFeatureState, EquipmentSetState, selectEquipmentItems,
+  selectEquipmentSetSettings
+} from '../store/equipment-set.reducer';
 import { DeleteEquipmentEntryAction, UpdateEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 import { debounceTime } from 'rxjs/operators/debounceTime';
 import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
@@ -20,6 +23,7 @@ import { map } from 'rxjs/operators/map';
 import { EquipmentVariantTotals } from '../../shared/models/equipment-variant.model';
 import { MatDialog } from '@angular/material';
 import { EditEquipmentItemComponent } from '../edit-equipment-item/edit-equipment-item.component';
+import { StoreSelectHelperService } from '../store/store-select-helper.service';
 
 @Component({
   selector: 'equip-equipment-entry',
@@ -54,9 +58,11 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
   items$: Observable<EquipmentItemState>;
 
   selectedItem$: Observable<EquipmentItem>;
-  globals$: Observable<EquipmentLimits>;
+  setLimits$: Observable<EquipmentLimits>;
 
-  constructor(private store: Store<{ equipmentSet: EquipmentSetState }>, private matDialog: MatDialog) {
+  constructor(private store: Store<EquipmentSetFeatureState>,
+              private storeSelect: StoreSelectHelperService,
+              private matDialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -67,7 +73,16 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
       )
       .subscribe(name => this.store.dispatch(new UpdateEquipmentEntryAction({...this.entry, name})));
 
-    this.globals$ = this.store.select(selectEquipmentSetSettings).pipe(map(settings => settings.limits));
+    this.setLimits$ = this.store.select(selectEquipmentSetSettings).pipe(
+      map(settings => settings.limits),
+      withLatestFrom(this.storeSelect.getLimitDefinitions()),
+      map(([globalLimits, limitDefinitions]) => limitDefinitions.reduce((setLimits, limitDefinition) => {
+        setLimits[limitDefinition.name] =
+          (this.collection.limits && this.collection.limits[limitDefinition.name])
+          || (globalLimits && globalLimits[limitDefinition.name]);
+        return setLimits;
+      }, {}))
+    );
 
     this.items$ = this.store.select(selectEquipmentItems);
     this.selectedItem$ = this.store.select(selectEquipmentItems).pipe(

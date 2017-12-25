@@ -1,0 +1,9 @@
+<div class="grid">
+  <ng-container *ngFor="let limit of limitDefinitions">
+    <ng-container class="limit" *ngIf="limits[limit.name]">
+      <equip-limit-icon [limit]="limit"></equip-limit-icon>
+      <span class="name">{{ limit.displayName || limit.name }}</span>
+      <span class="value">{{ limits[limit.name] }}</span>
+    </ng-container>
+  </ng-container>
+</div>

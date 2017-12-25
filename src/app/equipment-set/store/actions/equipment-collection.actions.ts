@@ -22,7 +22,7 @@ export class DeleteEquipmentCollectionAction implements Action {
 export class UpdateEquipmentCollectionAction implements Action {
   public type = EquipmentCollectionActionTypes.UPDATE;
 
-  constructor(public payload: EquipmentCollection) {}
+  constructor(public payload: { id: string, changes: Partial<EquipmentCollection> }) {}
 }
 
 export type EquipmentCollectionActions =

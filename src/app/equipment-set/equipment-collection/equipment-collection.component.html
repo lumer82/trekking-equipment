@@ -12,25 +12,49 @@
     <ng-template #noEditHeader>
       <span class="name">{{collection?.name}}</span>
     </ng-template>
-    <button mat-icon-button (click)="toggleEditMode()"><mat-icon>{{ editMode ? 'check' : 'edit' }}</mat-icon></button>
+    <button mat-icon-button (click)="toggleEditMode()">
+      <mat-icon>{{ editMode ? 'check' : 'edit' }}</mat-icon>
+    </button>
+  </div>
+  <div class="limits" *ngIf="collection.limits || editMode">
+    <div class="limits-header">
+      <h4>Limits</h4>
+      <button mat-icon-button *ngIf="editMode" (click)="editLimits()">
+        <mat-icon>settings</mat-icon>
+      </button>
+    </div>
+    <ng-container *ngIf="collection.limits as limits; else noLimitsSet">
+      <equip-limits-view [limits]="limits" [limitDefinitions]="limitDefinitions$ | async"></equip-limits-view>
+    </ng-container>
+    <ng-template #noLimitsSet>
+      This collection has no custom limits set
+    </ng-template>
   </div>
   <ng-container *ngIf="entries$ | async as entries">
-    <ng-container *ngFor="let variantEntry of (selectedVariant$ | async).entries; trackBy: variantEntryId; let index = index;">
-      <ng-container *ngIf="entries.entities[variantEntry.entryId] as entry">
-        <div class="drop-target" @move *ngIf="moveMode && index < moveIndex" (click)="dropTo(index)" ><mat-icon>input</mat-icon></div>
-        <equip-equipment-entry
-          class="equipment-entry"
-          [class.move]="entry?.id === this.moveMode?.entry?.id"
-          [entry]="entry"
-          [totals]="variantEntry.totals"
-          [collection]="collection"
-          [editMode]="editMode && !moveMode"
-          [selectedItemId]="variantEntry.itemId"
-          [moving]="!!moveMode"
-          (move)="move(entry, index)"></equip-equipment-entry>
-        <div class="drop-target" @move *ngIf="moveMode && index > moveIndex" (click)="dropTo(index)"><mat-icon>input</mat-icon></div>
+    <div class="entries" *ngIf="entries.ids.length || editMode">
+      <h4>Entries</h4>
+      <ng-container
+        *ngFor="let variantEntry of (selectedVariant$ | async).entries; trackBy: variantEntryId; let index = index;">
+        <ng-container *ngIf="entries.entities[variantEntry.entryId] as entry">
+          <div class="drop-target" @move *ngIf="moveMode && index < moveIndex" (click)="dropTo(index)">
+            <mat-icon>input</mat-icon>
+          </div>
+          <equip-equipment-entry
+            class="equipment-entry"
+            [class.move]="entry?.id === this.moveMode?.entry?.id"
+            [entry]="entry"
+            [totals]="variantEntry.totals"
+            [collection]="collection"
+            [editMode]="editMode && !moveMode"
+            [selectedItemId]="variantEntry.itemId"
+            [moving]="!!moveMode"
+            (move)="move(entry, index)"></equip-equipment-entry>
+          <div class="drop-target" @move *ngIf="moveMode && index > moveIndex" (click)="dropTo(index)">
+            <mat-icon>input</mat-icon>
+          </div>
+        </ng-container>
       </ng-container>
-    </ng-container>
+    </div>
   </ng-container>
   <div class="new-entry" *ngIf="editMode">
     <mat-icon>create_new_folder</mat-icon>
@@ -41,6 +65,8 @@
              (keyup.enter)="addEntry(newEntryName)"
              #newEntryName>
     </mat-input-container>
-    <button mat-icon-button (click)="addEntry(newEntryName)"><mat-icon>add</mat-icon></button>
+    <button mat-icon-button (click)="addEntry(newEntryName)">
+      <mat-icon>add</mat-icon>
+    </button>
   </div>
 </div>

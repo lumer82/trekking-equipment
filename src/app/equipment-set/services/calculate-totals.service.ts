@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EquipmentLimit } from '../../shared/models/equipment-limit.model';
+import { EquipmentLimitDefinition } from '../../shared/models/equipment-limit-definition.model';
 import { EquipmentVariantEntry, EquipmentVariantTotals } from '../../shared/models/equipment-variant.model';
 import { EquipmentItem } from '../../shared/models/equipment-item.model';
 
@@ -14,7 +14,7 @@ export class CalculateTotalsService {
     return +(field(items[cur.itemId].values) || 0) + (index > 0 ? field(acc[index - 1].totals) : 0);
   }
 
-  calculateTotals(variantEntries: Array<EquipmentVariantEntry>, items: { [itemId: string]: EquipmentItem }, limits: Array<EquipmentLimit>): Array<EquipmentVariantEntry> {
+  calculateTotals(variantEntries: Array<EquipmentVariantEntry>, items: { [itemId: string]: EquipmentItem }, limits: Array<EquipmentLimitDefinition>): Array<EquipmentVariantEntry> {
     return variantEntries.reduce((entries, entry, index) => {
       const totals = limits.reduce((total, limit) => {
         total[limit.name] = this.calculateTotal((obj: EquipmentItem) => obj[limit.name], index, entries, entry, items);

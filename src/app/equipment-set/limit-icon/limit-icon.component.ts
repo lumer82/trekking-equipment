@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { EquipmentLimit, IconType } from '../../shared/models/equipment-limit.model';
+import { EquipmentLimitDefinition, IconType } from '../../shared/models/equipment-limit-definition.model';
 
 @Component({
   selector: 'equip-limit-icon',
@@ -8,7 +8,7 @@ import { EquipmentLimit, IconType } from '../../shared/models/equipment-limit.mo
 })
 export class LimitIconComponent {
   @Input()
-  limit: EquipmentLimit;
+  limit: EquipmentLimitDefinition;
 
   readonly iconTypes = IconType;
 }

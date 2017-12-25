@@ -49,7 +49,7 @@
       *ngIf="selectedItem$ | async as selectedItem"
       [item]="selectedItem"
       [totals]="totals"
-      [setLimits]="globals$ | async">
+      [setLimits]="setLimits$ | async">
     </equip-selected-equipment-item>
   </ng-template>
 </div>

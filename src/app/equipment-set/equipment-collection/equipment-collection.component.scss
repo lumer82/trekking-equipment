@@ -40,3 +40,19 @@
     flex: 1;
   }
 }
+
+.limits {
+  .limits-header {
+    display: flex;
+    align-items: center;
+
+    h4 {
+      flex: 1;
+    }
+  }
+  margin-bottom: 10px;
+}
+
+h4 {
+  margin: 5px 0;
+}

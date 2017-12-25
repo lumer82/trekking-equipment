@@ -2,7 +2,21 @@
   <div class="name">
     <mat-icon>archive</mat-icon>
     <span>{{ settings.name }}</span>
-    <button mat-icon-button (click)="edit()"><mat-icon>settings</mat-icon></button>
+    <button mat-icon-button (click)="edit()">
+      <mat-icon>settings</mat-icon>
+    </button>
   </div>
-  <p>{{ settings.limits?.budget }} / {{ settings.limits?.weight }} / {{ settings.limits?.volume}}</p>
+  <div class="limits" *ngIf="settings.limits">
+    <h4 class="header">Limits</h4>
+    <equip-limits-view [limitDefinitions]="limitDefinitions$ | async" [limits]="settings.limits"></equip-limits-view>
+    <!--<div class="grid">-->
+      <!--<ng-container *ngFor="let limit of limits$ | async">-->
+        <!--<ng-container class="limit" *ngIf="settings.limits[limit.name]">-->
+          <!--<equip-limit-icon [limit]="limit"></equip-limit-icon>-->
+          <!--<span class="limit-name">{{ limit.displayName || limit.name }}</span>-->
+          <!--<span class="value">{{ settings.limits[limit.name] }}</span>-->
+        <!--</ng-container>-->
+      <!--</ng-container>-->
+    <!--</div>-->
+  </div>
 </ng-container>
