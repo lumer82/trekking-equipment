@@ -10,7 +10,7 @@
       <div formGroupName="values" class="settings">
         <mat-input-container *ngFor="let limit of limits$ | async">
           <equip-limit-icon matPrefix [limit]="limit"></equip-limit-icon>
-          <input matInput placeholder="{{limit.name.toLocaleUpperCase()}}" [formControlName]="limit.name">
+          <input matInput placeholder="{{limit.displayName || limit.name}}" [formControlName]="limit.name">
         </mat-input-container>
       </div>
     </div>

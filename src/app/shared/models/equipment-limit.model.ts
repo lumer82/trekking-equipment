@@ -5,6 +5,7 @@ export enum IconType {
 
 export interface EquipmentLimit {
   name: string;
+  displayName?: string;
   icon?: {
     name: string,
     type: IconType

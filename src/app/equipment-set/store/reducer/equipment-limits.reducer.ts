@@ -15,6 +15,7 @@ const adapter: EntityAdapter<EquipmentLimit> =
 const initialLimits: Array<EquipmentLimit> = [
   {
     name: 'price',
+    displayName: 'Price',
     icon: {
       name: 'attach_money',
       type: IconType.MATERIAL
@@ -22,6 +23,7 @@ const initialLimits: Array<EquipmentLimit> = [
   },
   {
     name: 'weight',
+    displayName: 'Weight',
     icon: {
       name: 'fitness_center',
       type: IconType.MATERIAL
@@ -29,6 +31,7 @@ const initialLimits: Array<EquipmentLimit> = [
   },
   {
     name: 'volume',
+    displayName: 'Volume',
     icon: {
       name: 'border_outer',
       type: IconType.MATERIAL
