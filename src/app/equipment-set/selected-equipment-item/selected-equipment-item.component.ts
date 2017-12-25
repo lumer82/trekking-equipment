@@ -1,6 +1,13 @@
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators';
 import { EquipmentItem } from '../../shared/models/equipment-item.model';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { EquipmentLimit } from '../../shared/models/equipment-limit.model';
+import { EquipmentLimits } from '../../shared/models/equipment-limits.model';
 import { EquipmentVariantTotals } from '../../shared/models/equipment-variant.model';
+import { EquipmentSetFeatureState, selectEquipmentLimits } from '../store/equipment-set.reducer';
+import { EquipmentLimitsState } from '../store/reducer/equipment-limits.reducer';
 
 @Component({
   selector: 'equip-selected-equipment-item',
@@ -8,7 +15,7 @@ import { EquipmentVariantTotals } from '../../shared/models/equipment-variant.mo
   styleUrls: ['./selected-equipment-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectedEquipmentItemComponent {
+export class SelectedEquipmentItemComponent implements OnInit {
 
   @Input()
   item: EquipmentItem;
@@ -19,4 +26,16 @@ export class SelectedEquipmentItemComponent {
   @Input()
   showTotals: boolean = true;
 
+  @Input()
+  setLimits: { [key: string]: number };
+
+  limits$: Observable<Array<EquipmentLimit>>;
+
+  constructor(private store: Store<EquipmentSetFeatureState>) {}
+
+  ngOnInit() {
+    this.limits$ = this.store.select(selectEquipmentLimits).pipe(
+      map(limits => (limits.ids as string[]).map(id => limits.entities[id]))
+    );
+  }
 }

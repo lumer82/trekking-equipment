@@ -1,7 +1,5 @@
 export interface EquipmentVariantTotals {
-  price: number;
-  weight: number;
-  volume: number;
+  [key: string]: number
 }
 
 export interface EquipmentVariantEntry {

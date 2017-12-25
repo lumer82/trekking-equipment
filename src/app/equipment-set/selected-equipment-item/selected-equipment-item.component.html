@@ -1,26 +1,13 @@
 <div class="selected-item">
   <mat-icon>label_outline</mat-icon>{{ item?.name }}
 </div>
-<div class="settings-container" *ngIf="item.price || item.weight || item.volume">
-    <span class="setting">
-      <mat-icon>attach_money</mat-icon>
+<div class="settings-container" *ngIf="limits$ | async as limits">
+    <span class="setting" *ngFor="let limit of limits">
+      <equip-limit-icon [limit]="limit"></equip-limit-icon>
       <span class="value">
-        <span>{{ item.price }}</span>
-        <span *ngIf="showTotals">({{totals?.price}})</span>
+        <span>{{ item.values[limit.name] }}</span>
+        <span *ngIf="showTotals && totals">({{totals[limit.name]}})</span>
       </span>
-    </span>
-    <span class="setting">
-      <mat-icon>fitness_center</mat-icon>
-      <span class="value">
-        <span>{{ item.weight }}</span>
-        <span *ngIf="showTotals">({{totals?.weight}})</span>
-      </span>
-    </span>
-    <span class="setting">
-      <mat-icon>border_outer</mat-icon>
-      <span class="value">
-        <span>{{ item.volume }}</span>
-        <span *ngIf="showTotals">({{totals?.volume}})</span>
-      </span>
+      <mat-icon color="warn" *ngIf="setLimits && totals && totals[limit.name] > setLimits[limit.name]">warning</mat-icon>
     </span>
 </div>

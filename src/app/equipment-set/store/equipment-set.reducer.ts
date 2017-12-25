@@ -7,6 +7,7 @@ import { EquipmentItem } from '../../shared/models/equipment-item.model';
 import { equipmentCollectionReducer } from './reducer/equipment-collection.reducer';
 import { equipmentEntryReducer } from './reducer/equipment-entry.reducer';
 import { equipmentItemReducer } from './reducer/equipment-item.reducer';
+import { equipmentLimitsReducer, EquipmentLimitsState } from './reducer/equipment-limits.reducer';
 import { equipmentSetSettingsReducer, EquipmentSetSettingsState } from './reducer/equipment-set-settings.reducer';
 import {
   equipmentVariantReducer, EquipmentVariantState,
@@ -15,12 +16,17 @@ import {
 
 export const EQUIPMENT_SET_FEATURE_NAME = 'equipmentSet';
 
+export interface EquipmentSetFeatureState {
+  equipmentSet: EquipmentSetState;
+}
+
 export interface EquipmentSetState {
   settings: EquipmentSetSettingsState;
   collections: EntityState<EquipmentCollection>;
   entries: EntityState<EquipmentEntry>;
   items: EntityState<EquipmentItem>;
   variants: EquipmentVariantState;
+  limits: EquipmentLimitsState;
 }
 
 export const equipmentSetReducer: ActionReducerMap<any> = {
@@ -28,7 +34,8 @@ export const equipmentSetReducer: ActionReducerMap<any> = {
   collections: equipmentCollectionReducer,
   entries: equipmentEntryReducer,
   items: equipmentItemReducer,
-  variants: equipmentVariantReducer
+  variants: equipmentVariantReducer,
+  limits: equipmentLimitsReducer
 };
 
 export const selectEquipmentSet = createFeatureSelector<EquipmentSetState>(EQUIPMENT_SET_FEATURE_NAME);
@@ -42,3 +49,5 @@ export const selectEquipmentItems = createSelector(selectEquipmentSet, (state: E
 export const selectEquipmentVariants = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.variants);
 
 export const selectSelectedVariantIds = createSelector(selectEquipmentVariants, getSelectedVariantIds);
+
+export const selectEquipmentLimits = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.limits);

@@ -1,0 +1,6 @@
+<ng-container *ngIf="limit?.icon as icon">
+  <ng-container [ngSwitch]="icon.type">
+    <mat-icon *ngSwitchCase="iconTypes.MATERIAL">{{icon.name}}</mat-icon>
+    <i *ngSwitchCase="iconTypes.FONTAWESOME" class="fa {{icon.name}}"></i>
+  </ng-container>
+</ng-container>

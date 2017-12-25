@@ -1,4 +1,7 @@
-import { EquipmentSetState, selectEquipmentItems, selectEquipmentVariants } from '../equipment-set.reducer';
+import {
+  EquipmentSetState, selectEquipmentItems, selectEquipmentLimits,
+  selectEquipmentVariants
+} from '../equipment-set.reducer';
 import { Store } from '@ngrx/store';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
@@ -47,9 +50,10 @@ export class UpdateTotalsEffects {
       withLatestFrom(this.store.select(selectEquipmentVariants)),
       map(([variantId, variants]) => variants.entities[variantId]),
       withLatestFrom(this.store.select(selectEquipmentItems).pipe(map(items => items.entities))),
-      map(([variant, items]) => ({
+      withLatestFrom(this.store.select(selectEquipmentLimits).pipe(map(limits => (limits.ids as string[]).map(id => limits.entities[id])))),
+      map(([[variant, items], limits]) => ({
             variantId: variant.id,
-            entries: this.calculateTotalsService.calculateTotals(variant.entries, items)
+            entries: this.calculateTotalsService.calculateTotals(variant.entries, items, limits)
           })
       ),
       map(({variantId, entries}) => new UpdateTotalsEquipmentVariantAction({variantId, entries}))

@@ -7,17 +7,9 @@
         <input matInput placeholder="Name" formControlName="name">
       </mat-input-container>
       <div formGroupName="limits">
-        <mat-input-container>
-          <mat-icon matPrefix>attach_money</mat-icon>
-          <input matInput placeholder="Budget" formControlName="budget">
-        </mat-input-container>
-        <mat-input-container>
-          <mat-icon matPrefix>fitness_center</mat-icon>
-          <input matInput placeholder="Weight" formControlName="weight">
-        </mat-input-container>
-        <mat-input-container>
-          <mat-icon matPrefix>border_outer</mat-icon>
-          <input matInput placeholder="Volume" formControlName="volume">
+        <mat-input-container *ngFor="let limit of limits$ | async">
+          <equip-limit-icon matPrefix [limit]="limit"></equip-limit-icon>
+          <input matInput placeholder="{{limit.name.toLocaleUpperCase()}}" [formControlName]="limit.name">
         </mat-input-container>
       </div>
     </div>

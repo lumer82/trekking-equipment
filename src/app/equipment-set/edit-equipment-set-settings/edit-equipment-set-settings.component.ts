@@ -1,13 +1,14 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { debounceTime, take } from 'rxjs/operators';
+import { debounceTime, map, take, withLatestFrom } from 'rxjs/operators';
+import { EquipmentLimit } from '../../shared/models/equipment-limit.model';
 import { EditEquipmentItemComponent } from '../edit-equipment-item/edit-equipment-item.component';
 import { EquipmentSetSettingsSetAction } from '../store/actions/equipment-set-settings.actions';
 import {
-  EQUIPMENT_SET_FEATURE_NAME, EquipmentSetState,
+  EQUIPMENT_SET_FEATURE_NAME, EquipmentSetFeatureState, EquipmentSetState, selectEquipmentLimits,
   selectEquipmentSetSettings
 } from '../store/equipment-set.reducer';
 import { EquipmentSetSettingsState } from '../store/reducer/equipment-set-settings.reducer';
@@ -20,6 +21,7 @@ import { EquipmentSetSettingsState } from '../store/reducer/equipment-set-settin
 export class EditEquipmentSetSettingsComponent implements OnInit {
 
   private settings$: Observable<EquipmentSetSettingsState>;
+  limits$: Observable<Array<EquipmentLimit>>;
   private form: FormGroup;
 
   @HostListener('keyup', ['$event'])
@@ -29,25 +31,36 @@ export class EditEquipmentSetSettingsComponent implements OnInit {
     }
   }
 
-  constructor(private store: Store<{ equipmentSet: EquipmentSetState }>,
+  constructor(private store: Store<EquipmentSetFeatureState>,
               private formBuilder: FormBuilder,
-              private dialogRef: MatDialogRef<EditEquipmentItemComponent>) { }
+              private dialogRef: MatDialogRef<EditEquipmentItemComponent>) {
+  }
 
   ngOnInit() {
     this.settings$ = this.store.select(selectEquipmentSetSettings);
 
-    const valueOrUndefined = <T, K extends keyof T>(obj: T, key: K) => !!obj ? obj[key] : undefined;
 
-    this.settings$.pipe(take(1))
-      .subscribe(settings =>
-        this.form = this.formBuilder.group({
-          name: settings.name,
-          limits: this.formBuilder.group({
-            budget: valueOrUndefined(settings.limits, 'budget'),
-            weight: valueOrUndefined(settings.limits, 'weight'),
-            volume: valueOrUndefined(settings.limits, 'volume')
-          })
-        }));
+    this.limits$ =
+      this.limits$ = this.store.select(selectEquipmentLimits).pipe(
+        map(limits => (limits.ids as string[]).map(id => limits.entities[id]))
+      );
+
+    this.settings$.pipe(
+      take(1),
+      withLatestFrom(this.limits$)
+    ).subscribe(([settings, limits]) => {
+      const valueOrUndefined = <T>(obj: T, key: string) => !!obj ? obj[key] : undefined;
+
+      const limitGroup = limits.reduce((group, limit) => {
+        group[limit.name] = new FormControl(valueOrUndefined(settings.limits, limit.name));
+        return group;
+      }, {});
+
+      this.form = this.formBuilder.group({
+        name: settings.name,
+        limits: new FormGroup(limitGroup)
+      });
+    });
   }
 
 }

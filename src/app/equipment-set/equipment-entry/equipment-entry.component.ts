@@ -1,9 +1,11 @@
+import { tap } from 'rxjs/operators';
 import { EquipmentItem } from '../../shared/models/equipment-item.model';
+import { EquipmentLimits } from '../../shared/models/equipment-limits.model';
 import {
   AddEquipmentItemAction, DeleteEquipmentItemAction, SelectEquipmentItemAction,
   UpdateEquipmentItemAction
 } from '../store/actions/equipment-item.actions';
-import { EquipmentSetState, selectEquipmentItems } from '../store/equipment-set.reducer';
+import { EquipmentSetState, selectEquipmentItems, selectEquipmentSetSettings } from '../store/equipment-set.reducer';
 import { DeleteEquipmentEntryAction, UpdateEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 import { debounceTime } from 'rxjs/operators/debounceTime';
 import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
@@ -52,6 +54,7 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
   items$: Observable<EquipmentItemState>;
 
   selectedItem$: Observable<EquipmentItem>;
+  globals$: Observable<EquipmentLimits>;
 
   constructor(private store: Store<{ equipmentSet: EquipmentSetState }>, private matDialog: MatDialog) {
   }
@@ -64,6 +67,7 @@ export class EquipmentEntryComponent implements OnInit, OnChanges {
       )
       .subscribe(name => this.store.dispatch(new UpdateEquipmentEntryAction({...this.entry, name})));
 
+    this.globals$ = this.store.select(selectEquipmentSetSettings).pipe(map(settings => settings.limits));
 
     this.items$ = this.store.select(selectEquipmentItems);
     this.selectedItem$ = this.store.select(selectEquipmentItems).pipe(

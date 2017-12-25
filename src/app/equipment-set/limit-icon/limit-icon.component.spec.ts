@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EquipmentItemComponent } from './equipment-item.component';
+import { LimitIconComponent } from './limit-icon.component';
 
-describe('EquipmentItemComponent', () => {
-  let component: EquipmentItemComponent;
-  let fixture: ComponentFixture<EquipmentItemComponent>;
+describe('LimitIconComponent', () => {
+  let component: LimitIconComponent;
+  let fixture: ComponentFixture<LimitIconComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EquipmentItemComponent ]
+      declarations: [ LimitIconComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EquipmentItemComponent);
+    fixture = TestBed.createComponent(LimitIconComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
