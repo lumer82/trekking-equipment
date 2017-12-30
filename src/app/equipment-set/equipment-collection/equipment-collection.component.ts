@@ -24,6 +24,7 @@ import { EquipmentVariant } from '../../shared/models/equipment-variant.model';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { MoveEntryEquipmentVariantAction } from '../store/actions/equipment-variant.actions';
 import { StoreSelectHelperService } from '../store/store-select-helper.service';
+import { EquipmentTotals } from '../../shared/models/equipment-totals.model';
 
 @Component({
   selector: 'equip-equipment-collection',
@@ -47,6 +48,7 @@ export class EquipmentCollectionComponent implements OnInit {
   nameForm: FormControl;
 
   @Input() collection: EquipmentCollection;
+  @Input() totals: EquipmentTotals;
 
   entries$: Observable<EquipmentEntryState>;
   selectedVariant$: Observable<EquipmentVariant>;

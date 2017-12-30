@@ -20,9 +20,9 @@ import { EquipmentSetSettingsState } from '../store/reducer/equipment-set-settin
 })
 export class EditEquipmentSetSettingsComponent implements OnInit {
 
-  private settings$: Observable<EquipmentSetSettingsState>;
+  settings$: Observable<EquipmentSetSettingsState>;
   limits$: Observable<Array<EquipmentLimitDefinition>>;
-  private form: FormGroup;
+  form: FormGroup;
 
   @HostListener('keyup', ['$event'])
   onEnter($event: KeyboardEvent) {

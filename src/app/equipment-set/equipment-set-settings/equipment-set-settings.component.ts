@@ -20,8 +20,8 @@ import { StoreSelectHelperService } from '../store/store-select-helper.service';
 })
 export class EquipmentSetSettingsComponent implements OnInit {
 
-  private settings$: Observable<EquipmentSetSettingsState>;
-  private limitDefinitions$: Observable<Array<EquipmentLimitDefinition>>;
+  settings$: Observable<EquipmentSetSettingsState>;
+  limitDefinitions$: Observable<Array<EquipmentLimitDefinition>>;
 
   constructor(private store: Store<EquipmentSetFeatureState>,
               private storeSelect: StoreSelectHelperService,

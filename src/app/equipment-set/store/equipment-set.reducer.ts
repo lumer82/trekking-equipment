@@ -42,6 +42,8 @@ export const selectEquipmentSet = createFeatureSelector<EquipmentSetState>(EQUIP
 
 export const selectEquipmentSetSettings = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.settings);
 
+export const selectEquipmentCollections = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.collections);
+
 export const selectEquipmentEntries = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.entries);
 
 export const selectEquipmentItems = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.items);

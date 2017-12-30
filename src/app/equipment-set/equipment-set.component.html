@@ -6,6 +6,7 @@
   <equip-equipment-collection
     *ngFor="let collectionId of equipmentSet.collections.ids"
     [collection]="equipmentSet.collections.entities[collectionId]"
+    [totals]="equipmentSet.collections.totals[collectionId]"
   >
   </equip-equipment-collection>
 

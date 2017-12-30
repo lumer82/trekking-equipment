@@ -52,7 +52,7 @@ export class UpdateTotalsEffects {
       withLatestFrom(this.store.select(selectEquipmentItems).pipe(map(items => items.entities))),
       withLatestFrom(this.store.select(selectEquipmentLimits).pipe(map(limits => (limits.ids as string[]).map(id => limits.entities[id])))),
       map(([[variant, items], limits]) => {
-          const entries = this.calculateTotalsService.calculateTotals(variant.entries, items, limits);
+          const entries = this.calculateTotalsService.calculateTotalsForEntries(variant.entries, items, limits);
           return ({
             variantId: variant.id,
             entries,

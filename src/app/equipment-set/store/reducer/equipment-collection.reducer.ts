@@ -12,15 +12,14 @@ import { EntityAdapter } from '@ngrx/entity/src/models';
 import { createEntityAdapter } from '@ngrx/entity/src/create_adapter';
 import {
   AddEquipmentCollectionAction, DeleteEquipmentCollectionAction,
-  EquipmentCollectionActions, UpdateEquipmentCollectionAction
+  EquipmentCollectionActions, UpdateEquipmentCollectionAction, UpdateTotalsEquipmentCollectionAction
 } from '../actions/equipment-collection.actions';
+import { EquipmentTotals } from '../../../shared/models/equipment-totals.model';
 
 export interface EquipmentCollectionState
   extends EntityState<EquipmentCollection> {
-  metadata: Array<{
-    collectionId: string;
-    totals?: { [limit: string]: number };
-  }>;
+  order: Array<string>;
+  totals: { [id: string]: EquipmentTotals };
 }
 
 type State = EquipmentCollectionState;
@@ -29,7 +28,7 @@ const adapter: EntityAdapter<EquipmentCollection> = createEntityAdapter<
   EquipmentCollection
 >();
 
-const initialState: EquipmentCollectionState = adapter.getInitialState({ metadata: [] });
+const initialState: EquipmentCollectionState = adapter.getInitialState({ order: [], totals: {} });
 
 export function equipmentCollectionReducer(
   state: State = initialState,
@@ -39,19 +38,19 @@ export function equipmentCollectionReducer(
     case EquipmentCollectionActionTypes.ADD:
     {
       const collection = (action as AddEquipmentCollectionAction).payload;
-      const metadata = [...state.metadata, { collectionId: collection.id }]
+      const order = [...state.order, collection.id];
       return adapter.addOne(
         collection,
-        { ...state, metadata }
+        { ...state, order }
       );
     }
     case EquipmentCollectionActionTypes.DELETE:
     {
       const collectionId = (action as DeleteEquipmentCollectionAction).payload.id;
-      const metadata = state.metadata.filter(md => md.collectionId !== collectionId);
+      const order = state.order.filter(id => id !== collectionId);
       return adapter.removeOne(
         collectionId,
-        { ...state, metadata }
+        { ...state, order }
       );
     }
     case EquipmentCollectionActionTypes.UPDATE:
@@ -59,6 +58,11 @@ export function equipmentCollectionReducer(
         (action as UpdateEquipmentCollectionAction).payload,
         state
       );
+    case EquipmentCollectionActionTypes.UPDATE_TOTALS:
+    {
+      const totals = (action as UpdateTotalsEquipmentCollectionAction).payload;
+      return { ...state, totals };
+    }
     case EquipmentEntryActionTypes.ADD: {
       const payload = (action as AddEquipmentEntryAction).payload;
       const collection = addEntryToCollection(

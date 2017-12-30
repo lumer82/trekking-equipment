@@ -25,6 +25,7 @@ import { UpdateTotalsEffects } from './store/effects/update-totals.effects';
 import { CalculateTotalsService } from './services/calculate-totals.service';
 import { EditEquipmentItemComponent } from './edit-equipment-item/edit-equipment-item.component';
 import { StoreSelectHelperService } from './store/store-select-helper.service';
+import { EquipmentCollectionEffects } from './store/effects/equipment-collection.effects';
 
 export function loadInitialState() {
   if (!environment.production) {
@@ -38,7 +39,7 @@ export function loadInitialState() {
     CommonModule,
     EquipmentSetRoutingModule,
     StoreModule.forFeature(EQUIPMENT_SET_FEATURE_NAME, equipmentSetReducer),
-    EffectsModule.forFeature([UpdateTotalsEffects, EquipmentItemEffects]),
+    EffectsModule.forFeature([UpdateTotalsEffects, EquipmentCollectionEffects, EquipmentItemEffects]),
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
