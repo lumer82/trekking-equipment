@@ -16,7 +16,12 @@ import {
 } from '../actions/equipment-collection.actions';
 
 export interface EquipmentCollectionState
-  extends EntityState<EquipmentCollection> {}
+  extends EntityState<EquipmentCollection> {
+  metadata: Array<{
+    collectionId: string;
+    totals?: { [limit: string]: number };
+  }>;
+}
 
 type State = EquipmentCollectionState;
 
@@ -24,21 +29,31 @@ const adapter: EntityAdapter<EquipmentCollection> = createEntityAdapter<
   EquipmentCollection
 >();
 
+const initialState: EquipmentCollectionState = adapter.getInitialState({ metadata: [] });
+
 export function equipmentCollectionReducer(
-  state: State = adapter.getInitialState(),
+  state: State = initialState,
   action: EquipmentCollectionActions | EquipmentEntryActions
 ): State {
   switch (action.type) {
     case EquipmentCollectionActionTypes.ADD:
+    {
+      const collection = (action as AddEquipmentCollectionAction).payload;
+      const metadata = [...state.metadata, { collectionId: collection.id }]
       return adapter.addOne(
-        (action as AddEquipmentCollectionAction).payload,
-        state
+        collection,
+        { ...state, metadata }
       );
+    }
     case EquipmentCollectionActionTypes.DELETE:
+    {
+      const collectionId = (action as DeleteEquipmentCollectionAction).payload.id;
+      const metadata = state.metadata.filter(md => md.collectionId !== collectionId);
       return adapter.removeOne(
-        (action as DeleteEquipmentCollectionAction).payload.id,
-        state
+        collectionId,
+        { ...state, metadata }
       );
+    }
     case EquipmentCollectionActionTypes.UPDATE:
       return adapter.updateOne(
         (action as UpdateEquipmentCollectionAction).payload,

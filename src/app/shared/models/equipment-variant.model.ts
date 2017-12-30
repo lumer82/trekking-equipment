@@ -1,5 +1,5 @@
 export interface EquipmentVariantTotals {
-  [key: string]: number
+  [key: string]: number;
 }
 
 export interface EquipmentVariantEntry {

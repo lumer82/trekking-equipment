@@ -1,6 +1,7 @@
 import { EditCollectionLimitsComponent } from './edit-collection-limits/edit-collection-limits.component';
 import { EditEquipmentSetSettingsComponent } from './edit-equipment-set-settings/edit-equipment-set-settings.component';
 import { EquipmentSetSettingsComponent } from './equipment-set-settings/equipment-set-settings.component';
+import { EquipmentTotalsComponent } from './equipment-totals/equipment-totals.component';
 import { LimitIconComponent } from './limit-icon/limit-icon.component';
 import { LimitsViewComponent } from './limits-view/limits-view.component';
 import { SelectedEquipmentItemComponent } from './selected-equipment-item/selected-equipment-item.component';
@@ -58,7 +59,8 @@ export function loadInitialState() {
     EditEquipmentSetSettingsComponent,
     LimitIconComponent,
     LimitsViewComponent,
-    EditCollectionLimitsComponent
+    EditCollectionLimitsComponent,
+    EquipmentTotalsComponent
   ],
   providers: [
     CalculateTotalsService,

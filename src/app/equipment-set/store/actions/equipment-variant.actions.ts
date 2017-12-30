@@ -53,7 +53,7 @@ export class RecalculateTotalsEquipmentVariantAction implements Action {
 
 export class UpdateTotalsEquipmentVariantAction implements Action {
   public type = EquipmentVariantActionTypes.UPDATE_TOTALS;
-  constructor(public payload: { variantId: string, entries: Array<EquipmentVariantEntry> }) {}
+  constructor(public payload: { variantId: string, entries: Array<EquipmentVariantEntry>, totals: { [limit: string]: number } }) {}
 }
 
 export type EquipmentVariantActions =

@@ -4,7 +4,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store/src/selector'
 import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
 import { EquipmentEntry } from '../../shared/models/equipment-entry.model';
 import { EquipmentItem } from '../../shared/models/equipment-item.model';
-import { equipmentCollectionReducer } from './reducer/equipment-collection.reducer';
+import { equipmentCollectionReducer, EquipmentCollectionState } from './reducer/equipment-collection.reducer';
 import { equipmentEntryReducer } from './reducer/equipment-entry.reducer';
 import { equipmentItemReducer } from './reducer/equipment-item.reducer';
 import { equipmentLimitsReducer, EquipmentLimitsState } from './reducer/equipment-limits.reducer';
@@ -22,7 +22,7 @@ export interface EquipmentSetFeatureState {
 
 export interface EquipmentSetState {
   settings: EquipmentSetSettingsState;
-  collections: EntityState<EquipmentCollection>;
+  collections: EquipmentCollectionState;
   entries: EntityState<EquipmentEntry>;
   items: EntityState<EquipmentItem>;
   variants: EquipmentVariantState;

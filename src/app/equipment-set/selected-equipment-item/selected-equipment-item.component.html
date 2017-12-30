@@ -1,13 +1,20 @@
 <div class="selected-item">
-  <mat-icon>label_outline</mat-icon>{{ item?.name }}
+  <mat-icon>label_outline</mat-icon>
+  {{ item?.name }}
 </div>
-<div class="settings-container" *ngIf="limits$ | async as limits">
-    <span class="setting" *ngFor="let limit of limits">
-      <equip-limit-icon [limit]="limit"></equip-limit-icon>
-      <span class="value">
-        <span>{{ item.values[limit.name] }}</span>
-        <span *ngIf="showTotals && totals">({{totals[limit.name]}})</span>
-      </span>
-      <mat-icon color="warn" *ngIf="setLimits && totals && totals[limit.name] > setLimits[limit.name]">warning</mat-icon>
-    </span>
+<div class="settings-container">
+  <equip-equipment-totals [values]="item.values"
+                          [showTotals]="showTotals"
+                          [totals]="totals"
+                          [setLimits]="setLimits"></equip-equipment-totals>
 </div>
+<!--<div class="settings-container" *ngIf="limits$ | async as limits">-->
+<!--<span class="setting" *ngFor="let limit of limits">-->
+<!--<equip-limit-icon [limit]="limit"></equip-limit-icon>-->
+<!--<span class="value">-->
+<!--<span>{{ item.values[limit.name] }}</span>-->
+<!--<span *ngIf="showTotals && totals">({{totals[limit.name]}})</span>-->
+<!--</span>-->
+<!--<mat-icon color="warn" *ngIf="setLimits && totals && totals[limit.name] > setLimits[limit.name]">warning</mat-icon>-->
+<!--</span>-->
+<!--</div>-->

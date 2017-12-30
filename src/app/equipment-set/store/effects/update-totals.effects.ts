@@ -31,7 +31,7 @@ export class UpdateTotalsEffects {
     this.actions.ofType(EquipmentItemActionTypes.UPDATE).pipe(
       map((action: UpdateEquipmentItemAction) => action.payload),
       withLatestFrom(this.store.select(selectEquipmentVariants)),
-      map(([item, variants]) => ({ variant: variants.entities[variants.selectedVariantIds[item.collectionId]], item})),
+      map(([item, variants]) => ({variant: variants.entities[variants.selectedVariantIds[item.collectionId]], item})),
       filter(({item, variant}) => variant.entries.some(e => e.itemId === item.id)),
       map(({item, variant}) => new RecalculateTotalsEquipmentVariantAction(variant.id)),
     );
@@ -40,7 +40,7 @@ export class UpdateTotalsEffects {
     this.actions.ofType(EquipmentItemActionTypes.SELECT).pipe(
       map((action: UpdateEquipmentItemAction) => action.payload),
       withLatestFrom(this.store.select(selectEquipmentVariants)),
-      map(([item, variants]) => ({ variant: variants.entities[variants.selectedVariantIds[item.collectionId]], item})),
+      map(([item, variants]) => ({variant: variants.entities[variants.selectedVariantIds[item.collectionId]], item})),
       map(({item, variant}) => new RecalculateTotalsEquipmentVariantAction(variant.id)),
     );
 
@@ -51,12 +51,17 @@ export class UpdateTotalsEffects {
       map(([variantId, variants]) => variants.entities[variantId]),
       withLatestFrom(this.store.select(selectEquipmentItems).pipe(map(items => items.entities))),
       withLatestFrom(this.store.select(selectEquipmentLimits).pipe(map(limits => (limits.ids as string[]).map(id => limits.entities[id])))),
-      map(([[variant, items], limits]) => ({
+      map(([[variant, items], limits]) => {
+          const entries = this.calculateTotalsService.calculateTotals(variant.entries, items, limits);
+          return ({
             variantId: variant.id,
-            entries: this.calculateTotalsService.calculateTotals(variant.entries, items, limits)
-          })
+            entries,
+            totals: entries[entries.length - 1].totals
+          });
+        }
       ),
-      map(({variantId, entries}) => new UpdateTotalsEquipmentVariantAction({variantId, entries}))
+      map(({variantId, entries, totals}) =>
+        new UpdateTotalsEquipmentVariantAction({variantId, entries, totals}))
     );
 
 

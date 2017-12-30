@@ -1,0 +1,35 @@
+:host {
+  width: 100%;
+}
+
+.totals {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.entry {
+  width: 25%;
+  margin: 0 4%;
+  display: flex;
+  align-items: center;
+}
+
+.value_total {
+  flex: 1;
+  padding-left: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.value:after {
+  visibility: hidden;
+  content: ')';
+}
+
+.warning-placeholder {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+}

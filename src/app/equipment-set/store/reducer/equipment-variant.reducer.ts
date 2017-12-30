@@ -124,7 +124,7 @@ export function equipmentVariantReducer(
     }
     case EquipmentVariantActionTypes.UPDATE_TOTALS: {
       const payload = (action as UpdateTotalsEquipmentVariantAction).payload;
-      return adapter.updateOne({ id: payload.variantId, changes: { entries: payload.entries }}, state);
+      return adapter.updateOne({ id: payload.variantId, changes: { entries: payload.entries, totals: payload.totals }}, state);
     }
     default:
       return state;

@@ -30,6 +30,10 @@
       This collection has no custom limits set
     </ng-template>
   </div>
+  <div class="totals" *ngIf="(selectedVariant$ | async).totals as totals">
+    <h4>Totals</h4>
+    <equip-equipment-totals [values]="totals"></equip-equipment-totals>
+  </div>
   <ng-container *ngIf="entries$ | async as entries">
     <div class="entries" *ngIf="entries.ids.length || editMode">
       <h4>Entries</h4>
