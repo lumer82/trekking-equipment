@@ -1,0 +1,56 @@
+<h1 matDialogTitle>Limit Definitions</h1>
+<div matDialogContent>
+  <form [formGroup]="edit">
+    <div class="limit"
+         *ngFor="let limit of edit.get('limits').controls; let i = index"
+         formArrayName="limits">
+      <ng-container [formGroupName]="i">
+        <span class="limit-header">
+          <h3 class="limit-name">{{ edit.controls.limits.controls[i].controls.name.value }}</h3>
+          <button mat-icon-button><mat-icon>delete</mat-icon></button>
+        </span>
+        <mat-input-container>
+          <input matInput placeholder="Displayname" formControlName="displayName">
+        </mat-input-container>
+        <span class="limit-type">
+        Local
+        <mat-slide-toggle formControlName="type"></mat-slide-toggle>
+        Global
+      </span>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Icon
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="icon" formGroupName="icon">
+            <mat-input-container>
+              <input matInput placeholder="Name" formControlName="name">
+            </mat-input-container>
+            <span class="icon-type-header">Type</span>
+            <mat-radio-group formControlName="type">
+              <mat-radio-button [value]="iconTypes.MATERIAL">Material Icon</mat-radio-button>
+              <mat-radio-button [value]="iconTypes.FONTAWESOME">Fontawesome Icon</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </mat-expansion-panel>
+      </ng-container>
+
+    </div>
+  </form>
+
+  <form [formGroup]="new">
+    <h3>New Limit</h3>
+    <mat-input-container>
+      <input matInput placeholder="Name" formControlName="name" #newLimitInput>
+    </mat-input-container>
+    <button mat-icon-button [disabled]="!new.valid || new.pristine" (click)="add(new.getRawValue())">
+      <mat-icon>add</mat-icon>
+    </button>
+  </form>
+</div>
+<div matDialogActions>
+  <button mat-button color="primary" [mat-dialog-close]="edit.getRawValue()">OK</button>
+  <button mat-button mat-dialog-close>CANCEL</button>
+</div>

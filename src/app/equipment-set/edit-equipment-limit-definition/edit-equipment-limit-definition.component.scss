@@ -1,0 +1,33 @@
+.limit-type {
+  display: flex;
+  align-items: center;
+
+  .mat-slide-toggle {
+    margin: 0 8px;
+  }
+}
+
+.limit {
+  margin: 20px 0;
+}
+
+.limit-header {
+  display: flex;
+  align-items: center;
+
+  .limit-name {
+    flex: 1;
+  }
+}
+
+.icon {
+  display: flex;
+  flex-direction: column;
+
+  .icon-type-header {
+    display: inline-block;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+}

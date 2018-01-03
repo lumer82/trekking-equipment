@@ -7,10 +7,16 @@
         <input matInput placeholder="Name" formControlName="name">
       </mat-input-container>
       <div formGroupName="limits">
-        <mat-input-container *ngFor="let limit of limits$ | async">
-          <equip-limit-icon matPrefix [limit]="limit"></equip-limit-icon>
-          <input matInput placeholder="{{limit.displayName || limit.name}}" [formControlName]="limit.name">
-        </mat-input-container>
+        <span class="limit-header">
+          <span>Limits</span>
+          <button mat-icon-button (click)="editLimits()"><mat-icon>settings</mat-icon></button>
+        </span>
+        <ng-container *ngFor="let limit of globalLimits$ | async">
+          <mat-input-container *ngIf="form.controls?.limits.controls[limit.name]">
+            <equip-limit-icon matPrefix [limit]="limit"></equip-limit-icon>
+            <input matInput placeholder="{{limit.displayName || limit.name}}" [formControlName]="limit.name">
+          </mat-input-container>
+        </ng-container>
       </div>
     </div>
     <div mat-dialog-action>

@@ -16,8 +16,8 @@ import { EquipmentSetRoutingModule } from './equipment-set.routing.module';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import {
-  MatButtonModule, MatCardModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule,
-  MatRadioModule
+  MatButtonModule, MatCardModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule,
+  MatRadioModule, MatSlideToggleModule
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from '../../environments/environment';
@@ -26,6 +26,7 @@ import { CalculateTotalsService } from './services/calculate-totals.service';
 import { EditEquipmentItemComponent } from './edit-equipment-item/edit-equipment-item.component';
 import { StoreSelectHelperService } from './store/store-select-helper.service';
 import { EquipmentCollectionEffects } from './store/effects/equipment-collection.effects';
+import { EditEquipmentLimitDefinitionComponent } from './edit-equipment-limit-definition/edit-equipment-limit-definition.component';
 
 export function loadInitialState() {
   if (!environment.production) {
@@ -48,20 +49,23 @@ export function loadInitialState() {
     MatIconModule,
     MatCardModule,
     MatRadioModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatExpansionModule
   ],
   declarations: [
     EquipmentSetComponent,
     EquipmentCollectionComponent,
     EquipmentEntryComponent,
     EquipmentSetSettingsComponent,
+    EquipmentTotalsComponent,
     SelectedEquipmentItemComponent,
-    EditEquipmentItemComponent,
-    EditEquipmentSetSettingsComponent,
     LimitIconComponent,
     LimitsViewComponent,
+    EditEquipmentItemComponent,
+    EditEquipmentSetSettingsComponent,
     EditCollectionLimitsComponent,
-    EquipmentTotalsComponent
+    EditEquipmentLimitDefinitionComponent
   ],
   providers: [
     CalculateTotalsService,
@@ -70,7 +74,8 @@ export function loadInitialState() {
   entryComponents: [
     EditEquipmentItemComponent,
     EditEquipmentSetSettingsComponent,
-    EditCollectionLimitsComponent
+    EditCollectionLimitsComponent,
+    EditEquipmentLimitDefinitionComponent
   ]
 })
 export class EquipmentSetModule { }
