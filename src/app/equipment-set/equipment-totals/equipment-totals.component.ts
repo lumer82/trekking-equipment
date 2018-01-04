@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { EquipmentLimitDefinition } from '../../shared/models/equipment-limit-definition.model';
+import { EquipmentLimitDefinition, LimitType } from '../../shared/models/equipment-limit-definition.model';
 import { StoreSelectHelperService } from '../store/store-select-helper.service';
+import { EquipmentTotals } from '../../shared/models/equipment-totals.model';
 
 @Component({
   selector: 'equip-equipment-totals',
@@ -9,8 +10,7 @@ import { StoreSelectHelperService } from '../store/store-select-helper.service';
   styleUrls: ['./equipment-totals.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EquipmentTotalsComponent {
-
+export class EquipmentTotalsComponent implements OnChanges {
   limitDefinitions$: Observable<Array<EquipmentLimitDefinition>>;
 
   @Input()
@@ -23,10 +23,33 @@ export class EquipmentTotalsComponent {
   totals: { [limit: string]: number };
 
   @Input()
+  startValues: EquipmentTotals;
+
+  @Input()
   showTotals = true;
+
+  @Input()
+  limitDefinitions: Array<EquipmentLimitDefinition>
+
+  calculatedTotals: EquipmentTotals;
 
   constructor(private storeSelect: StoreSelectHelperService) {
     this.limitDefinitions$ = this.storeSelect.getLimitDefinitions();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!(changes['totals'] || changes['startValues'] || changes['limitDefinitions'])) {
+      return;
+    }
+
+    this.calculatedTotals = this.startValues ? Object.keys(this.totals).reduce((calc, key) => {
+      calc[key] = this.totals[key] + (this.isGlobal(key) ? this.startValues[key] || 0 : 0);
+      return calc;
+    }, {}) : this.totals;
+  }
+
+  private isGlobal(key: string): boolean {
+    return this.limitDefinitions && this.limitDefinitions.find(ld => ld.name === key).type === LimitType.GLOBAL;
   }
 
   /**
@@ -42,9 +65,9 @@ export class EquipmentTotalsComponent {
    */
   showWarning(limit: EquipmentLimitDefinition): boolean {
     return this.showTotals
-      && this.totals
+      && this.calculatedTotals
       && this.setLimits
-      && this.isBiggerThanSetLimit(this.totals[limit.name], this.setLimits[limit.name]);
+      && this.isBiggerThanSetLimit(this.calculatedTotals[limit.name], this.setLimits[limit.name]);
   }
 
   isBiggerThanSetLimit(total: number, setLimit: number): boolean {

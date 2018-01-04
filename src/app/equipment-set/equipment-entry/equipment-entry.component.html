@@ -26,6 +26,7 @@
         <div class="equipment-item" *ngFor="let itemId of entry.items">
           <mat-radio-button [value]="items.entities[itemId]" [checked]="selectedItemId === itemId"></mat-radio-button>
           <equip-selected-equipment-item
+            [collection]="collection"
             [item]="items.entities[itemId]"
             [showTotals]="false"
             [totals]="totals">
@@ -47,6 +48,7 @@
     <equip-selected-equipment-item
       class="selected-item"
       *ngIf="selectedItem$ | async as selectedItem"
+      [collection]="collection"
       [item]="selectedItem"
       [totals]="totals"
       [setLimits]="setLimits$ | async">

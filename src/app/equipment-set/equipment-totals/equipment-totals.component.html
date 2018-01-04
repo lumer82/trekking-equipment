@@ -2,7 +2,7 @@
   <div class="entry" *ngFor="let limit of limitDefinitions$ | async">
     <span class="value_total">
       <span class="value">{{ values[limit.name] }}</span>
-      <span *ngIf="showTotals && totals">({{totals[limit.name]}})</span>
+      <span *ngIf="showTotals && calculatedTotals">({{calculatedTotals[limit.name]}})</span>
     </span>
     <equip-limit-icon [limit]="limit"></equip-limit-icon>
     <span class="warning-placeholder">

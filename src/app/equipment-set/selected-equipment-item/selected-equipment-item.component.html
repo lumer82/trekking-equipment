@@ -3,7 +3,9 @@
   {{ item?.name }}
 </div>
 <div class="settings-container">
-  <equip-equipment-totals [values]="item.values"
+  <equip-equipment-totals [startValues]="startValues$ | async"
+                          [limitDefinitions]="limits$ | async"
+                          [values]="item.values"
                           [showTotals]="showTotals"
                           [totals]="totals"
                           [setLimits]="setLimits"></equip-equipment-totals>
