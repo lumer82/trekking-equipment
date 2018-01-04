@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EquipmentLimitDefinition } from '../../shared/models/equipment-limit-definition.model';
+import { EquipmentLimitDefinition, LimitType } from '../../shared/models/equipment-limit-definition.model';
 import { EquipmentVariantEntry, EquipmentVariantTotals } from '../../shared/models/equipment-variant.model';
 import { EquipmentItem } from '../../shared/models/equipment-item.model';
 import { EquipmentTotals } from '../../shared/models/equipment-totals.model';
@@ -39,10 +39,14 @@ export class CalculateTotalsService {
     return order.reduce((totals, id, index, ids) => {
       const previous = index > 0 ? totals[ids[index - 1]] : this.createDefaultTotals(limits);
       totals[id]  = limits.reduce((t, limit) => {
-        t[limit.name] = previous[limit.name] + (collectionTotals[id][limit.name] || 0);
+        t[limit.name] = this.getStartValue(previous, limit) + (collectionTotals[id][limit.name] || 0);
         return t;
       }, {});
       return totals;
     }, {});
+  }
+
+  private getStartValue(previous: EquipmentTotals, limit: EquipmentLimitDefinition): number {
+    return limit.type === LimitType.GLOBAL ? previous[limit.name] : 0;
   }
 }
