@@ -13,7 +13,7 @@ import { debounceTime } from 'rxjs/operators/debounceTime';
 import {
   EquipmentSetFeatureState,
   EquipmentSetState,
-  selectEquipmentEntries,
+  selectEquipmentEntries, selectEquipmentSetSettings,
   selectEquipmentVariants,
   selectSelectedVariantIds
 } from '../store/equipment-set.reducer';
@@ -21,10 +21,11 @@ import { Observable } from 'rxjs/Observable';
 import { AddEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 import { Subject } from 'rxjs/Subject';
 import { EquipmentVariant } from '../../shared/models/equipment-variant.model';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { MoveEntryEquipmentVariantAction } from '../store/actions/equipment-variant.actions';
 import { StoreSelectHelperService } from '../store/store-select-helper.service';
 import { EquipmentTotals } from '../../shared/models/equipment-totals.model';
+import { EquipmentLimits } from '../../shared/models/equipment-limits.model';
 
 @Component({
   selector: 'equip-equipment-collection',
@@ -59,11 +60,24 @@ export class EquipmentCollectionComponent implements OnInit {
 
   limitDefinitions$: Observable<Array<EquipmentLimitDefinition>>;
 
+  setLimits$: Observable<EquipmentLimits>;
+
   constructor(private store: Store<EquipmentSetFeatureState>,
               private storeSelect: StoreSelectHelperService,
               private matDialog: MatDialog) {}
 
   ngOnInit() {
+    this.setLimits$ = this.store.select(selectEquipmentSetSettings).pipe(
+      map(settings => settings.limits),
+      withLatestFrom(this.storeSelect.getLimitDefinitions()),
+      map(([globalLimits, limitDefinitions]) => limitDefinitions.reduce((setLimits, limitDefinition) => {
+        setLimits[limitDefinition.name] =
+          (this.collection.limits && this.collection.limits[limitDefinition.name])
+          || (globalLimits && globalLimits[limitDefinition.name]);
+        return setLimits;
+      }, {}))
+    );
+
     this.nameForm = new FormControl();
     this.nameForm.valueChanges
       .pipe(debounceTime(800))

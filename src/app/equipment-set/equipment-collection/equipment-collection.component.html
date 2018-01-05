@@ -32,7 +32,7 @@
   </div>
   <div class="totals" *ngIf="(selectedVariant$ | async).totals as values">
     <h4>Totals</h4>
-    <equip-equipment-totals [values]="values" [totals]="totals" [showTotals]="!editMode"></equip-equipment-totals>
+    <equip-equipment-totals [values]="values" [totals]="totals" [showTotals]="!editMode" [setLimits]="setLimits$ | async"></equip-equipment-totals>
   </div>
   <ng-container *ngIf="entries$ | async as entries">
     <div class="entries" *ngIf="entries.ids.length || editMode">
