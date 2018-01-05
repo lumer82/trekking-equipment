@@ -4,7 +4,7 @@ import { EquipmentLimitDefinition } from '../../shared/models/equipment-limit-de
 import { EditCollectionLimitsComponent } from '../edit-collection-limits/edit-collection-limits.component';
 import { EquipmentEntryState } from '../store/reducer/equipment-entry.reducer';
 import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Store } from '@ngrx/store';
 import { DeleteEquipmentCollectionAction, UpdateEquipmentCollectionAction } from '../store/actions/equipment-collection.actions';
@@ -21,11 +21,12 @@ import { Observable } from 'rxjs/Observable';
 import { AddEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
 import { Subject } from 'rxjs/Subject';
 import { EquipmentVariant } from '../../shared/models/equipment-variant.model';
-import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { combineLatest, distinctUntilChanged, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { MoveEntryEquipmentVariantAction } from '../store/actions/equipment-variant.actions';
 import { StoreSelectHelperService } from '../store/store-select-helper.service';
 import { EquipmentTotals } from '../../shared/models/equipment-totals.model';
 import { EquipmentLimits } from '../../shared/models/equipment-limits.model';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 @Component({
   selector: 'equip-equipment-collection',
@@ -35,47 +36,53 @@ import { EquipmentLimits } from '../../shared/models/equipment-limits.model';
   animations: [
     trigger('move', [
       transition(':enter', [
-        style({ height: '0px' }),
+        style({height: '0px'}),
         animate(25, style({height: '*'}))
       ]),
       transition(':leave', [
-        style({ height: '*' }),
+        style({height: '*'}),
         animate(25, style({height: '0px'}))
       ]),
     ])
   ]
 })
-export class EquipmentCollectionComponent implements OnInit {
+export class EquipmentCollectionComponent implements OnInit, OnChanges {
   nameForm: FormControl;
-
   @Input() collection: EquipmentCollection;
+
   @Input() totals: EquipmentTotals;
-
   entries$: Observable<EquipmentEntryState>;
-  selectedVariant$: Observable<EquipmentVariant>;
 
+  selectedVariant$: Observable<EquipmentVariant>;
   editMode = true;
+
   moveMode: { entry: EquipmentEntry, index: number } = null;
   resetEntryEditMode$: Subject<void> = new Subject<void>();
-
   limitDefinitions$: Observable<Array<EquipmentLimitDefinition>>;
 
   setLimits$: Observable<EquipmentLimits>;
 
+  private collectionLimits$: ReplaySubject<EquipmentLimits> = new ReplaySubject<EquipmentLimits>(1);
+
   constructor(private store: Store<EquipmentSetFeatureState>,
               private storeSelect: StoreSelectHelperService,
-              private matDialog: MatDialog) {}
+              private matDialog: MatDialog) {
+  }
 
   ngOnInit() {
+    const localLimits$ = this.collectionLimits$.pipe(distinctUntilChanged());
+
     this.setLimits$ = this.store.select(selectEquipmentSetSettings).pipe(
       map(settings => settings.limits),
       withLatestFrom(this.storeSelect.getLimitDefinitions()),
-      map(([globalLimits, limitDefinitions]) => limitDefinitions.reduce((setLimits, limitDefinition) => {
+      combineLatest(localLimits$),
+      map(([[globalLimits, limitDefinitions], collectionLimits]) => limitDefinitions.reduce((setLimits, limitDefinition) => {
         setLimits[limitDefinition.name] =
-          (this.collection.limits && this.collection.limits[limitDefinition.name])
+          (collectionLimits && collectionLimits[limitDefinition.name])
           || (globalLimits && globalLimits[limitDefinition.name]);
         return setLimits;
-      }, {}))
+      }, {})),
+      tap(limits => console.log(`limits for collection ${this.collection.name}`, limits))
     );
 
     this.nameForm = new FormControl();
@@ -83,7 +90,7 @@ export class EquipmentCollectionComponent implements OnInit {
       .pipe(debounceTime(800))
       .subscribe(name =>
         this.store.dispatch(
-          new UpdateEquipmentCollectionAction({ id: this.collection.id, changes: { name } })
+          new UpdateEquipmentCollectionAction({id: this.collection.id, changes: {name}})
         )
       );
 
@@ -96,6 +103,13 @@ export class EquipmentCollectionComponent implements OnInit {
         map(variants => variants.entities[variantId]))
       )
     );
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['collection'] && (changes['collection'].firstChange ||
+        (changes['collection'].previousValue.limits !== changes['collection'].currentValue.limits))) {
+      this.collectionLimits$.next(changes['collection'].currentValue.limits);
+    }
   }
 
   delete(): void {
@@ -125,7 +139,7 @@ export class EquipmentCollectionComponent implements OnInit {
   }
 
   move(entry: EquipmentEntry, index: number): void {
-    this.moveMode = entry.id !== (this.moveMode && this.moveMode.entry.id) ? { entry, index } : null;
+    this.moveMode = entry.id !== (this.moveMode && this.moveMode.entry.id) ? {entry, index} : null;
     this.resetEntryEditMode$.next();
   }
 
@@ -133,7 +147,8 @@ export class EquipmentCollectionComponent implements OnInit {
     this.store.dispatch(new MoveEntryEquipmentVariantAction({
       collectionId: this.collection.id,
       entryId: this.moveMode.entry.id,
-      moveTo: index }));
+      moveTo: index
+    }));
     this.moveMode = null;
   }
 
@@ -141,20 +156,20 @@ export class EquipmentCollectionComponent implements OnInit {
     return this.moveMode ? this.moveMode.index : 0;
   }
 
-  variantEntryId(index: number, variantEntry: { entryId: string}): string {
+  variantEntryId(index: number, variantEntry: { entryId: string }): string {
     return variantEntry.entryId;
   }
 
   editLimits(): void {
-    const dialogRef = this.matDialog.open(EditCollectionLimitsComponent, { data: this.collection.limits });
+    const dialogRef = this.matDialog.open(EditCollectionLimitsComponent, {data: this.collection.limits});
     dialogRef.afterClosed()
       .pipe(filter(value => !!value))
       .subscribe(value =>
-      this.store.dispatch(new UpdateEquipmentCollectionAction({
-        id: this.collection.id,
-        // check that there are some set limits, else set undefined
-        changes: { limits: Object.keys(value).some(k => !!value[k]) ? value : undefined }
-      }))
-    );
+        this.store.dispatch(new UpdateEquipmentCollectionAction({
+          id: this.collection.id,
+          // check that there are some set limits, else set undefined
+          changes: {limits: Object.keys(value).some(k => !!value[k]) ? value : undefined}
+        }))
+      );
   }
 }
