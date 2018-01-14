@@ -13,6 +13,7 @@ import {
   equipmentVariantReducer, EquipmentVariantState,
   getSelectedVariantIds
 } from './reducer/equipment-variant.reducer';
+import { equipmentCollectionLimitReducer, EquipmentCollectionLimitState } from './reducer/equipment-collection-limits.reducer';
 
 export const EQUIPMENT_SET_FEATURE_NAME = 'equipmentSet';
 
@@ -27,6 +28,7 @@ export interface EquipmentSetState {
   items: EntityState<EquipmentItem>;
   variants: EquipmentVariantState;
   limits: EquipmentLimitsState;
+  collectionLimits: EquipmentCollectionLimitState;
 }
 
 export const equipmentSetReducer: ActionReducerMap<any> = {
@@ -35,7 +37,8 @@ export const equipmentSetReducer: ActionReducerMap<any> = {
   entries: equipmentEntryReducer,
   items: equipmentItemReducer,
   variants: equipmentVariantReducer,
-  limits: equipmentLimitsReducer
+  limits: equipmentLimitsReducer,
+  collectionLimits: equipmentCollectionLimitReducer
 };
 
 export const selectEquipmentSet = createFeatureSelector<EquipmentSetState>(EQUIPMENT_SET_FEATURE_NAME);
@@ -53,3 +56,5 @@ export const selectEquipmentVariants = createSelector(selectEquipmentSet, (state
 export const selectSelectedVariantIds = createSelector(selectEquipmentVariants, getSelectedVariantIds);
 
 export const selectEquipmentLimits = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.limits);
+
+export const selectEquipmentCollectionLimits = createSelector(selectEquipmentSet, (state: EquipmentSetState) => state.collectionLimits);

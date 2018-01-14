@@ -27,6 +27,7 @@ import { EditEquipmentItemComponent } from './edit-equipment-item/edit-equipment
 import { StoreSelectHelperService } from './store/store-select-helper.service';
 import { EquipmentCollectionEffects } from './store/effects/equipment-collection.effects';
 import { EditEquipmentLimitDefinitionComponent } from './edit-equipment-limit-definition/edit-equipment-limit-definition.component';
+import { EquipmentCollectionLimitsEffects } from './store/effects/equipment-collection-limits.effects';
 
 export function loadInitialState() {
   if (!environment.production) {
@@ -40,7 +41,12 @@ export function loadInitialState() {
     CommonModule,
     EquipmentSetRoutingModule,
     StoreModule.forFeature(EQUIPMENT_SET_FEATURE_NAME, equipmentSetReducer),
-    EffectsModule.forFeature([UpdateTotalsEffects, EquipmentCollectionEffects, EquipmentItemEffects]),
+    EffectsModule.forFeature([
+      UpdateTotalsEffects,
+      EquipmentCollectionEffects,
+      EquipmentItemEffects,
+      EquipmentCollectionLimitsEffects
+    ]),
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
