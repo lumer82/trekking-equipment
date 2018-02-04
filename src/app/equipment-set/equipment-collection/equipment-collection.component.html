@@ -1,27 +1,17 @@
 <div class="collection">
   <div class="header">
     <mat-icon>list</mat-icon>
-    <ng-container *ngIf="editMode; else noEditHeader">
-      <mat-input-container class="name">
-        <input type="text" matInput placeholder="Name" [value]="collection?.name" [formControl]="nameForm">
-      </mat-input-container>
-      <button class="delete" mat-icon-button (click)="delete()">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </ng-container>
-    <ng-template #noEditHeader>
-      <span class="name">{{collection?.name}}</span>
-    </ng-template>
-    <button mat-icon-button (click)="toggleEditMode()">
-      <mat-icon>{{ editMode ? 'check' : 'edit' }}</mat-icon>
+    <span class="name">{{collection?.name}}</span>
+    <button class="move" mat-icon-button (click)="moveCollection()">
+      <mat-icon>swap_vert</mat-icon>
     </button>
+    <a mat-icon-button [routerLink]="['/equipment-set', setId$ | async, 'edit-collection', collection.id]">
+      <mat-icon>edit</mat-icon>
+    </a>
   </div>
-  <div class="limits" *ngIf="collection.limits || editMode">
+  <div class="limits" *ngIf="collection.limits">
     <div class="limits-header">
       <h4>Limits</h4>
-      <button mat-icon-button *ngIf="editMode" (click)="editLimits()">
-        <mat-icon>settings</mat-icon>
-      </button>
     </div>
     <ng-container *ngIf="collection.limits as limits; else noLimitsSet">
       <equip-limits-view [limits]="limits" [limitDefinitions]="limitDefinitions$ | async"></equip-limits-view>
@@ -32,10 +22,10 @@
   </div>
   <div class="totals" *ngIf="(selectedVariant$ | async).totals as values">
     <h4>Totals</h4>
-    <equip-equipment-totals [values]="values" [totals]="totals" [showTotals]="!editMode" [setLimits]="setLimits$ | async"></equip-equipment-totals>
+    <equip-equipment-totals [values]="values" [totals]="totals" [showTotals]="true" [setLimits]="setLimits$ | async"></equip-equipment-totals>
   </div>
   <ng-container *ngIf="entries$ | async as entries">
-    <div class="entries" *ngIf="entries.ids.length || editMode">
+    <div class="entries" *ngIf="entries.ids.length">
       <h4>Entries</h4>
       <ng-container
         *ngFor="let variantEntry of (selectedVariant$ | async).entries; trackBy: variantEntryId; let index = index;">
@@ -60,17 +50,4 @@
       </ng-container>
     </div>
   </ng-container>
-  <div class="new-entry" *ngIf="editMode">
-    <mat-icon>create_new_folder</mat-icon>
-    <mat-input-container>
-      <input type="text"
-             matInput
-             placeholder="Name"
-             (keyup.enter)="addEntry(newEntryName)"
-             #newEntryName>
-    </mat-input-container>
-    <button mat-icon-button (click)="addEntry(newEntryName)">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
 </div>

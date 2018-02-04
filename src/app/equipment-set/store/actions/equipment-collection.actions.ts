@@ -8,7 +8,8 @@ export const EquipmentCollectionActionTypes = {
   ADD: literal('Add'),
   DELETE: literal('Delete'),
   UPDATE: literal('Update'),
-  UPDATE_TOTALS: literal('UPDATE_TOTALS')
+  UPDATE_TOTALS: literal('Update Totals'),
+  MOVE: literal('Move')
 };
 
 export class AddEquipmentCollectionAction implements Action {
@@ -35,8 +36,15 @@ export class UpdateTotalsEquipmentCollectionAction implements Action {
   constructor(public payload: { [collectionId: string]: EquipmentTotals }) {}
 }
 
+export class MoveEquipmentCollectionAction implements Action {
+  public readonly type = EquipmentCollectionActionTypes.MOVE;
+
+  constructor(public payload: { id: string, moveTo: number }) {}
+}
+
 export type EquipmentCollectionActions =
   AddEquipmentCollectionAction
   | DeleteEquipmentCollectionAction
   | UpdateEquipmentCollectionAction
-  | UpdateTotalsEquipmentCollectionAction;
+  | UpdateTotalsEquipmentCollectionAction
+  | MoveEquipmentCollectionAction;

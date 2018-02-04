@@ -12,7 +12,7 @@ import { EntityAdapter } from '@ngrx/entity/src/models';
 import { createEntityAdapter } from '@ngrx/entity/src/create_adapter';
 import {
   AddEquipmentCollectionAction, DeleteEquipmentCollectionAction,
-  EquipmentCollectionActions, UpdateEquipmentCollectionAction, UpdateTotalsEquipmentCollectionAction
+  EquipmentCollectionActions, MoveEquipmentCollectionAction, UpdateEquipmentCollectionAction, UpdateTotalsEquipmentCollectionAction
 } from '../actions/equipment-collection.actions';
 import { EquipmentTotals } from '../../../shared/models/equipment-totals.model';
 
@@ -76,6 +76,12 @@ export function equipmentCollectionReducer(
         },
         state
       );
+    }
+    case EquipmentCollectionActionTypes.MOVE: {
+      const payload = (action as MoveEquipmentCollectionAction).payload;
+      const otherCollections = state.order.filter(id => id !== payload.id);
+      const order = [...otherCollections.slice(0, payload.moveTo), payload.id, ...otherCollections.slice(payload.moveTo)];
+      return {...state, order};
     }
     case EquipmentEntryActionTypes.DELETE: {
       const payload = (action as DeleteEquipmentEntryAction).payload;

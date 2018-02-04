@@ -1,0 +1,20 @@
+<div mat-dialog-title>Move Collection</div>
+<div mat-dialog-content>
+  <mat-list>
+    <ng-container *ngFor="let collection of collections$ | async; let i = index">
+      <mat-list-item *ngIf="i < index">
+        <button class="drop-target" type="button" [mat-dialog-close]="i"><mat-icon>input</mat-icon></button>
+      </mat-list-item>
+      <mat-list-item>
+        <mat-icon>list</mat-icon>
+        {{ collection }}
+      </mat-list-item>
+      <mat-list-item *ngIf="i > index">
+        <button class="drop-target" type="button" [mat-dialog-close]="i"><mat-icon>input</mat-icon></button>
+      </mat-list-item>
+    </ng-container>
+  </mat-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>CANCEL</button>
+</div>

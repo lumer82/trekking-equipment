@@ -16,8 +16,8 @@ import { EquipmentSetRoutingModule } from './equipment-set.routing.module';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import {
-  MatButtonModule, MatCardModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule,
-  MatRadioModule, MatSlideToggleModule
+  MatButtonModule, MatCardModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule,
+  MatRadioModule, MatSlideToggleModule, MatToolbarModule
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from '../../environments/environment';
@@ -28,6 +28,8 @@ import { StoreSelectHelperService } from './store/store-select-helper.service';
 import { EquipmentCollectionEffects } from './store/effects/equipment-collection.effects';
 import { EditEquipmentLimitDefinitionComponent } from './edit-equipment-limit-definition/edit-equipment-limit-definition.component';
 import { EquipmentCollectionLimitsEffects } from './store/effects/equipment-collection-limits.effects';
+import { MoveCollectionDialogComponent } from './move-collection-dialog/move-collection-dialog.component';
+import { EquipmentCollectionEditComponent } from './equipment-collection-edit/equipment-collection-edit.component';
 
 export function loadInitialState() {
   if (!environment.production) {
@@ -57,7 +59,9 @@ export function loadInitialState() {
     MatRadioModule,
     MatDialogModule,
     MatSlideToggleModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatListModule,
+    MatToolbarModule
   ],
   declarations: [
     EquipmentSetComponent,
@@ -71,7 +75,9 @@ export function loadInitialState() {
     EditEquipmentItemComponent,
     EditEquipmentSetSettingsComponent,
     EditCollectionLimitsComponent,
-    EditEquipmentLimitDefinitionComponent
+    EditEquipmentLimitDefinitionComponent,
+    MoveCollectionDialogComponent,
+    EquipmentCollectionEditComponent
   ],
   providers: [
     CalculateTotalsService,
@@ -81,7 +87,8 @@ export function loadInitialState() {
     EditEquipmentItemComponent,
     EditEquipmentSetSettingsComponent,
     EditCollectionLimitsComponent,
-    EditEquipmentLimitDefinitionComponent
+    EditEquipmentLimitDefinitionComponent,
+    MoveCollectionDialogComponent
   ]
 })
 export class EquipmentSetModule { }

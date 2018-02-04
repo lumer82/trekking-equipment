@@ -1,105 +1,106 @@
-import { MatDialog } from '@angular/material';
-import { EquipmentEntry } from '../../shared/models/equipment-entry.model';
-import { EquipmentLimitDefinition } from '../../shared/models/equipment-limit-definition.model';
-import { EditCollectionLimitsComponent } from '../edit-collection-limits/edit-collection-limits.component';
-import { EquipmentEntryState } from '../store/reducer/equipment-entry.reducer';
+import { Component, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { EquipmentCollection } from '../../shared/models/equipment-collection.model';
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { animate, style, transition, trigger } from '@angular/animations';
+import { Observable } from 'rxjs/Observable';
+import { combineLatest, distinctUntilChanged, filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
+import {
+  EquipmentSetFeatureState, selectEquipmentCollections, selectEquipmentEntries, selectEquipmentSetSettings, selectEquipmentVariants,
+  selectSelectedVariantIds
+} from '../store/equipment-set.reducer';
+import { StoreSelectHelperService } from '../store/store-select-helper.service';
+import { EquipmentLimitDefinition } from '../../shared/models/equipment-limit-definition.model';
+import { EquipmentVariant } from '../../shared/models/equipment-variant.model';
+import { debounceTime } from 'rxjs/operators/debounceTime';
+import { FormControl } from '@angular/forms';
+import { MoveEntryEquipmentVariantAction } from '../store/actions/equipment-variant.actions';
+import { EditCollectionLimitsComponent } from '../edit-collection-limits/edit-collection-limits.component';
+import { EquipmentTotals } from '../../shared/models/equipment-totals.model';
 import {
   DeleteEquipmentCollectionAction, MoveEquipmentCollectionAction,
   UpdateEquipmentCollectionAction
 } from '../store/actions/equipment-collection.actions';
-import { FormControl } from '@angular/forms';
-import { debounceTime } from 'rxjs/operators/debounceTime';
-import {
-  EquipmentSetFeatureState,
-  EquipmentSetState,
-  selectEquipmentEntries, selectEquipmentSetSettings,
-  selectEquipmentVariants,
-  selectSelectedVariantIds
-} from '../store/equipment-set.reducer';
-import { Observable } from 'rxjs/Observable';
-import { AddEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
-import { Subject } from 'rxjs/Subject';
-import { EquipmentVariant } from '../../shared/models/equipment-variant.model';
-import { combineLatest, distinctUntilChanged, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
-import { MoveEntryEquipmentVariantAction } from '../store/actions/equipment-variant.actions';
-import { StoreSelectHelperService } from '../store/store-select-helper.service';
-import { EquipmentTotals } from '../../shared/models/equipment-totals.model';
-import { EquipmentLimits } from '../../shared/models/equipment-limits.model';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { EquipmentLimits } from '../../shared/models/equipment-limits.model';
+import { Subject } from 'rxjs/Subject';
+import { AddEquipmentEntryAction } from '../store/actions/equipment-entry.actions';
+import { EquipmentEntryState } from '../store/reducer/equipment-entry.reducer';
 import { MoveCollectionDialogComponent } from '../move-collection-dialog/move-collection-dialog.component';
-import { isNullOrUndefined } from 'util';
-import { of } from 'rxjs/observable/of';
+import { isNullOrUndefined } from "util";
+import { MatDialog } from '@angular/material';
+import { EquipmentEntry } from '../../shared/models/equipment-entry.model';
 
 @Component({
-  selector: 'equip-equipment-collection',
-  templateUrl: './equipment-collection.component.html',
-  styleUrls: ['./equipment-collection.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('move', [
-      transition(':enter', [
-        style({height: '0px'}),
-        animate(25, style({height: '*'}))
-      ]),
-      transition(':leave', [
-        style({height: '*'}),
-        animate(25, style({height: '0px'}))
-      ]),
-    ])
-  ]
+  selector: 'equip-equipment-collection-edit',
+  templateUrl: './equipment-collection-edit.component.html',
+  styleUrls: ['./equipment-collection-edit.component.scss']
 })
-export class EquipmentCollectionComponent implements OnInit, OnChanges {
-  nameForm: FormControl;
-  @Input() order: number;
-  @Input() collection: EquipmentCollection;
+export class EquipmentCollectionEditComponent implements OnInit, OnDestroy {
 
-  @Input() totals: EquipmentTotals;
-  entries$: Observable<EquipmentEntryState>;
+  nameForm: FormControl;
+  collection$: Observable<EquipmentCollection>;
+  collection: EquipmentCollection;
+  order$: Observable<number>;
   setId$: Observable<string>;
 
+  totals$: Observable<EquipmentTotals>;
+  entries$: Observable<EquipmentEntryState>;
+
   selectedVariant$: Observable<EquipmentVariant>;
+  editMode = true;
 
   moveMode: { entry: EquipmentEntry, index: number } = null;
   resetEntryEditMode$: Subject<void> = new Subject<void>();
   limitDefinitions$: Observable<Array<EquipmentLimitDefinition>>;
 
   setLimits$: Observable<EquipmentLimits>;
+  private unsubscribe$: Subject<void> = new Subject<void>();
 
   private collectionLimits$: ReplaySubject<EquipmentLimits> = new ReplaySubject<EquipmentLimits>(1);
 
   constructor(private store: Store<EquipmentSetFeatureState>,
               private storeSelect: StoreSelectHelperService,
-              private matDialog: MatDialog) {
+              private matDialog: MatDialog,
+              private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.setId$ = of('new');
+    this.setId$ = this.activatedRoute.paramMap.pipe(map(paramMap => paramMap.get('set-id')));
 
-    const localLimits$ = this.collectionLimits$.pipe(distinctUntilChanged());
+    this.collection$ = this.activatedRoute.data.pipe(map(data => data['collection']));
+    this.collection$.pipe(takeUntil(this.unsubscribe$)).subscribe(collection => this.collection = collection);
+
+    this.order$ = this.store.select(selectEquipmentCollections).pipe(
+      withLatestFrom(this.collection$.pipe(map(collection => collection.id))),
+      map(([collections, collectionId]) => collections.order.findIndex(id => id === collectionId))
+    );
+
+    this.totals$ = this.store.select(selectEquipmentCollections).pipe(
+      combineLatest(this.collection$.pipe(map(collection => collection.id))),
+      map(([collections, id]) => collections.totals[id])
+    );
 
     this.setLimits$ = this.store.select(selectEquipmentSetSettings).pipe(
       map(settings => settings.limits),
       withLatestFrom(this.storeSelect.getLimitDefinitions()),
-      combineLatest(localLimits$),
+      combineLatest(this.collection$.pipe(map(collection => collection.limits))),
       map(([[globalLimits, limitDefinitions], collectionLimits]) => limitDefinitions.reduce((setLimits, limitDefinition) => {
         setLimits[limitDefinition.name] =
           (collectionLimits && collectionLimits[limitDefinition.name])
           || (globalLimits && globalLimits[limitDefinition.name]);
         return setLimits;
-      }, {})),
-      tap(limits => console.log(`limits for collection ${this.collection.name}`, limits))
+      }, {}))
     );
 
     this.nameForm = new FormControl();
     this.nameForm.valueChanges
-      .pipe(debounceTime(800))
-      .subscribe(name =>
+      .pipe(
+        debounceTime(800),
+        withLatestFrom(this.collection$.pipe(map(collection => collection.id)))
+      )
+      .subscribe(([name, id]) =>
         this.store.dispatch(
-          new UpdateEquipmentCollectionAction({id: this.collection.id, changes: {name}})
+          new UpdateEquipmentCollectionAction({id, changes: {name}})
         )
       );
 
@@ -107,18 +108,12 @@ export class EquipmentCollectionComponent implements OnInit, OnChanges {
 
     this.entries$ = this.store.select(selectEquipmentEntries);
     this.selectedVariant$ = this.store.select(selectSelectedVariantIds).pipe(
-      map(selectedVariantIds => selectedVariantIds[this.collection.id]),
+      withLatestFrom(this.collection$.pipe(map(collection => collection.id))),
+      map(([selectedVariantIds, collectionId]) => selectedVariantIds[collectionId]),
       switchMap((variantId: string) => this.store.select(selectEquipmentVariants).pipe(
         map(variants => variants.entities[variantId]))
       )
     );
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['collection'] && (changes['collection'].firstChange ||
-        (changes['collection'].previousValue.limits !== changes['collection'].currentValue.limits))) {
-      this.collectionLimits$.next(changes['collection'].currentValue.limits);
-    }
   }
 
   delete(): void {
@@ -140,6 +135,11 @@ export class EquipmentCollectionComponent implements OnInit, OnChanges {
     );
 
     input.value = null;
+  }
+
+  toggleEditMode(): void {
+    this.editMode = !this.editMode;
+    this.moveMode = this.editMode && this.moveMode;
   }
 
   move(entry: EquipmentEntry, index: number): void {
@@ -177,12 +177,17 @@ export class EquipmentCollectionComponent implements OnInit, OnChanges {
       );
   }
 
-  moveCollection() {
+  moveCollection(order: number) {
     const dialogRef = this.matDialog.open(MoveCollectionDialogComponent, {
-      data: this.order
+      data: 0
     });
     dialogRef.afterClosed().pipe(
-     filter(result => !isNullOrUndefined(result))
+      filter(result => !isNullOrUndefined(result))
     ).subscribe(result => this.store.dispatch(new MoveEquipmentCollectionAction({id: this.collection.id, moveTo: result})));
   }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+  }
+
 }

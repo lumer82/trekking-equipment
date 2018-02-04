@@ -4,9 +4,10 @@
   </div>
 
   <equip-equipment-collection
-    *ngFor="let collectionId of equipmentSet.collections.ids"
+    *ngFor="let collectionId of equipmentSet.collections.order; let index = index"
     [collection]="equipmentSet.collections.entities[collectionId]"
     [totals]="equipmentSet.collections.totals[collectionId]"
+    [order]="index"
   >
   </equip-equipment-collection>
 
