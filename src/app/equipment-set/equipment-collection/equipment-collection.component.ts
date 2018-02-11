@@ -179,7 +179,10 @@ export class EquipmentCollectionComponent implements OnInit, OnChanges {
 
   moveCollection() {
     const dialogRef = this.matDialog.open(MoveCollectionDialogComponent, {
-      data: this.order
+      data: {
+        index: this.order,
+        name: this.collection.name
+      }
     });
     dialogRef.afterClosed().pipe(
      filter(result => !isNullOrUndefined(result))

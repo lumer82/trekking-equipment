@@ -1,7 +1,7 @@
 import { debounceTime } from 'rxjs/operators/debounceTime';
 import { AddEquipmentCollectionAction } from './store/actions/equipment-collection.actions';
 import { SetEquipmentSetAction } from './store/actions/equipment-set.actions';
-import { EquipmentSetState, selectEquipmentSet } from './store/equipment-set.reducer';
+import { EquipmentSetState, selectEquipmentCollections, selectEquipmentSet } from './store/equipment-set.reducer';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { EquipmentSet } from '../../shared/models/equipment-set.model';
@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { environment } from '../../environments/environment';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'equip-equipment-set',
@@ -35,16 +36,20 @@ export class EquipmentSetComponent implements OnInit {
     );
 
     if (!environment.production) {
-      for (let i = 1; i < 10; i++) {
-        const id = Date.now() + `${i}`;
-        this.store.dispatch(
-          new AddEquipmentCollectionAction({
-            id: id,
-            name: `Collection ${i}`,
-            entries: []
-          })
-        );
-      }
+      this.store.select(selectEquipmentCollections).pipe(
+        filter(collections => collections.ids.length === 0)
+      ).subscribe(() => {
+        for (let i = 1; i < 10; i++) {
+          const id = Date.now() + `${i}`;
+          this.store.dispatch(
+            new AddEquipmentCollectionAction({
+              id: id,
+              name: `Collection ${i}`,
+              entries: []
+            })
+          );
+        }
+      });
 
       // this.store
       //   .select(selectEquipmentSet)

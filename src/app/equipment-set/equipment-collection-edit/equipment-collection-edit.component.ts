@@ -67,7 +67,11 @@ export class EquipmentCollectionEditComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.setId$ = this.activatedRoute.paramMap.pipe(map(paramMap => paramMap.get('set-id')));
 
-    this.collection$ = this.activatedRoute.data.pipe(map(data => data['collection']));
+    this.collection$ = this.store.select(selectEquipmentCollections)
+      .pipe(
+        combineLatest(this.activatedRoute.paramMap.pipe(map(paramMap => paramMap.get('collection-id')))),
+        map(([collections, id]) => collections.entities[id])
+      );
     this.collection$.pipe(takeUntil(this.unsubscribe$)).subscribe(collection => this.collection = collection);
 
     this.order$ = this.store.select(selectEquipmentCollections).pipe(

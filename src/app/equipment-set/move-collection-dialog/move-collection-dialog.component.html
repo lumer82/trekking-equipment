@@ -1,4 +1,7 @@
-<div mat-dialog-title>Move Collection</div>
+<div mat-dialog-title class="move-collection-title">
+  <span class="title">Move Collection</span>
+  <span class="name">{{name}}</span>
+</div>
 <div mat-dialog-content>
   <mat-list>
     <ng-container *ngFor="let collection of collections$ | async; let i = index">

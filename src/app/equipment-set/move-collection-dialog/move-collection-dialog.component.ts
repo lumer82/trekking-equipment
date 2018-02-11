@@ -14,10 +14,15 @@ import { map } from 'rxjs/operators';
 export class MoveCollectionDialogComponent implements OnInit {
 
   collections$: Observable<Array<string>>;
+  index: number;
+  name: string;
 
   constructor(
     private store: Store<EquipmentSetFeatureState>,
-    @Inject(MAT_DIALOG_DATA) public index: number) { }
+    @Inject(MAT_DIALOG_DATA) public args: { index: number, name: string }) {
+    this.index = args.index;
+    this.name = args.name;
+  }
 
   ngOnInit() {
     this.collections$ = this.store.select(selectEquipmentCollections).pipe(

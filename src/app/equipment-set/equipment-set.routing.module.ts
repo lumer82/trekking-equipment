@@ -4,14 +4,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { EquipmentCollectionEditComponent } from './equipment-collection-edit/equipment-collection-edit.component';
 import { EditCollectionResolver } from './services/edit-collection.resolver';
 import { EquipmentSetResolver } from './services/equipment-set-resolver.service';
+import { EditCollectionCanActivateService } from './services/edit-collection-can-activate.service';
 
 const routes: Routes = [
   {
     path: ':set-id/edit-collection/:collection-id',
     component: EquipmentCollectionEditComponent,
-    resolve: {
-      collection: EditCollectionResolver
-    }
+    canActivate: [ EditCollectionCanActivateService ]
   },
   { path: ':set-id',
     component: EquipmentSetComponent,
@@ -27,7 +26,7 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [
     EquipmentSetResolver,
-    EditCollectionResolver
+    EditCollectionCanActivateService
   ]
 })
 export class EquipmentSetRoutingModule { }

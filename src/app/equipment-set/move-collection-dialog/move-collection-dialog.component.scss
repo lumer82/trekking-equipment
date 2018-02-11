@@ -10,3 +10,12 @@
   justify-content: center;
   color: rgba(0,0,0,.5);
 }
+
+.move-collection-title {
+  display: flex;
+  flex-direction: column;
+
+  .name {
+    font-size: 0.8em;
+  }
+}
