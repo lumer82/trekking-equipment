@@ -37,9 +37,10 @@ export class CalculateTotalsService {
                                 collectionTotals: { [id: string]: EquipmentTotals },
                                 limits: Array<EquipmentLimitDefinition>): { [collectionId: string]: EquipmentTotals } {
     return order.reduce((totals, id, index, ids) => {
+      const collectionTotalsForId = collectionTotals[id] || {};
       const previous = index > 0 ? totals[ids[index - 1]] : this.createDefaultTotals(limits);
       totals[id]  = limits.reduce((t, limit) => {
-        t[limit.name] = this.getStartValue(previous, limit) + (collectionTotals[id][limit.name] || 0);
+        t[limit.name] = this.getStartValue(previous, limit) + (collectionTotalsForId[limit.name] || 0);
         return t;
       }, {});
       return totals;
