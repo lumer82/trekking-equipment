@@ -15,8 +15,9 @@ import {
 import { filter, map, switchMap, take, withLatestFrom } from 'rxjs/operators';
 import { CalculateTotalsService } from '../../services/calculate-totals.service';
 import { EquipmentItemActionTypes, UpdateEquipmentItemAction } from '../actions/equipment-item.actions';
-import { UpdateTotalsEquipmentCollectionAction } from '../actions/equipment-collection.actions';
+import { EquipmentCollectionActionTypes, UpdateTotalsEquipmentCollectionAction } from '../actions/equipment-collection.actions';
 import { EquipmentLimitsActionTypes } from '../actions/equipment-limits.actions';
+import { EquipmentSetActionTypes, UpdateTotalsEquipmentSetAction } from '../actions/equipment-set.actions';
 
 @Injectable()
 export class UpdateTotalsEffects {
@@ -66,26 +67,35 @@ export class UpdateTotalsEffects {
         new UpdateTotalsEquipmentVariantAction({variantId, entries, totals}))
     );
 
+  @Effect() onCollectionMoveUpdateTotals: Observable<any> =
+    this.actions.ofType(EquipmentCollectionActionTypes.MOVE)
+      .pipe(map(() => new UpdateTotalsEquipmentSetAction()));
+
   @Effect() updateCollectionTotals$: Observable<UpdateTotalsEquipmentCollectionAction> =
     this.actions.ofType(
-      EquipmentVariantActionTypes.UPDATE_TOTALS, ...Object.values(EquipmentLimitsActionTypes)).pipe(
-      withLatestFrom(this.store.select(selectEquipmentCollections)),
-      map(([action, collectionState]) => collectionState.order),
-      withLatestFrom(this.store.select(selectEquipmentVariants)),
-      map(([order, variants]) => ({ order, totals: order.reduce((totals, id) => {
-          totals[id] = variants.entities[variants.selectedVariantIds[id]].totals;
-          return totals;
-        }, {})})),
-      withLatestFrom(this.store.select(selectEquipmentLimits).pipe(
-        map(limits => (limits.ids as Array<string>).map(id => limits.entities[id])))
-      ),
-      map(([{order, totals}, limits]) =>
-        this.calculateTotalsService.calculateTotalsForCollections(
-          order,
-          totals,
-          limits)),
-      map(totals => new UpdateTotalsEquipmentCollectionAction(totals))
-    );
+        EquipmentVariantActionTypes.UPDATE_TOTALS,
+        EquipmentSetActionTypes.UPDATE_TOTALS,
+        ...Object.values(EquipmentLimitsActionTypes))
+      .pipe(
+        withLatestFrom(this.store.select(selectEquipmentCollections)),
+        map(([action, collectionState]) => collectionState.order),
+        withLatestFrom(this.store.select(selectEquipmentVariants)),
+        map(([order, variants]) => ({
+          order, totals: order.reduce((totals, id) => {
+            totals[id] = variants.entities[variants.selectedVariantIds[id]].totals;
+            return totals;
+          }, {})
+        })),
+        withLatestFrom(this.store.select(selectEquipmentLimits).pipe(
+          map(limits => (limits.ids as Array<string>).map(id => limits.entities[id])))
+        ),
+        map(([{order, totals}, limits]) =>
+          this.calculateTotalsService.calculateTotalsForCollections(
+            order,
+            totals,
+            limits)),
+        map(totals => new UpdateTotalsEquipmentCollectionAction(totals))
+      );
 
 
   constructor(private actions: Actions,
